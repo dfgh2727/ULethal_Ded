@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{279CC3AD-417E-35D6-5807-76A8544EC0CB}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "Lethal_Ded",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}
