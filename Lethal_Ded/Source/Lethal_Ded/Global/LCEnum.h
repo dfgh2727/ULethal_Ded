@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -14,12 +14,12 @@
 UENUM(BlueprintType)
 enum class EAIState : uint8
 {
-	Spawn UMETA(DisplayName = "»ı¼º"),
-	Idle UMETA(DisplayName = "´ë±â"),
-	Patrol UMETA(DisplayName = "¼øÂû"),
-	Trace UMETA(DisplayName = "ÃßÀû"),
-	TraceBack UMETA(DisplayName = "È¸±Í"),
-	Attack UMETA(DisplayName = "°ø°İ"),
+	Spawn UMETA(DisplayName = "ìƒì„±"),
+	Idle UMETA(DisplayName = "ëŒ€ê¸°"),
+	Patrol UMETA(DisplayName = "ìˆœì°°"),
+	Trace UMETA(DisplayName = "ì¶”ì "),
+	TraceBack UMETA(DisplayName = "íšŒê·€"),
+	Attack UMETA(DisplayName = "ê³µê²©"),
 	MAX UMETA(DisplayName = "MAX"),
 };
 
