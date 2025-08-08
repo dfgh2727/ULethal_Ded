@@ -40,4 +40,5 @@ void UMonsterAnimInstance::ChangeAnimation(int _CurAnimationType, FName _Section
 	CurAnimationType = _CurAnimationType;
 	SectionName = _SectionName;
 
+	
 }

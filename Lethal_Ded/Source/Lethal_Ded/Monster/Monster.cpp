@@ -44,15 +44,6 @@ AMonster::AMonster()
 void AMonster::BeginPlay()
 {
 
-	if (GetWorld()->GetAuthGameMode())
-	{
-		int a = 0;
-	}
-	else
-	{
-		int a = 0;
-	}
-
 	if (DataKey == TEXT("") || true == DataKey.IsEmpty())
 	{
 		//(GMLOG, Error, TEXT("%S(%u)> if (ItemDataKey == TEXT("") || true == ItemDataKey.IsEmpty())"), __FUNCTION__, __LINE__);
@@ -83,11 +74,6 @@ void AMonster::BeginPlay()
 		Con->GetBlackboardComponent()->SetValueAsObject(TEXT("AIData"), AIData);
 
 	}
-
-
-
-
-	
 
 	GetMesh()->SetSkeletalMesh(FindData->Mesh);
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -120,7 +106,7 @@ void AMonster::NetSyncMonster()
 
 	int CurAnimation = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance())->GetCurAnimationType();
 
-	ChangeAnimation_Multicast(CurAnimation);
+	ChangeAnimation_Implementation(CurAnimation);
 
 
 }
