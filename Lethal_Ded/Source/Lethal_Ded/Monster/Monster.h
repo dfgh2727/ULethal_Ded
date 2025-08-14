@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MonsterDataTable.h"
+#include "Object/Interface/AttackInterface.h"
 //#include "Monster/MonsterAnimInstance.h"
 #include "Monster.generated.h"
 
 
 UCLASS()
-class LETHAL_DED_API AMonster : public ACharacter
+class LETHAL_DED_API AMonster : public ACharacter, public IAttackInterface
 {
 	GENERATED_BODY()
 
@@ -40,6 +41,13 @@ public:
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	
 	void NetSyncMonster();
+
+
+	void AttackStart() override;
+	void AttackEnd() override;
+	float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+
+
 	
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

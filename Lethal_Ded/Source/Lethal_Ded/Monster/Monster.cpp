@@ -10,6 +10,7 @@
 #include "Engine/SkeletalMesh.h"
 #include "Monster/MonsterAnimInstance.h" // Add this include to resolve UMonsterAnimInstance
 #include <Net/UnrealNetwork.h>
+#include <Global/LCConst.h>
 
 
 // Sets default values
@@ -159,4 +160,21 @@ void AMonster::ChangeAnimation_Multicast_Implementation(int _CurAnimnation, FNam
 	{
 		CurAnimInstance->ChangeAnimation(_CurAnimnation, _SectionName);
 	}
+}
+
+void AMonster::AttackStart()
+{
+	GetMesh()->SetCollisionProfileName(ULCConst::Collision::ProfileName_MonsterAttack, true);
+}
+
+void AMonster::AttackEnd()
+{
+	GetMesh()->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName, true);
+}
+
+float AMonster::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	return 0.0f;
 }
