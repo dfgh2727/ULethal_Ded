@@ -21,5 +21,6 @@ public:
 
 	UBTTaskNode_Spawn();
 
-	float CurSpanwTime = 0.0f;
+
+
 };

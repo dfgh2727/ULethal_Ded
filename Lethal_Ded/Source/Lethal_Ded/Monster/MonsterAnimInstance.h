@@ -32,6 +32,17 @@ public:
 		return CurAnimationType;
 	}
 
+	UAnimMontage* GetCurAnimMontage()
+	{
+		return CurMontage;
+	}
+
+	bool MontageIsPlaying()
+	{
+		return Montage_IsPlaying(CurMontage);
+	}
+
+
 	void ChangeAnimation(int _Animation, FName _SectionName = TEXT("None"));
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)

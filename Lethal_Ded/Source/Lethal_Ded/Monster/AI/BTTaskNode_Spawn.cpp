@@ -2,6 +2,8 @@
 
 
 #include "Monster/AI/BTTaskNode_Spawn.h"
+
+#include "Monster/MonsterAnimInstance.h"
 #include "Monster/Monster.h"
 
 void UBTTaskNode_Spawn::Start(UBehaviorTreeComponent& _OwnerComp)
@@ -20,9 +22,8 @@ void UBTTaskNode_Spawn::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pNo
 
 	FPlayAIData& PlayAIData = UAIBTTaskNode::GetPlayAIData(_OwnerComp);
 
-	CurSpanwTime += _DeltaSeconds;
 
-	if(CurSpanwTime >5.0f)
+	if(false == PlayAIData.MonsterAnimInstance->MontageIsPlaying())
 	{
 		ChangeState(_OwnerComp, EAIState::Idle);
 		return;
@@ -33,3 +34,4 @@ UBTTaskNode_Spawn::UBTTaskNode_Spawn()
 {
 	AIStateValue = EAIState::Spawn;
 }
+

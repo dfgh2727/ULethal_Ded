@@ -21,6 +21,12 @@ public:
 	public:
 		static FName AIDataName;
 	};
+
+	class Collision
+	{
+	public:
+		static FName ProfileName_MonsterAttack;
+	};
 #pragma endregion 
 
 };

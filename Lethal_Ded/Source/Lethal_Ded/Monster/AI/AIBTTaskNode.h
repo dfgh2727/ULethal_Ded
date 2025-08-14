@@ -29,6 +29,7 @@ public:
 
 	void TargetCheck(UBehaviorTreeComponent& _OwnerComp);
 
+
 protected:
 	UPROPERTY(Category = "AI", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	EAIState AIStateValue = EAIState::MAX;

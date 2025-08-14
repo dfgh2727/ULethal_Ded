@@ -18,6 +18,10 @@ struct FAIData
 	FAIData() {}
 	~FAIData() {}
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	double MaxSpeed = 300.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	double MaxHP = 100;
 
@@ -58,6 +62,8 @@ public:
 
 	double CurPatrolTime = 0.0f;
 	TArray<FVector> PatrolPos;
+
+	double CurSpeed = 300.0f;
 
 	class AMonster* SelfAnimPawn = nullptr;
 	class UMonsterAnimInstance* MonsterAnimInstance = nullptr;

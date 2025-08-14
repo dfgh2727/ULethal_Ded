@@ -5,4 +5,5 @@
 
 FName ULCConst::AI::AIDataName = TEXT("AIData");
 
+FName ULCConst::Collision::ProfileName_MonsterAttack = TEXT("MonsterAttack");
 

@@ -10,6 +10,7 @@
 #include "Engine/SkeletalMesh.h"
 #include "Monster/MonsterAnimInstance.h" // Add this include to resolve UMonsterAnimInstance
 #include <Net/UnrealNetwork.h>
+#include <Global/LCConst.h>
 
 
 // Sets default values
@@ -44,15 +45,6 @@ AMonster::AMonster()
 void AMonster::BeginPlay()
 {
 
-	if (GetWorld()->GetAuthGameMode())
-	{
-		int a = 0;
-	}
-	else
-	{
-		int a = 0;
-	}
-
 	if (DataKey == TEXT("") || true == DataKey.IsEmpty())
 	{
 		//(GMLOG, Error, TEXT("%S(%u)> if (ItemDataKey == TEXT("") || true == ItemDataKey.IsEmpty())"), __FUNCTION__, __LINE__);
@@ -83,11 +75,6 @@ void AMonster::BeginPlay()
 		Con->GetBlackboardComponent()->SetValueAsObject(TEXT("AIData"), AIData);
 
 	}
-
-
-
-
-	
 
 	GetMesh()->SetSkeletalMesh(FindData->Mesh);
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -120,7 +107,7 @@ void AMonster::NetSyncMonster()
 
 	int CurAnimation = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance())->GetCurAnimationType();
 
-	ChangeAnimation_Multicast(CurAnimation);
+	ChangeAnimation_Implementation(CurAnimation);
 
 
 }
@@ -130,6 +117,14 @@ void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AMonsterAIController* Con = Cast<AMonsterAIController>(GetController());
+	if (nullptr != Con)
+	{
+		UObject* Object= Con->GetBlackboardComponent()->GetValueAsObject("AIData");
+
+		AIStateValue= Cast<UAIDataObject>(Object)->PlayData.AIState;
+
+	}
 }
 
 // Called to bind functionality to input
@@ -144,6 +139,7 @@ void AMonster::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMonster, DataKey);
+	DOREPLIFETIME(AMonster, AIStateValue);
 }
 
 void AMonster::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -164,4 +160,21 @@ void AMonster::ChangeAnimation_Multicast_Implementation(int _CurAnimnation, FNam
 	{
 		CurAnimInstance->ChangeAnimation(_CurAnimnation, _SectionName);
 	}
+}
+
+void AMonster::AttackStart()
+{
+	GetMesh()->SetCollisionProfileName(ULCConst::Collision::ProfileName_MonsterAttack, true);
+}
+
+void AMonster::AttackEnd()
+{
+	GetMesh()->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName, true);
+}
+
+float AMonster::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	return 0.0f;
 }
