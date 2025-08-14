@@ -22,6 +22,11 @@ public:
 	void CreateRoom();
 	void JoinRoom(FString IP, APlayerController* PlayerController);
 
+	void SetBootingScreenPlayed(bool bCheck)
+	{
+		bBootingScreenPlayed = bCheck;
+	}
+
 	bool CheckBootingScreenPlayed()
 	{
 		return bBootingScreenPlayed;
