@@ -5,6 +5,7 @@
 #include <Monster/MonsterDataTable.h>
 #include <Global/LCConst.h>
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include <Kismet/GameplayStatics.h>
 
 
@@ -15,6 +16,7 @@ UAIBTTaskNode::UAIBTTaskNode()
 
 void UAIBTTaskNode::Start(UBehaviorTreeComponent& _OwnerComp)
 {
+
 }
 
 
@@ -83,4 +85,5 @@ void UAIBTTaskNode::TargetCheck(UBehaviorTreeComponent& _OwnerComp)
 	}
 
 }
+
  

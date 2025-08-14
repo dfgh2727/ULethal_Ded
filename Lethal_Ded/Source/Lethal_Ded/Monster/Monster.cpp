@@ -116,6 +116,14 @@ void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AMonsterAIController* Con = Cast<AMonsterAIController>(GetController());
+	if (nullptr != Con)
+	{
+		UObject* Object= Con->GetBlackboardComponent()->GetValueAsObject("AIData");
+
+		AIStateValue= Cast<UAIDataObject>(Object)->PlayData.AIState;
+
+	}
 }
 
 // Called to bind functionality to input
@@ -130,6 +138,7 @@ void AMonster::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMonster, DataKey);
+	DOREPLIFETIME(AMonster, AIStateValue);
 }
 
 void AMonster::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

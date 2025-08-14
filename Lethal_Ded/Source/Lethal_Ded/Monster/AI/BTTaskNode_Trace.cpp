@@ -11,6 +11,7 @@ UBTTaskNode_Trace::UBTTaskNode_Trace()
 	AIStateValue = EAIState::Trace;
 }
 
+
 void UBTTaskNode_Trace::Start(UBehaviorTreeComponent& _OwnerComp)
 {
 	FPlayAIData& PlayAIData = UAIBTTaskNode::GetPlayAIData(_OwnerComp);
@@ -24,6 +25,10 @@ void UBTTaskNode_Trace::Start(UBehaviorTreeComponent& _OwnerComp)
 	if (nullptr != Character)
 	{
 		Character->GetCharacterMovement()->bOrientRotationToMovement = true;
+
+		float Speed= Character->GetCharacterMovement()->MaxWalkSpeed * 3;
+		Character->GetCharacterMovement()->MaxWalkSpeed = Speed;
+		
 	}
 
 }
@@ -37,7 +42,16 @@ void UBTTaskNode_Trace::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pNo
 
 	if (nullptr == TargetActor)
 	{
+	
 
+		ACharacter* Character = Cast<ACharacter>(PlayAIData.SelfPawn);
+		if (nullptr != Character)
+		{
+
+			float Speed = (float)PlayAIData.Data.MaxSpeed;
+			Character->GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+		}
 		ChangeState(_OwnerComp, EAIState::TraceBack);
 		return;
 	}
@@ -48,12 +62,28 @@ void UBTTaskNode_Trace::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pNo
 
 	if (TargetDir.Size() <= PlayAIData.Data.AttackRange)
 	{
+		ACharacter* Character = Cast<ACharacter>(PlayAIData.SelfPawn);
+		if (nullptr != Character)
+		{
+
+			float Speed = (float)PlayAIData.Data.MaxSpeed;
+			Character->GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+		}
 		ChangeState(_OwnerComp, EAIState::Attack);
 		return;
 	}
 	SelfActor->AddMovementInput(TargetDir);
 	if (TargetDir.Size() >= PlayAIData.Data.TraceRange)
 	{
+		ACharacter* Character = Cast<ACharacter>(PlayAIData.SelfPawn);
+		if (nullptr != Character)
+		{
+
+			float Speed = (float)PlayAIData.Data.MaxSpeed;
+			Character->GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+		}
 		ChangeState(_OwnerComp, EAIState::TraceBack); 
 		return;
 	}

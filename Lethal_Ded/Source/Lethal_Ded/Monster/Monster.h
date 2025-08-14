@@ -52,6 +52,8 @@ public:
 	void ChangeAnimation_Multicast(int _CurAnimnation, FName _SectionName = TEXT("None"));
 	void ChangeAnimation_Multicast_Implementation(int _CurAnimnation, FName _SectionName = TEXT("None"));
 
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "Data")
+	EAIState AIStateValue = EAIState::MAX;
 
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "Data")
 	FString DataKey = "";
