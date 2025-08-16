@@ -4,3 +4,5 @@
 #include "Modules/ModuleManager.h"
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, Lethal_Ded, "Lethal_Ded" );
+
+DEFINE_LOG_CATEGORY(LethalCompany_LOG);

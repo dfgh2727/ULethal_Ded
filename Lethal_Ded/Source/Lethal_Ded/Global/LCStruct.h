@@ -14,7 +14,7 @@ class LETHAL_DED_API ULCStruct : public UObject
 {
 	GENERATED_BODY()
 	
-	
-	
-	
+public:
+
+
 };
