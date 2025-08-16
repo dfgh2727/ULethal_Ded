@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InputAction.h"
+
 #include "GlobDevCharacter.generated.h"
 
 UCLASS()
@@ -26,6 +28,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
+	void MoveCharacter(const FInputActionValue& Value);
 	
-	
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UserInput", meta = (AllowPrivateAccess = "true"))
+	UInputAction* MoveAction = nullptr;
 };

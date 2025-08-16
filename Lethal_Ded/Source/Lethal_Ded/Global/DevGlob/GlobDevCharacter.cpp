@@ -2,6 +2,9 @@
 
 
 #include "Global/DevGlob/GlobDevCharacter.h"
+#include "EnhancedInputComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 
 // Sets default values
@@ -30,6 +33,18 @@ void AGlobDevCharacter::Tick(float DeltaTime)
 void AGlobDevCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AGlobDevCharacter::MoveCharacter);
+
+}
+
+void AGlobDevCharacter::MoveCharacter(const FInputActionValue& Value)
+{
+	FVector InputVector = Value.Get<FVector>();
+
+	InputVector.Normalize();
 
 }
 
