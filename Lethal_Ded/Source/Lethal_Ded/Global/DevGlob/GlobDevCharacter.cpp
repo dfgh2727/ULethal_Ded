@@ -46,5 +46,7 @@ void AGlobDevCharacter::MoveCharacter(const FInputActionValue& Value)
 
 	InputVector.Normalize();
 
+	AddMovementInput(InputVector);
+
 }
 
