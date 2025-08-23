@@ -3,6 +3,7 @@
 
 #include "Global/LCGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Global/DevGlob/GlobDevGameMode.h"
 
 ULCGameInstance::ULCGameInstance()
 {
@@ -20,14 +21,8 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 	//FString OpenLevelName = FString::Printf(TEXT(":%s%s"), *Port, *TitleLevelName);
 	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
 	
-	UWorld* World = GetWorld();
-
-	/*if(World != nullptr && HasAuthority)
-	{
-		World->ServerTravel(TitleLevelName);
-	}*/
-	//UGameplayStatics::OpenLevel(GetWorld(), *OpenLevelName/*, true, TEXT("listen")*/);
-	// 서버 권한이 있는 곳에서 ServerTravel 필요
+	AGlobDevGameMode* DevGameMode = Cast<AGlobDevGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	DevGameMode->MakeServerTravel(TitleLevelName);
 
 	if (PlayerController != nullptr)
 	{
