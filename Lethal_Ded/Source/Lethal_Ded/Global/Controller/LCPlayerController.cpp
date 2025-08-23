@@ -6,6 +6,10 @@
 #include "EnhancedInputComponent.h"
 
 
+ALCPlayerController::ALCPlayerController()
+{
+}
+
 void ALCPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -30,3 +34,4 @@ void ALCPlayerController::AddMappingContext(UInputMappingContext* _MappingContex
 	InputSystem->ClearAllMappings();
 	InputSystem->AddMappingContext(_MappingContext, 0);
 }
+

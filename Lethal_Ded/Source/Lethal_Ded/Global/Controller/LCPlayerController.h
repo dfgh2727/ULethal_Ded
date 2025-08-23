@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SetupInputComponentEvent();
 
+	ALCPlayerController();
+
+
 protected:
 	void BeginPlay() override;
 	void SetupInputComponent() override;

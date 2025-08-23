@@ -21,6 +21,10 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	void MakeServerTravel(FString& TargerLevelName);
+	//void MakeServerTravel(FString& TargerLevelName);
+	
+private:
+
+	//bool bTravelServer = false;
 	
 };

@@ -13,8 +13,17 @@ UCLASS()
 class LETHAL_DED_API AGlobDevTitleController : public APlayerController
 {
 	GENERATED_BODY()
-	
-	
-	
-	
+
+public:
+
+	AGlobDevTitleController();
+	~AGlobDevTitleController();
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(Server, Reliable)
+	void SetServerTravel(const FString& TargetLevel);
+	void SetServerTravel_Implementation(const FString& TargetLevel);
+
 };

@@ -4,6 +4,7 @@
 #include "Global/LCGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Global/DevGlob/GlobDevGameMode.h"
+#include "Global/DevGlob/GlobDevTitleController.h"
 
 ULCGameInstance::ULCGameInstance()
 {
@@ -21,8 +22,14 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 	//FString OpenLevelName = FString::Printf(TEXT(":%s%s"), *Port, *TitleLevelName);
 	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
 	
-	AGlobDevGameMode* DevGameMode = Cast<AGlobDevGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	DevGameMode->MakeServerTravel(TitleLevelName);
+	//AGlobDevGameMode* DevGameMode = Cast<AGlobDevGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	//DevGameMode->MakeServerTravel(TitleLevelName);
+
+	AGlobDevTitleController* LCPlayerController = Cast<AGlobDevTitleController>(PlayerController);
+	if (LCPlayerController != nullptr)
+	{
+		LCPlayerController->SetServerTravel(TitleLevelName);
+	}
 
 	if (PlayerController != nullptr)
 	{
