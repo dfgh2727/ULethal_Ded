@@ -20,10 +20,6 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 {
 	FString TitleLevelName = TitleLevel.GetLongPackageName();
 	FString OpenLevelName = FString::Printf(TEXT(":%s%s"), *Port, *TitleLevelName);
-	//FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
-	
-	//AGlobDevGameMode* DevGameMode = Cast<AGlobDevGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	//DevGameMode->MakeServerTravel(TitleLevelName);
 
 	AGlobDevTitleController* LCPlayerController = Cast<AGlobDevTitleController>(PlayerController);
 	if (LCPlayerController != nullptr)
@@ -32,17 +28,20 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 	}
 
 	UGameplayStatics::OpenLevel(GetWorld(), *OpenLevelName, true);
-
 }
 
 void ULCGameInstance::JoinRoom(FString IP, APlayerController* PlayerController)
 {
 	FString TitleLevelName = TitleLevel.GetLongPackageName();
-	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *IP, *Port, *TitleLevelName);
+	//FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *IP, *Port, *TitleLevelName);
+	FString ConnectLevelName = FString::Printf(TEXT("%s:%s"), *IP, *Port);
 
-	if (PlayerController != nullptr)
+	UGameplayStatics::OpenLevel(GetWorld(), FName(*ConnectLevelName), true);
+
+	AGlobDevTitleController* LCPlayerController = Cast<AGlobDevTitleController>(PlayerController);
+	if (LCPlayerController != nullptr)
 	{
-		PlayerController->ClientTravel(ConnectLevelName, ETravelType::TRAVEL_Absolute);
+		LCPlayerController->SetClientTravel(TitleLevelName);
 	}
 }
 

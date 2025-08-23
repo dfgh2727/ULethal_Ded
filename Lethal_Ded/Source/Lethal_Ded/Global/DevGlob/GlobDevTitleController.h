@@ -26,4 +26,9 @@ public:
 	void SetServerTravel(const FString& TargetLevel);
 	void SetServerTravel_Implementation(const FString& TargetLevel);
 
+
+	UFUNCTION(Server, Reliable)
+	void SetClientTravel(const FString& TargetLevel);
+	void SetClientTravel_Implementation(const FString& TargetLevel);
+
 };

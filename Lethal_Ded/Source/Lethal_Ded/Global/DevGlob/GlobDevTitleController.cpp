@@ -32,3 +32,11 @@ void AGlobDevTitleController::SetServerTravel_Implementation(const FString& Targ
 		GetWorld()->ServerTravel(TargetLevel);
 	}
 }
+
+void AGlobDevTitleController::SetClientTravel_Implementation(const FString& TargetLevel)
+{
+	if (HasAuthority())
+	{
+		ClientTravel(TargetLevel, ETravelType::TRAVEL_Absolute);
+	}
+}
