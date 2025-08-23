@@ -6,9 +6,6 @@
 #include "EnhancedInputComponent.h"
 
 
-ALCPlayerController::ALCPlayerController()
-{
-}
 
 void ALCPlayerController::BeginPlay()
 {
