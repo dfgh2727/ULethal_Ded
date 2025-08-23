@@ -29,5 +29,4 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* MappingContext = nullptr;
-	
 };

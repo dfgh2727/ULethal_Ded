@@ -26,6 +26,17 @@ enum class EAIState : uint8
 #pragma endregion 
 
 
+#pragma region LCCharacter
+UENUM(BlueprintType)
+enum class ECharAnim : uint8
+{
+	IDLE UMETA(DisplayName = "기본"),
+	WALK UMETA(DisplayName = "걷기"),
+	MAX UMETA(DisplayName = "MAX"),
+};
+#pragma endregion
+
+
 UCLASS()
 class LETHAL_DED_API ULCEnum : public UObject
 {
