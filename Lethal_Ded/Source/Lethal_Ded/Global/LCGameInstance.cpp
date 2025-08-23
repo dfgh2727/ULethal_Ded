@@ -38,15 +38,10 @@ void ULCGameInstance::JoinRoom(FString IP, APlayerController* PlayerController)
 
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*ConnectLevelName), true);
 
-	/*if (PlayerController != nullptr)
-	{
-		PlayerController->ClientTravel(ConnectLevelName, ETravelType::TRAVEL_Absolute);
-	}*/
-
 	AGlobDevTitleController* LCPlayerController = Cast<AGlobDevTitleController>(PlayerController);
 	if (LCPlayerController != nullptr)
 	{
-		LCPlayerController->SetServerTravel(TitleLevelName);
+		LCPlayerController->SetClientTravel(TitleLevelName);
 	}
 }
 
