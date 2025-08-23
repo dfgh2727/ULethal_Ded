@@ -14,18 +14,10 @@ ULCGameInstance* ULCGlobal::GetLCGameInstance(const UWorld* World)
 
 void ULCGlobal::StartServer(UWorld* World, APlayerController* PlayerController)
 {
-	ULCGlobal::GetLCGameInstance(World)->CreateRoom();
+	ULCGlobal::GetLCGameInstance(World)->CreateRoom(PlayerController);
 
-	FString LocalIP = FString::Printf(TEXT("127.0.0.1"));
-	ULCGlobal::GetLCGameInstance(World)->JoinRoom(LocalIP, PlayerController);
-	//if (true)
-	//{
-	//	//방이 만들어지면 Client Travel
-	//}
-	//else
-	//{
-	//	UE_LOG(LethalCompany_LOG, Warning, TEXT("Creating Room has failed."));
-	//}
+	//FString LocalIP = FString::Printf(TEXT("127.0.0.1"));
+	//ULCGlobal::GetLCGameInstance(World)->JoinRoom(LocalIP, PlayerController);
 }
 
 void ULCGlobal::ConnectServer(UWorld* World, APlayerController* PlayerController, FString& IP/*, FString& Port*/)

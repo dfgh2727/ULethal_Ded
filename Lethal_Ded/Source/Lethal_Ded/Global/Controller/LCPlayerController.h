@@ -22,6 +22,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SetupInputComponentEvent();
 
+
 protected:
 	void BeginPlay() override;
 	void SetupInputComponent() override;

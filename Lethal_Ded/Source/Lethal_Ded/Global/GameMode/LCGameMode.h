@@ -13,8 +13,18 @@ UCLASS()
 class LETHAL_DED_API ALCGameMode : public AGameMode
 {
 	GENERATED_BODY()
+
+public:
+
+	ALCGameMode();
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	//void MakeServerTravel(FString& TargerLevelName);
 	
-	
-	
+private:
+
+	//bool bTravelServer = false;
 	
 };

@@ -19,7 +19,7 @@ public:
 	ULCGameInstance();
 	~ULCGameInstance();
 
-	void CreateRoom();
+	void CreateRoom(APlayerController* PlayerController);
 	void JoinRoom(FString IP, APlayerController* PlayerController);
 
 	void SetBootingScreenPlayed(bool bCheck)
@@ -42,6 +42,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Num")
 	FString Port = TEXT("7777");
+
+	UPROPERTY(EditAnywhere, Category = "Num")
+	FString LocalIP = TEXT("127.0.0.1");
 
 	bool bBootingScreenPlayed = false;
 	
