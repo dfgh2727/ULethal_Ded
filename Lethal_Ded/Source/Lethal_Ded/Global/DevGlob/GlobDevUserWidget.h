@@ -26,5 +26,5 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Network", meta = (AllowPrivateAccess = "true"))
 	FString IP = TEXT("127.0.0.1");
-	
+
 };
