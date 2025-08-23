@@ -18,3 +18,9 @@ void ALCGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+void ALCGameMode::MakeServerTravel(FString& TargerLevelName)
+{
+	UWorld* World = GetWorld();
+	World->ServerTravel(TargerLevelName);
+}

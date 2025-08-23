@@ -20,9 +20,14 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 	//FString OpenLevelName = FString::Printf(TEXT(":%s%s"), *Port, *TitleLevelName);
 	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
 	
-	//ServerTravel 호출을 GameMode에서 해야 함
-	//GetWorld()->ServerTravel(TitleLevelName);
+	UWorld* World = GetWorld();
+
+	/*if(World != nullptr && HasAuthority)
+	{
+		World->ServerTravel(TitleLevelName);
+	}*/
 	//UGameplayStatics::OpenLevel(GetWorld(), *OpenLevelName/*, true, TEXT("listen")*/);
+	// 서버 권한이 있는 곳에서 ServerTravel 필요
 
 	if (PlayerController != nullptr)
 	{
