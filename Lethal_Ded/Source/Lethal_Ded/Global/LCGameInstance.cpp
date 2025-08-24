@@ -37,8 +37,11 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 void ULCGameInstance::JoinRoom(FString IP, APlayerController* PlayerController)
 {
 	FString TitleLevelName = TitleLevel.GetLongPackageName();
-	//FString ConnectLevelName = FString::Printf(TEXT("%s:%s"), *IP, *Port);
-	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
+
+	//아래는 테스트용 ConnectLevelName
+	//FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
+
+	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *IP, *Port, *TitleLevelName);
 
 	UGameplayStatics::OpenLevel(GetWorld(), *ConnectLevelName, true);
 
