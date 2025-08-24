@@ -21,16 +21,13 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void PostLogin(APlayerController* PlayerController) override;
-
-	
+	virtual void PostLogin(APlayerController* PlayerController) override;	
 	void SpawnAndPossess(class AGlobDevPlayerController* Controller);
-	bool CheckPossibilitySAP();
+
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AGlobDevCharacter> GlobDevCharacter;
 
-	bool bPostLogin = false;
-	bool bBeginPlay = false;
+	class UTimeEventComponent* TimeEventComponent = nullptr;
 };

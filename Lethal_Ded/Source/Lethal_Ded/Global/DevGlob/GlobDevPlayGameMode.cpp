@@ -5,15 +5,16 @@
 #include "Global/DevGlob/GlobDevPlayerController.h"
 #include "Global/DevGlob/GlobDevCharacter.h"
 
+#include "Global/Component/TimeEventComponent.h"
+
 AGlobDevPlayGameMode::AGlobDevPlayGameMode()
 {
+	TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
 }
 
 void AGlobDevPlayGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	bBeginPlay = true;
 }
 
 void AGlobDevPlayGameMode::Tick(float DeltaTime)
@@ -25,13 +26,20 @@ void AGlobDevPlayGameMode::PostLogin(APlayerController* PlayerController)
 {
 	Super::PostLogin(PlayerController);
 
-	bPostLogin = true;
+	//FString Message = FString::Printf(TEXT("클라이언트가 접속했습니다"));
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *Message);
 
-	/*AGlobDevPlayerController* GlobDevPlayerController = Cast<AGlobDevPlayerController>(PlayerController);
-	if (GlobDevPlayerController != nullptr)
-	{
-		SpawnAndPossess(GlobDevPlayerController);
-	}*/
+	FString MyString = TEXT("YOUR CLIENT CONNECTED");
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *MyString);
+
+	//TimeEventComponent->AddEndEvent(0.5f, [this, PlayerController]()
+	//	{
+	//		AGlobDevPlayerController* GlobDevPlayerController = Cast<AGlobDevPlayerController>(PlayerController);
+	//		if (GlobDevPlayerController != nullptr)
+	//		{
+	//			SpawnAndPossess(GlobDevPlayerController);
+	//		}
+	//	});
 }
 
 void AGlobDevPlayGameMode::SpawnAndPossess(AGlobDevPlayerController* Controller)
@@ -39,31 +47,17 @@ void AGlobDevPlayGameMode::SpawnAndPossess(AGlobDevPlayerController* Controller)
 	FVector Location = FVector(0.0, 0.0, 300.0);
 	FRotator Rotation = FRotator::ZeroRotator;
 
-	if (HasAuthority())
-	{
-		AGlobDevPlayerController* GlobDevPlayerController = Controller;
-		if (GlobDevPlayerController != nullptr)
-		{
-			//Location = GlobDevPlayerController->GetPawn()->GetActorLocation();
-			GlobDevPlayerController->GetPawn()->Destroy();
-		}
 
-		AActor* NewActor = GetWorld()->SpawnActor<AActor>(GlobDevCharacter);
-		AGlobDevCharacter* NewCharacter = Cast<AGlobDevCharacter>(NewActor);
-		GlobDevPlayerController->Possess(NewCharacter);
-		
+	AGlobDevPlayerController* GlobDevPlayerController = Controller;
+	if (GlobDevPlayerController != nullptr)
+	{
+		//Location = GlobDevPlayerController->GetPawn()->GetActorLocation();
+		GlobDevPlayerController->GetPawn()->Destroy();
 	}
+
+	AActor* NewActor = GetWorld()->SpawnActor<AActor>(GlobDevCharacter);
+	AGlobDevCharacter* NewCharacter = Cast<AGlobDevCharacter>(NewActor);
+	GlobDevPlayerController->Possess(NewCharacter);
 	
 }
 
-bool AGlobDevPlayGameMode::CheckPossibilitySAP()
-{
-	if (bPostLogin == true && bBeginPlay == true)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
