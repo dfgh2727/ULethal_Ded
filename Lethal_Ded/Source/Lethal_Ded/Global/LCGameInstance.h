@@ -41,10 +41,11 @@ private:
 	TSoftObjectPtr<UWorld> PlayLevel;
 
 	UPROPERTY(EditAnywhere, Category = "Num")
-	FString Port = TEXT("17777");
+	FString Port = TEXT("7777");
 
 	UPROPERTY(EditAnywhere, Category = "Num")
 	FString LocalIP = TEXT("127.0.0.1");
+	//FString LocalIP = TEXT("0.0.0.0");
 
 	bool bBootingScreenPlayed = false;
 	

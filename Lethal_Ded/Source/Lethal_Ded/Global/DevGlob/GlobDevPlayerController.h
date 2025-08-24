@@ -25,9 +25,13 @@ public:
 	virtual void SetupInputComponent() override;
 	virtual void OnPossess(APawn* ThePawn) override;
 
-
+	//UFUNCTION(Server, Reliable)
+	//void CharacterChange(AGlobDevPlayerController* CurPlayercontroller);
+	//void CharacterChange_Implementation(AGlobDevPlayerController* CurPlayercontroller);
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|PlayerController", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* MappingContext = nullptr;
+
+	bool bMoved = false;
 };
