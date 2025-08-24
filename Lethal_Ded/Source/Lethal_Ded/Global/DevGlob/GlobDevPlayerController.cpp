@@ -6,6 +6,7 @@
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Global/DevGlob/GlobDevPlayGameMode.h"
 
 AGlobDevPlayerController::AGlobDevPlayerController()
 {
@@ -34,6 +35,7 @@ void AGlobDevPlayerController::BeginPlay()
 void AGlobDevPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
 
 void AGlobDevPlayerController::SetupInputComponent()
@@ -45,3 +47,12 @@ void AGlobDevPlayerController::OnPossess(APawn* ThePawn)
 {
 	Super::OnPossess(ThePawn);
 }
+
+//void AGlobDevPlayerController::CharacterChange_Implementation(AGlobDevPlayerController* CurPlayercontroller)
+//{
+//	AGlobDevPlayGameMode* GlobDevPlayGameMode = Cast<AGlobDevPlayGameMode>(GetWorld()->GetAuthGameMode());
+//	if (GlobDevPlayGameMode != nullptr)
+//	{
+//		GlobDevPlayGameMode->SpawnAndPossess(this);
+//	}
+//}

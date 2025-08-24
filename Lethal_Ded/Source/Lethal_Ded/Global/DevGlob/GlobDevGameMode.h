@@ -13,6 +13,7 @@ UCLASS()
 class LETHAL_DED_API AGlobDevGameMode : public ALCGameMode
 {
 	GENERATED_BODY()
+
 	
 	
 	
