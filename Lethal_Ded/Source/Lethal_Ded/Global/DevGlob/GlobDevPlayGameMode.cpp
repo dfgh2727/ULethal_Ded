@@ -10,6 +10,8 @@
 AGlobDevPlayGameMode::AGlobDevPlayGameMode()
 {
 	TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
+
+	bUseSeamlessTravel = true;
 }
 
 void AGlobDevPlayGameMode::BeginPlay()
@@ -26,20 +28,14 @@ void AGlobDevPlayGameMode::PostLogin(APlayerController* PlayerController)
 {
 	Super::PostLogin(PlayerController);
 
-	//FString Message = FString::Printf(TEXT("클라이언트가 접속했습니다"));
-	//UE_LOG(LogTemp, Warning, TEXT("%s"), *Message);
-
-	FString MyString = TEXT("YOUR CLIENT CONNECTED");
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *MyString);
-
-	//TimeEventComponent->AddEndEvent(0.5f, [this, PlayerController]()
-	//	{
-	//		AGlobDevPlayerController* GlobDevPlayerController = Cast<AGlobDevPlayerController>(PlayerController);
-	//		if (GlobDevPlayerController != nullptr)
-	//		{
-	//			SpawnAndPossess(GlobDevPlayerController);
-	//		}
-	//	});
+	TimeEventComponent->AddEndEvent(0.5f, [this, PlayerController]()
+		{
+			AGlobDevPlayerController* GlobDevPlayerController = Cast<AGlobDevPlayerController>(PlayerController);
+			if (GlobDevPlayerController != nullptr)
+			{
+				SpawnAndPossess(GlobDevPlayerController);
+			}
+		});
 }
 
 void AGlobDevPlayGameMode::SpawnAndPossess(AGlobDevPlayerController* Controller)
@@ -51,7 +47,6 @@ void AGlobDevPlayGameMode::SpawnAndPossess(AGlobDevPlayerController* Controller)
 	AGlobDevPlayerController* GlobDevPlayerController = Controller;
 	if (GlobDevPlayerController != nullptr)
 	{
-		//Location = GlobDevPlayerController->GetPawn()->GetActorLocation();
 		GlobDevPlayerController->GetPawn()->Destroy();
 	}
 
@@ -59,5 +54,7 @@ void AGlobDevPlayGameMode::SpawnAndPossess(AGlobDevPlayerController* Controller)
 	AGlobDevCharacter* NewCharacter = Cast<AGlobDevCharacter>(NewActor);
 	GlobDevPlayerController->Possess(NewCharacter);
 	
+	FString MyString = TEXT("YOUR CLIENT CONNECTED");
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *MyString);
 }
 
