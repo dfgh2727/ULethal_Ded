@@ -14,7 +14,4 @@ class LETHAL_DED_API ATitleGameMode : public ALCGameMode
 {
 	GENERATED_BODY()
 	
-	
-	
-	
 };
