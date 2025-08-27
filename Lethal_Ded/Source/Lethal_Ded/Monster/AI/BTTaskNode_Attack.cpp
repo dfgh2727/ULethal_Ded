@@ -3,6 +3,8 @@
 
 #include "Monster/AI/BTTaskNode_Attack.h"
 #include "Monster/Monster.h"
+#include "Net/UnrealNetwork.h" 
+
 
 void UBTTaskNode_Attack::Start(UBehaviorTreeComponent& _OwnerComp)
 {
@@ -12,6 +14,8 @@ void UBTTaskNode_Attack::Start(UBehaviorTreeComponent& _OwnerComp)
 	{
 		PlayAIData.SelfAnimPawn->ChangeAnimation_Multicast(static_cast<int>(AIStateValue)); // 0 Àº Idle
 	}
+
+	PlayAIData.SelfAnimPawn->S2C_ApplyCaptured(PlayAIData.TargetActor,true);
 }
 
 void UBTTaskNode_Attack::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pNodeMemory, float _DeltaSeconds)
@@ -19,11 +23,27 @@ void UBTTaskNode_Attack::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pN
 	Super::TickTask(_OwnerComp, _pNodeMemory, _DeltaSeconds);
 
 	FPlayAIData& PlayAIData = UAIBTTaskNode::GetPlayAIData(_OwnerComp);
+	
+	if (PlayAIData.AIState != AIStateValue)
+	{
+		return;
+	}
 	AActor* TargetActor = PlayAIData.TargetActor;
 
 	APawn* SelfActor = PlayAIData.SelfPawn;
-	FVector TargetDir = TargetActor->GetActorLocation() - SelfActor->GetActorLocation();
-	SelfActor->SetActorRotation(TargetDir.Rotation());
+
+
+	
+
+	const FName SocketName = TEXT("PlayerPointSocket");
+
+	FVector SelfLoc = Cast<ACharacter>(SelfActor)->GetMesh()->GetSocketLocation(SocketName);
+	
+
+	FVector TargetDir = TargetActor->GetActorLocation() - SelfLoc;
+	//SelfActor->SetActorRotation(TargetDir.Rotation());
+
+	double T= TargetDir.Size();
 
 	if (TargetDir.Size() >= PlayAIData.Data.AttackRange)
 	{
@@ -37,3 +57,7 @@ UBTTaskNode_Attack::UBTTaskNode_Attack()
 {
 	AIStateValue = EAIState::Attack;
 }
+
+
+
+

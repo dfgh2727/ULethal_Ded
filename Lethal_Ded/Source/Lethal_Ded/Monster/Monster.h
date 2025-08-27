@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MonsterDataTable.h"
 #include "Object/Interface/AttackInterface.h"
+#include "Net/UnrealNetwork.h" 
 //#include "Monster/MonsterAnimInstance.h"
 #include "Monster.generated.h"
 
@@ -43,10 +44,22 @@ public:
 	void NetSyncMonster();
 
 
-	void AttackStart() override;
-	void AttackEnd() override;
+
+
+
+
+	// °ø°Ý ½Ã
+	void AttackStart();
+	void AttackEnd();
 	float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 
+	UFUNCTION(Server, Reliable)
+	void C2S_AttachCharacter(AActor* Target);
+	void C2S_AttachCharacter_Implementation(AActor* Target);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void S2C_ApplyCaptured(AActor* Target, bool bCaptured);
+	void S2C_ApplyCaptured_Implementation(AActor* Target, bool bCaptured);
 
 	
 	UFUNCTION()

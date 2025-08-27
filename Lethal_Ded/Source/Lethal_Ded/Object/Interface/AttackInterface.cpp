@@ -8,7 +8,7 @@ UAttackInterface::UAttackInterface(const FObjectInitializer& ObjectInitializer)
 {
 }
 
-void IAttackInterface::AttackUpdate(float _DeltaTime)
+void IAttackInterface::AttackUpdate( float _DeltaTime)
 {
 }
 

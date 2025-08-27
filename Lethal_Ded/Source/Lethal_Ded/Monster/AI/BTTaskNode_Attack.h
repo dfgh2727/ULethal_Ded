@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Monster/AI/AIBTTaskNode.h"
+#include "Object/Interface/AttackInterface.h"
+
 #include "BTTaskNode_Attack.generated.h"
 
 /**
@@ -20,4 +22,7 @@ public:
 	void TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pNodeMemory, float _DeltaSeconds) override;
 
 	UBTTaskNode_Attack();
+
+
+
 };

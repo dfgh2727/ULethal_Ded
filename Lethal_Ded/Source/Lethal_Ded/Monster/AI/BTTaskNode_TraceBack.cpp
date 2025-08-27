@@ -22,6 +22,11 @@ void UBTTaskNode_TraceBack::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* 
 
 	FPlayAIData& PlayAIData = UAIBTTaskNode::GetPlayAIData(_OwnerComp);
 
+	if (PlayAIData.AIState != AIStateValue)
+	{
+		return;
+	}
+
 	APawn* SelfActor = PlayAIData.SelfPawn;
 
 	/*if (nullptr != PlayAIData.TargetActor)
