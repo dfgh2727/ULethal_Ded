@@ -33,6 +33,24 @@ void UBTTaskNode_Attack::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pN
 	APawn* SelfActor = PlayAIData.SelfPawn;
 
 
+
+	{
+		AMonster* Owner = Cast<AMonster>(SelfActor);
+
+		if (Owner)
+		{
+			if (true == Owner->bIsWaitTime)
+			{
+
+				PlayAIData.TargetActor->Destroy();
+				PlayAIData.TargetActor = nullptr;
+				PlayAIData.CurPatrolTime = 0.0f;
+				ChangeState(_OwnerComp, EAIState::Idle);
+				return;
+			}
+		}
+	}
+
 	
 
 	const FName SocketName = TEXT("PlayerPointSocket");

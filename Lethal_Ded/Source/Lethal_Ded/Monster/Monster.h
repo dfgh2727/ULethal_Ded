@@ -90,5 +90,7 @@ private:
 	class UDataTable* DataTables = nullptr;
 	class UDataTable* MonsterDataTable = nullptr;
 
-
+public:
+	UPROPERTY(Replicated)
+	bool bIsWaitTime = false;
 };

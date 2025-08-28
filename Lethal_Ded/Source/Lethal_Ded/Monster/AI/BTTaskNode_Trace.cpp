@@ -46,7 +46,11 @@ void UBTTaskNode_Trace::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pNo
 	AActor* TargetActor = PlayAIData.TargetActor;
 
 	APawn* SelfActor = PlayAIData.SelfPawn;
+
+
 	FVector TargetDir = TargetActor->GetActorLocation() - SelfActor->GetActorLocation();
+
+	double T = TargetDir.Size();
 
 
 	if (TargetDir.Size() <= PlayAIData.Data.AttackRange)

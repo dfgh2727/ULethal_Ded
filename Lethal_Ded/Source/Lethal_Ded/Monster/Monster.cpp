@@ -141,6 +141,7 @@ void AMonster::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 
 	DOREPLIFETIME(AMonster, DataKey);
 	DOREPLIFETIME(AMonster, AIStateValue);
+	DOREPLIFETIME(AMonster, bIsWaitTime);
 }
 
 void AMonster::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -188,6 +189,7 @@ void AMonster::AttackEnd()
 				if (nullptr != Cast<ACharacter>(Root))
 				{
 					// Ä³¸¯ÅÍ Á×ÀÓ
+					bIsWaitTime = true;
 				}
 			}
 		}
