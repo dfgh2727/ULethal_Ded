@@ -6,16 +6,28 @@
 #include "EnhancedInputComponent.h"
 
 
+
 void ALCPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FInputModeGameOnly InputMode;
+	SetInputMode(InputMode);
+	SetShowMouseCursor(false);
+
+	PlayerCameraManager->ViewPitchMin = -50.0f;
+	PlayerCameraManager->ViewPitchMax = 20.0f;
 }
 
 void ALCPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	SetupInputComponentEvent();
+	//SetupInputComponentEvent();
+	if (nullptr != MappingContext)
+	{
+		AddMappingContext(MappingContext);
+	}
 }
 
 void ALCPlayerController::AddMappingContext(UInputMappingContext* _MappingContext)
@@ -30,3 +42,4 @@ void ALCPlayerController::AddMappingContext(UInputMappingContext* _MappingContex
 	InputSystem->ClearAllMappings();
 	InputSystem->AddMappingContext(_MappingContext, 0);
 }
+

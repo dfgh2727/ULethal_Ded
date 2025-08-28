@@ -4,15 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Global/GameMode/LCGameMode.h"
-#include "ReadyGameMode.generated.h"
+#include "GlobDevGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LETHAL_DED_API AReadyGameMode : public ALCGameMode
+class LETHAL_DED_API AGlobDevGameMode : public ALCGameMode
 {
 	GENERATED_BODY()
+
 	
 	
 	

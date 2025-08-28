@@ -22,6 +22,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SetupInputComponentEvent();
 
+
 protected:
 	void BeginPlay() override;
 	void SetupInputComponent() override;
@@ -29,5 +30,4 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* MappingContext = nullptr;
-	
 };

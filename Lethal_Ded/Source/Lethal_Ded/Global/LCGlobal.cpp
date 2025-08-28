@@ -2,6 +2,28 @@
 
 
 #include "Global/LCGlobal.h"
+#include "Kismet/GameplayStatics.h"
+#include "LCGameInstance.h"
+#include "Lethal_Ded.h"
+
+
+ULCGameInstance* ULCGlobal::GetLCGameInstance(const UWorld* World)
+{
+	return Cast<ULCGameInstance>(UGameplayStatics::GetGameInstance(World));
+}
+
+void ULCGlobal::StartServer(UWorld* World, APlayerController* PlayerController)
+{
+	ULCGlobal::GetLCGameInstance(World)->CreateRoom(PlayerController);
+
+	//FString LocalIP = FString::Printf(TEXT("127.0.0.1"));
+	//ULCGlobal::GetLCGameInstance(World)->JoinRoom(LocalIP, PlayerController);
+}
+
+void ULCGlobal::ConnectServer(UWorld* World, APlayerController* PlayerController, FString& IP/*, FString& Port*/)
+{
+	ULCGlobal::GetLCGameInstance(World)->JoinRoom(IP, PlayerController);
+}
 
 
 

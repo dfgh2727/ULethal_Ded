@@ -3,6 +3,28 @@
 
 #include "Global/GameMode/LCGameMode.h"
 
+ALCGameMode::ALCGameMode()
+{
+}
 
+void ALCGameMode::BeginPlay()
+{
+	Super::BeginPlay();
 
+	bUseSeamlessTravel = true; 
+}
 
+void ALCGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+//void ALCGameMode::MakeServerTravel(FString& TargerLevelName)
+//{
+//	UWorld* World = GetWorld();
+//
+//	if (HasAuthority())
+//	{
+//		World->ServerTravel(TargerLevelName);
+//	}
+//}
