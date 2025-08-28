@@ -28,12 +28,21 @@ enum class EAIState : uint8
 
 #pragma region LCCharacter
 UENUM(BlueprintType)
-enum class ECharAnim : uint8
+enum class ECharUpperAnim : uint8
+{
+	IDLE UMETA(DisplayName = "기본"),
+	TWOHANDS UMETA(DisplayName = "두손사용"),
+	MAX UMETA(DisplayName = "MAX"),
+};
+
+UENUM(BlueprintType)
+enum class ECharLowerAnim : uint8
 {
 	IDLE UMETA(DisplayName = "기본"),
 	WALK UMETA(DisplayName = "걷기"),
 	MAX UMETA(DisplayName = "MAX"),
 };
+
 #pragma endregion
 
 

@@ -21,20 +21,12 @@ public:
 	void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	UFUNCTION(BlueprintCallable)
-	void ChangeAnimation(ECharAnim _CurAnimType, FName _UpperSectionName = TEXT("None"), FName _LowerSectionName = TEXT("None"));
+	void ChangeAnimation(ECharUpperAnim _CurUpperAnimType, ECharLowerAnim _CurLowerAnimType);
 
 private:
-	ECharAnim CurAnimType = ECharAnim::IDLE;
-
-	FName UpperSectionName = TEXT("");
-	FName LowerSectionName = TEXT("");
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* UpperMontage;
+	ECharUpperAnim CurUpperAnimType = ECharUpperAnim::MAX;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* LowerMontage;
-
-	UAnimMontage* CurUpperMontage;
-	UAnimMontage* CurLowerMontage;
+	ECharLowerAnim CurLowerAnimType = ECharLowerAnim::MAX;
 };
