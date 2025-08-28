@@ -11,6 +11,7 @@
 #include "Monster/MonsterAnimInstance.h" // Add this include to resolve UMonsterAnimInstance
 #include <Net/UnrealNetwork.h>
 #include <Global/LCConst.h>
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -140,6 +141,7 @@ void AMonster::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 
 	DOREPLIFETIME(AMonster, DataKey);
 	DOREPLIFETIME(AMonster, AIStateValue);
+	DOREPLIFETIME(AMonster, bIsWaitTime);
 }
 
 void AMonster::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -164,12 +166,34 @@ void AMonster::ChangeAnimation_Multicast_Implementation(int _CurAnimnation, FNam
 
 void AMonster::AttackStart()
 {
-	GetMesh()->SetCollisionProfileName(ULCConst::Collision::ProfileName_MonsterAttack, true);
+	GetMesh()->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName, true);
 }
 
 void AMonster::AttackEnd()
 {
 	GetMesh()->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName, true);
+
+	FName SocketName = TEXT("PlayerPointSocket");
+
+	TArray<AActor*> Attached;
+	GetAttachedActors(Attached, /*bResetArray=*/true);
+
+	for (AActor* ChildActor : Attached)
+	{
+		if (!ChildActor) continue;
+
+		if (AActor* Root = ChildActor)
+		{
+			if (Root->GetAttachParentActor() == this && Root->GetAttachParentSocketName() == SocketName)
+			{
+				if (nullptr != Cast<ACharacter>(Root))
+				{
+					// 캐릭터 죽임
+					bIsWaitTime = true;
+				}
+			}
+		}
+	}
 }
 
 float AMonster::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -177,4 +201,71 @@ float AMonster::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AContr
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	return 0.0f;
+}
+
+void AMonster::C2S_AttachCharacter_Implementation(AActor* Target)
+{
+	S2C_ApplyCaptured_Implementation(Target, true);
+}
+
+void AMonster::S2C_ApplyCaptured_Implementation(AActor* Target, bool bCaptured)
+{
+	const FName SocketName = TEXT("PlayerPointSocket");
+	const FAttachmentTransformRules KeepWorld(EAttachmentRule::KeepWorld, true);
+
+	const FTransform SocketW = GetMesh()->GetSocketTransform(SocketName, RTS_World);
+
+
+	if (GetMesh()->DoesSocketExist(SocketName))
+	{
+		//PlayAIData.TargetActor->SetActorEnableCollision(false);
+		Target->SetActorTransform(SocketW, false, nullptr, ETeleportType::TeleportPhysics);
+
+		// 4. 플레이어 캐릭터의 루트 컴포넌트를 소켓에 붙입니다.
+		Target->GetRootComponent()->AttachToComponent(
+			GetMesh(),
+			KeepWorld,
+			SocketName
+		);
+
+		if (bCaptured)
+		{
+			ACharacter* Char = Cast<ACharacter>(Target);
+
+		
+			if ( Char->GetCharacterMovement())
+			{
+				auto* Move = Char->GetCharacterMovement();
+				Move->StopMovementImmediately();
+				Move->DisableMovement();
+				Move->NetworkSmoothingMode = ENetworkSmoothingMode::Disabled;
+			}
+			Char->SetReplicateMovement(false);
+			//Cast<ACharacter>(Target)->GetCharacterMovement()->SetMovementMode(bCaptured ? EMovementMode::MOVE_None : EMovementMode::MOVE_Walking);
+
+
+			USceneComponent* RootComp = Target->GetRootComponent();
+
+			UPrimitiveComponent* PrimitiveComp = Cast<UPrimitiveComponent>(RootComp);
+
+
+			if (PrimitiveComp != nullptr)
+			{
+				// 3. 루트 컴포넌트의 콜리전 설정 변경
+				//PrimitiveComp->SetIsReplicated(true);
+				PrimitiveComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			}
+		}
+		//S2C_ApplyCaptured(Target, true);
+	}
+	else
+	{
+		// 로그: 소켓을 찾을 수 없습니다.
+		UE_LOG(LogTemp, Warning, TEXT("Socket 'PlayerPointSocket' not found on monster mesh!"));
+	}
+
+		
+
+	
+
 }
