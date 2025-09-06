@@ -26,7 +26,8 @@ void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	OpenDoors(DeltaTime);
+	//OpenDoors(DeltaTime);
+	CloseDoors(DeltaTime);
 }
 
 void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -39,20 +40,48 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 
 void AShip::OpenDoors(float DeltaTime)
 {
+	if(bDoorMove == true)
 	{
 		FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
-		CurLeftLocation.X -= DeltaTime * 100;
+		CurLeftLocation.X -= DeltaTime * DoorMovement;
 		LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
-	}
-	{
-		FVector CurRighttLocation = LeftDoorComponent->GetRelativeLocation();
-		CurRighttLocation.X += DeltaTime * 100;
+	
+		FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
+		CurRighttLocation.X += DeltaTime * DoorMovement;
 		RightDoorComponent->SetRelativeLocation(CurRighttLocation);
+	}
+
+	FVector Locate = LeftDoorComponent->GetRelativeLocation();
+
+	if (Locate.X < -600.0f)
+	{
+		bDoorMove = false;
+		LeftDoorComponent->SetVisibility(false);
+		RightDoorComponent->SetVisibility(false);
 	}
 }
 
-void AShip::CloseDoors()
+void AShip::CloseDoors(float DeltaTime)
 {
+	LeftDoorComponent->SetVisibility(true);
+	RightDoorComponent->SetVisibility(true);
 
+	if (bDoorMove == true)
+	{
+		FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
+		CurLeftLocation.X += DeltaTime * DoorMovement;
+		LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
+
+		FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
+		CurRighttLocation.X -= DeltaTime * DoorMovement;
+		RightDoorComponent->SetRelativeLocation(CurRighttLocation);
+	}
+
+	FVector Locate = LeftDoorComponent->GetRelativeLocation();
+
+	if (Locate.X >= 0.0f)
+	{
+		bDoorMove = false;
+	}
 }
 

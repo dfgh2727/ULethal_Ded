@@ -23,7 +23,7 @@ public:
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	void OpenDoors(float DeltaTime);
-	void CloseDoors();
+	void CloseDoors(float DeltaTime);
 
 private:
 
@@ -33,5 +33,6 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "RightDoor", meta = (AllowprivateAccess = "true"))
 	UStaticMeshComponent* RightDoorComponent = nullptr;
 
-	
+	float DoorMovement = 300.0f;
+	bool bDoorMove = true;
 };
