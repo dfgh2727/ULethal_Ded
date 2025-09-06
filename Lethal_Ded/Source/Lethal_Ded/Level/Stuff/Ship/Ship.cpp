@@ -27,7 +27,7 @@ void AShip::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//OpenDoors(DeltaTime);
-	CloseDoors(DeltaTime);
+	//CloseDoors(DeltaTime);
 }
 
 void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -79,7 +79,7 @@ void AShip::CloseDoors(float DeltaTime)
 
 	FVector Locate = LeftDoorComponent->GetRelativeLocation();
 
-	if (Locate.X >= 0.0f)
+	if (Locate.X > 0.0f)
 	{
 		bDoorMove = false;
 	}
