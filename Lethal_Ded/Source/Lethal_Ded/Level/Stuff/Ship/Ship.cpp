@@ -25,6 +25,8 @@ void AShip::BeginPlay()
 void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	OpenDoors(DeltaTime);
 }
 
 void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -34,3 +36,23 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	DOREPLIFETIME(AShip, LeftDoorComponent);
 	DOREPLIFETIME(AShip, RightDoorComponent);
 }
+
+void AShip::OpenDoors(float DeltaTime)
+{
+	{
+		FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
+		CurLeftLocation.X -= DeltaTime * 100;
+		LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
+	}
+	{
+		FVector CurRighttLocation = LeftDoorComponent->GetRelativeLocation();
+		CurRighttLocation.X += DeltaTime * 100;
+		RightDoorComponent->SetRelativeLocation(CurRighttLocation);
+	}
+}
+
+void AShip::CloseDoors()
+{
+
+}
+
