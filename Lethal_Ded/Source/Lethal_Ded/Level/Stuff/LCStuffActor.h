@@ -23,4 +23,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+protected:
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, Category = "COMPONENT", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* StaticMeshComponent = nullptr;
+
 };

@@ -13,5 +13,22 @@ UCLASS()
 class LETHAL_DED_API AShip : public ALCStuffActor
 {
 	GENERATED_BODY()
+
+public:
+	AShip();
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+
+private:
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LeftDoor", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* LeftDoorComponent = nullptr;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "RightDoor", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* RightDoorComponent = nullptr;
 	
 };
