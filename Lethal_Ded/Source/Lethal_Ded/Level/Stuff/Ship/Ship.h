@@ -25,6 +25,8 @@ public:
 	void OpenDoors(float DeltaTime);
 	void CloseDoors(float DeltaTime);
 
+	void ControlDoors(bool bOpen);
+
 private:
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LeftDoor", meta = (AllowprivateAccess = "true"))
@@ -34,5 +36,7 @@ private:
 	UStaticMeshComponent* RightDoorComponent = nullptr;
 
 	float DoorMovement = 300.0f;
-	bool bDoorMove = true;
+	//bool bDoorMove = true;
+	bool bDoItOnce = false;
+	bool bSign = false;
 };

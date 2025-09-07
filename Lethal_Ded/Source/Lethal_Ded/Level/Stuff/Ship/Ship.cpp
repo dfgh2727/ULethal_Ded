@@ -26,8 +26,15 @@ void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//OpenDoors(DeltaTime);
-	//CloseDoors(DeltaTime);
+	if (bDoItOnce == true && bSign == true)
+	{
+		OpenDoors(DeltaTime);
+	}
+	else if (bDoItOnce == true && bSign == false)
+	{
+		CloseDoors(DeltaTime);
+	}
+
 }
 
 void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -40,7 +47,7 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 
 void AShip::OpenDoors(float DeltaTime)
 {
-	if(bDoorMove == true)
+	/*if(bDoorMove == true)
 	{
 		FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
 		CurLeftLocation.X -= DeltaTime * DoorMovement;
@@ -49,13 +56,22 @@ void AShip::OpenDoors(float DeltaTime)
 		FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
 		CurRighttLocation.X += DeltaTime * DoorMovement;
 		RightDoorComponent->SetRelativeLocation(CurRighttLocation);
-	}
+	}*/
+
+	FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
+	CurLeftLocation.X -= DeltaTime * DoorMovement;
+	LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
+
+	FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
+	CurRighttLocation.X += DeltaTime * DoorMovement;
+	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
 	FVector Locate = LeftDoorComponent->GetRelativeLocation();
 
 	if (Locate.X < -600.0f)
 	{
-		bDoorMove = false;
+		//bDoorMove = false;
+		bDoItOnce = false;
 		LeftDoorComponent->SetVisibility(false);
 		RightDoorComponent->SetVisibility(false);
 	}
@@ -66,7 +82,7 @@ void AShip::CloseDoors(float DeltaTime)
 	LeftDoorComponent->SetVisibility(true);
 	RightDoorComponent->SetVisibility(true);
 
-	if (bDoorMove == true)
+	/*if (bDoorMove == true)
 	{
 		FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
 		CurLeftLocation.X += DeltaTime * DoorMovement;
@@ -75,13 +91,29 @@ void AShip::CloseDoors(float DeltaTime)
 		FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
 		CurRighttLocation.X -= DeltaTime * DoorMovement;
 		RightDoorComponent->SetRelativeLocation(CurRighttLocation);
-	}
+	}*/
+
+	FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
+	CurLeftLocation.X += DeltaTime * DoorMovement;
+	LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
+
+	FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
+	CurRighttLocation.X -= DeltaTime * DoorMovement;
+	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
 	FVector Locate = LeftDoorComponent->GetRelativeLocation();
 
 	if (Locate.X > 0.0f)
 	{
-		bDoorMove = false;
+		//bDoorMove = false;
+		bDoItOnce = false;
 	}
+}
+
+void AShip::ControlDoors(bool bOpen) //문의 개폐조절 함수. true는 열기, false는 닫기
+{
+	bSign = bOpen;
+	bDoItOnce = true;
+	//bDoorMove = true;
 }
 
