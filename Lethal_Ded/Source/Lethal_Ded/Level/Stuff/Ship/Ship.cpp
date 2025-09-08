@@ -38,6 +38,11 @@ void AShip::Tick(float DeltaTime)
 		CloseDoors(DeltaTime);
 	}
 
+	if (bLeverMove == true)
+	{
+		MoveTheLever(DeltaTime);
+	}
+
 }
 
 void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -113,10 +118,46 @@ void AShip::CloseDoors(float DeltaTime)
 	}
 }
 
-void AShip::LeverMovesDown(float DeltaTime)
+void AShip::MoveTheLever(float DeltaTime)
 {
+	if (bLeverIsDown == false)
+	{
+		FRotator CurRotation = LeverComponent->GetRelativeRotation();
+		CurRotation.Roll -= DeltaTime * 100;
+		LeverComponent->SetRelativeRotation(CurRotation);
 
+		if (CurRotation.Roll <= -46)
+		{
+			bLeverMove = false;
+			bLeverIsDown = true;
+		}
+	}
+	else
+	{
+		FRotator CurRotation = LeverComponent->GetRelativeRotation();
+		CurRotation.Roll += DeltaTime * 100;
+		LeverComponent->SetRelativeRotation(CurRotation);
+		
+		if (CurRotation.Roll >= 1)
+		{
+			bLeverMove = false;
+			bLeverIsDown = false;
+		}
+	}
+	
 }
+
+//void AShip::PushTheLever(float DeltaTime)
+//{
+//	FRotator CurRotation = LeverComponent->GetRelativeRotation();
+//	CurRotation.Roll += DeltaTime * 100;
+//	LeverComponent->SetRelativeRotation(CurRotation);
+//
+//	if (CurRotation.Roll >= 1)
+//	{
+//		bLeverMove = false;
+//	}
+//}
 
 void AShip::ControlDoors(bool bOpen) //문의 개폐조절 함수. true는 열기, false는 닫기
 {
@@ -125,7 +166,7 @@ void AShip::ControlDoors(bool bOpen) //문의 개폐조절 함수. true는 열기, false는 
 	//bDoorMove = true;
 }
 
-void AShip::PullTheLever()
+void AShip::ControlTheLever()
 {
 	bLeverMove = true;
 }
