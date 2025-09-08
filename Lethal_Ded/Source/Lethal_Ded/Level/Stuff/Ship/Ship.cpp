@@ -15,6 +15,9 @@ AShip::AShip()
 
 	RightDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightDoorComponent"));
 	RightDoorComponent->SetupAttachment(RootComponent);
+
+	LeverComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeverComponent"));
+	LeverComponent->SetupAttachment(RootComponent);
 }
 
 void AShip::BeginPlay()
@@ -110,10 +113,20 @@ void AShip::CloseDoors(float DeltaTime)
 	}
 }
 
+void AShip::LeverMovesDown(float DeltaTime)
+{
+
+}
+
 void AShip::ControlDoors(bool bOpen) //문의 개폐조절 함수. true는 열기, false는 닫기
 {
 	bSign = bOpen;
 	bDoItOnce = true;
 	//bDoorMove = true;
+}
+
+void AShip::PullTheLever()
+{
+	bLeverMove = true;
 }
 
