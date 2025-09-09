@@ -25,6 +25,9 @@ public:
 	void ControlDoors(bool bOpen);
 	void ControlTheLever();
 
+	void ControlSDoorLeft();
+	void ControlSDoorRight();
+
 private:
 	void OpenDoors(float DeltaTime);
 	void CloseDoors(float DeltaTime);

@@ -185,3 +185,13 @@ void AShip::ControlTheLever()
 	bLeverMove = true;
 }
 
+void AShip::ControlSDoorLeft()
+{
+
+}
+
+void AShip::ControlSDoorRight()
+{
+
+}
+
