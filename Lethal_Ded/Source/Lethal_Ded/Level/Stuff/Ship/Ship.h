@@ -44,6 +44,15 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Lever", meta = (AllowprivateAccess = "true"))
 	UStaticMeshComponent* LeverComponent = nullptr;
 
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "StorageBody", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* StorageBodyComponent = nullptr;
+	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LSDoor", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* LSDoorComponent = nullptr;
+	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "RSDoor", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* RSDoorComponent = nullptr;
+
 	float DoorMovement = 300.0f;
 	//bool bDoorMove = true;
 	bool bDoItOnce = false;

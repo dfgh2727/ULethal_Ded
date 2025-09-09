@@ -10,14 +10,28 @@ AShip::AShip()
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 
-	LeftDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoorComponent"));
-	LeftDoorComponent->SetupAttachment(RootComponent);
+	{
+		LeftDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoorComponent"));
+		LeftDoorComponent->SetupAttachment(RootComponent);
 
-	RightDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightDoorComponent"));
-	RightDoorComponent->SetupAttachment(RootComponent);
+		RightDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightDoorComponent"));
+		RightDoorComponent->SetupAttachment(RootComponent);
 
-	LeverComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeverComponent"));
-	LeverComponent->SetupAttachment(RootComponent);
+		LeverComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeverComponent"));
+		LeverComponent->SetupAttachment(RootComponent);
+
+		StorageBodyComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StorageBodyComponent"));
+		StorageBodyComponent->SetupAttachment(RootComponent);
+
+		LSDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LSDoorComponent"));
+		LSDoorComponent->SetupAttachment(RootComponent);
+
+		RSDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RSDoorComponent"));
+		RSDoorComponent->SetupAttachment(RootComponent);
+
+	}
+
+	
 }
 
 void AShip::BeginPlay()
