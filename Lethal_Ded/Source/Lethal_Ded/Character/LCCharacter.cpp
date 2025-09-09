@@ -82,6 +82,7 @@ void ALCCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ALCCharacter, CurUpperAnimType);
 	DOREPLIFETIME(ALCCharacter, CurLowerAnimType);
 	DOREPLIFETIME(ALCCharacter, CurMovementValue);
+	DOREPLIFETIME(ALCCharacter, bIsJumping);
 }
 
 #pragma endregion 
@@ -98,6 +99,8 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &ALCCharacter::Rotate);
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALCCharacter::Move);
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ALCCharacter::Idle);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
+	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ALCCharacter::StopJumping);
 
 }
 
@@ -146,6 +149,23 @@ void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 		CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
 		ChangeAnimation_Server(CurUpperAnimType, CurLowerAnimType);
 	}
+}
+
+void ALCCharacter::Jump()
+{
+	Super::Jump();
+
+	bIsJumping = true;
+	CurLowerAnimType = ECharLowerAnim::JUMP;
+	ChangeAnimation_Server(CurUpperAnimType, CurLowerAnimType);
+}
+
+void ALCCharacter::StopJumping()
+{
+	Super::StopJumping();
+
+	bIsJumping = false;
+	Idle(CurMovementValue);
 }
 
 #pragma endregion 

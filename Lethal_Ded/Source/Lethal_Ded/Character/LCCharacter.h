@@ -81,6 +81,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* JumpAction = nullptr;
+
 #pragma endregion 
 
 
@@ -94,6 +97,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Idle(const struct FInputActionValue& _Axis2D);
+
+	void Jump() override;
+	void StopJumping() override;
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void SetMovementValue_Server(const FVector2D& _MovementValue);
@@ -114,6 +120,9 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	FVector2D CurMovementValue;
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	bool bIsJumping = false;
 
 #pragma endregion 
 };
