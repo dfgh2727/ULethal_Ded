@@ -41,6 +41,8 @@ enum class ECharLowerAnim : uint8
 	IDLE UMETA(DisplayName = "기본"),
 	WALK UMETA(DisplayName = "걷기"),
 	JUMP UMETA(DisplayName = "점프"),
+	CROUCH_IDLE UMETA(DisplayName = "앉기기본"),
+	CROUCH_WALK UMETA(DisplayName = "앉아걷기"),
 	MAX UMETA(DisplayName = "MAX"),
 };
 
