@@ -54,6 +54,10 @@ void ALCCharacter::Tick(float DeltaTime)
 	{
 		CharAnimInst->ChangeAnimation(CurUpperAnimType, CurLowerAnimType);
 	}
+
+	ChangeAnimation_Server(CurUpperAnimType, CurLowerAnimType);
+
+	bIsCrouch = GetCharacterMovement()->bWantsToCrouch;
 }
 
 #pragma endregion 
@@ -82,7 +86,9 @@ void ALCCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ALCCharacter, CurUpperAnimType);
 	DOREPLIFETIME(ALCCharacter, CurLowerAnimType);
 	DOREPLIFETIME(ALCCharacter, CurMovementValue);
-	DOREPLIFETIME(ALCCharacter, bIsJumping);
+	DOREPLIFETIME(ALCCharacter, bIsFalling);
+	DOREPLIFETIME(ALCCharacter, bIsMoving);
+	DOREPLIFETIME(ALCCharacter, bIsCrouch);
 }
 
 #pragma endregion 
@@ -101,7 +107,7 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ALCCharacter::Idle);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ALCCharacter::StopJumping);
-
+	//EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ALCCharacter::Crouch, bIsCrouch);
 }
 
 #pragma endregion 
@@ -121,6 +127,8 @@ void ALCCharacter::Rotate(const FInputActionValue& _Axis2D)
 
 void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 {
+	bIsMoving = true;
+
 	const FVector2D MovementValue = _Axis2D.Get<FVector2D>();
 
 	SetMovementValue_Server(MovementValue);
@@ -133,39 +141,89 @@ void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 		const FVector Right = GetActorRightVector();
 		AddMovementInput(Right, MovementValue.Y);
 
-		CurLowerAnimType = ECharLowerAnim::WALK;
-		CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Test
-		ChangeAnimation_Server(CurUpperAnimType, CurLowerAnimType);
+		if (false == bIsFalling && true == GetVelocity().IsNearlyZero(10.0f))
+		{
+			if (false == bIsCrouch)
+			{
+				CurLowerAnimType = ECharLowerAnim::WALK;
+				CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
+			}
+			else
+			{
+				CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
+			}
+		}
 	}
 }
 
 void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 {
+	bIsMoving = false;
+	//bIsCrouch = false;
+
 	const FVector2D MovementValue = _Axis2D.Get<FVector2D>();
 
-	if (nullptr != Controller && true == MovementValue.IsNearlyZero())
+
+	if (false == bIsCrouch)
 	{
-		CurLowerAnimType = ECharLowerAnim::IDLE;
-		CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
-		ChangeAnimation_Server(CurUpperAnimType, CurLowerAnimType);
+		if (nullptr != Controller && true == MovementValue.IsNearlyZero())
+		{
+			CurLowerAnimType = ECharLowerAnim::IDLE;
+			CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
+		}
+	}
+	else
+	{
+		if (nullptr != Controller && true == MovementValue.IsNearlyZero())
+		{
+			CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
+		}
 	}
 }
 
 void ALCCharacter::Jump()
 {
+	if (true == bIsCrouch)
+	{
+		return;
+	}
+
 	Super::Jump();
 
-	bIsJumping = true;
 	CurLowerAnimType = ECharLowerAnim::JUMP;
-	ChangeAnimation_Server(CurUpperAnimType, CurLowerAnimType);
 }
 
 void ALCCharacter::StopJumping()
 {
+	if (true == bIsCrouch)
+	{
+		return;
+	}
+
 	Super::StopJumping();
 
-	bIsJumping = false;
-	Idle(CurMovementValue);
+	if (false == bIsMoving)
+	{
+		CurLowerAnimType = ECharLowerAnim::IDLE;
+	}
+	else
+	{
+		CurLowerAnimType = ECharLowerAnim::WALK;
+	}
+}
+
+void ALCCharacter::Crouch(bool _IsCrouch)
+{
+	Super::Crouch(_IsCrouch);
+
+	CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
+}
+
+void ALCCharacter::UnCrouch(bool _IsCrouch)
+{
+	Super::UnCrouch(_IsCrouch);
+
+	CurLowerAnimType = ECharLowerAnim::IDLE;
 }
 
 #pragma endregion 
