@@ -78,6 +78,7 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	DOREPLIFETIME(AShip, StorageBodyComponent);
 	DOREPLIFETIME(AShip, LSDoorComponent);
 	DOREPLIFETIME(AShip, RSDoorComponent);
+	//bool 값 replicate?
 
 }
 
@@ -214,17 +215,17 @@ void AShip::ControlDoors(bool bOpen) //문의 개폐조절 함수. true는 열기, false는 
 	bDoItOnce = true;
 }
 
-void AShip::ControlTheLever()
+void AShip::ControlTheLever() //레버 컨트롤 함수
 {
 	bLeverMove = true;
 }
 
-void AShip::ControlSDoorLeft()
+void AShip::ControlSDoorLeft() //저장고(Storage) 왼쪽문 컨트롤 함수
 {
 	bLSDoorMove = true;
 }
 
-void AShip::ControlSDoorRight()
+void AShip::ControlSDoorRight() //저장고(Storage) 오른쪽문 컨트롤 함수
 {
 	bRSDoorMove = true;
 }
