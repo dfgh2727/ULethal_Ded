@@ -34,8 +34,8 @@ private:
 
 	void MoveTheLever(float DeltaTime);
 
-	//void PullTheLever(float DeltaTime);
-	//void PushTheLever(float DeltaTime);
+	void MoveLSDoor(float DeltaTime);
+	void MoveRSDoor(float DeltaTime);
 
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LeftDoor", meta = (AllowprivateAccess = "true"))
@@ -57,10 +57,16 @@ private:
 	UStaticMeshComponent* RSDoorComponent = nullptr;
 
 	float DoorMovement = 300.0f;
-	//bool bDoorMove = true;
+
 	bool bDoItOnce = false;
 	bool bSign = false;
 
 	bool bLeverMove = false;
 	bool bLeverIsDown = false;
+
+	bool bLSDoorMove = false;
+	bool bRSDoorMove = false;
+
+	bool bLSDoorShut = true;
+	bool bRSDoorShut = true;
 };

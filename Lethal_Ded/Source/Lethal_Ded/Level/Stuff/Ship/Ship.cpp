@@ -28,7 +28,6 @@ AShip::AShip()
 
 		RSDoorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RSDoorComponent"));
 		RSDoorComponent->SetupAttachment(RootComponent);
-
 	}
 
 	
@@ -57,6 +56,16 @@ void AShip::Tick(float DeltaTime)
 		MoveTheLever(DeltaTime);
 	}
 
+	if (bLSDoorMove == true)
+	{
+		MoveLSDoor(DeltaTime);
+	}
+
+	if (bRSDoorMove == true)
+	{
+		MoveRSDoor(DeltaTime);
+	}
+
 }
 
 void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -65,21 +74,15 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 
 	DOREPLIFETIME(AShip, LeftDoorComponent);
 	DOREPLIFETIME(AShip, RightDoorComponent);
+	DOREPLIFETIME(AShip, LeverComponent);
+	DOREPLIFETIME(AShip, StorageBodyComponent);
+	DOREPLIFETIME(AShip, LSDoorComponent);
+	DOREPLIFETIME(AShip, RSDoorComponent);
+
 }
 
 void AShip::OpenDoors(float DeltaTime)
 {
-	/*if(bDoorMove == true)
-	{
-		FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
-		CurLeftLocation.X -= DeltaTime * DoorMovement;
-		LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
-	
-		FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
-		CurRighttLocation.X += DeltaTime * DoorMovement;
-		RightDoorComponent->SetRelativeLocation(CurRighttLocation);
-	}*/
-
 	FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
 	CurLeftLocation.X -= DeltaTime * DoorMovement;
 	LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
@@ -92,7 +95,6 @@ void AShip::OpenDoors(float DeltaTime)
 
 	if (Locate.X < -600.0f)
 	{
-		//bDoorMove = false;
 		bDoItOnce = false;
 		LeftDoorComponent->SetVisibility(false);
 		RightDoorComponent->SetVisibility(false);
@@ -103,17 +105,6 @@ void AShip::CloseDoors(float DeltaTime)
 {
 	LeftDoorComponent->SetVisibility(true);
 	RightDoorComponent->SetVisibility(true);
-
-	/*if (bDoorMove == true)
-	{
-		FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
-		CurLeftLocation.X += DeltaTime * DoorMovement;
-		LeftDoorComponent->SetRelativeLocation(CurLeftLocation);
-
-		FVector CurRighttLocation = RightDoorComponent->GetRelativeLocation();
-		CurRighttLocation.X -= DeltaTime * DoorMovement;
-		RightDoorComponent->SetRelativeLocation(CurRighttLocation);
-	}*/
 
 	FVector CurLeftLocation = LeftDoorComponent->GetRelativeLocation();
 	CurLeftLocation.X += DeltaTime * DoorMovement;
@@ -127,7 +118,6 @@ void AShip::CloseDoors(float DeltaTime)
 
 	if (Locate.X > 0.0f)
 	{
-		//bDoorMove = false;
 		bDoItOnce = false;
 	}
 }
@@ -161,23 +151,67 @@ void AShip::MoveTheLever(float DeltaTime)
 	
 }
 
-//void AShip::PushTheLever(float DeltaTime)
-//{
-//	FRotator CurRotation = LeverComponent->GetRelativeRotation();
-//	CurRotation.Roll += DeltaTime * 100;
-//	LeverComponent->SetRelativeRotation(CurRotation);
-//
-//	if (CurRotation.Roll >= 1)
-//	{
-//		bLeverMove = false;
-//	}
-//}
+void AShip::MoveLSDoor(float DeltaTime)
+{
+	if (bLSDoorShut == true)
+	{
+		FRotator CurRotation = LSDoorComponent->GetRelativeRotation();
+		CurRotation.Yaw += DeltaTime * 100;
+		LSDoorComponent->SetRelativeRotation(CurRotation);
+
+		if (CurRotation.Yaw >= 160)
+		{
+			bLSDoorMove = false;
+			bLSDoorShut = false;
+		}
+	}
+	else
+	{
+		FRotator CurRotation = LSDoorComponent->GetRelativeRotation();
+		CurRotation.Yaw -= DeltaTime * 100;
+		LSDoorComponent->SetRelativeRotation(CurRotation);
+
+		if (CurRotation.Yaw <= 0)
+		{
+			bLSDoorMove = false;
+			bLSDoorShut = true;
+		}
+	}
+}
+
+void AShip::MoveRSDoor(float DeltaTime)
+{
+	if (bRSDoorShut == true)
+	{
+		FRotator CurRotation = RSDoorComponent->GetRelativeRotation();
+		CurRotation.Yaw -= DeltaTime * 100;
+		RSDoorComponent->SetRelativeRotation(CurRotation);
+
+		if (CurRotation.Yaw <= -160)
+		{
+			bRSDoorMove = false;
+			bRSDoorShut = false;
+		}
+	}
+	else
+	{
+		FRotator CurRotation = RSDoorComponent->GetRelativeRotation();
+		CurRotation.Yaw += DeltaTime * 100;
+		RSDoorComponent->SetRelativeRotation(CurRotation);
+
+		if (CurRotation.Yaw >= 0)
+		{
+			bRSDoorMove = false;
+			bRSDoorShut = true;
+		}
+	}
+}
+
 
 void AShip::ControlDoors(bool bOpen) //문의 개폐조절 함수. true는 열기, false는 닫기
 {
 	bSign = bOpen;
 	bDoItOnce = true;
-	//bDoorMove = true;
 }
 
 void AShip::ControlTheLever()
@@ -187,11 +221,11 @@ void AShip::ControlTheLever()
 
 void AShip::ControlSDoorLeft()
 {
-
+	bLSDoorMove = true;
 }
 
 void AShip::ControlSDoorRight()
 {
-
+	bRSDoorMove = true;
 }
 
