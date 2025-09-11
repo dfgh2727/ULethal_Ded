@@ -31,6 +31,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	float CurSpeed = 0.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	float Stamina = 100.0f;
+
 #pragma endregion 
 
 
