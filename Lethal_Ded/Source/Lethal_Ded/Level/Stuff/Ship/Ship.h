@@ -58,15 +58,23 @@ private:
 
 	float DoorMovement = 300.0f;
 
+	UPROPERTY(Replicated)
 	bool bDoItOnce = false;
+	UPROPERTY(Replicated)
 	bool bSign = false;
 
+	UPROPERTY(Replicated)
 	bool bLeverMove = false;
+	UPROPERTY(Replicated)
 	bool bLeverIsDown = false;
 
+	UPROPERTY(Replicated)
 	bool bLSDoorMove = false;
+	UPROPERTY(Replicated)
 	bool bRSDoorMove = false;
 
+	UPROPERTY(Replicated)
 	bool bLSDoorShut = true;
+	UPROPERTY(Replicated)
 	bool bRSDoorShut = true;
 };

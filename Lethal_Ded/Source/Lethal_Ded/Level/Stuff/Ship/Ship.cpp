@@ -80,6 +80,15 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	DOREPLIFETIME(AShip, RSDoorComponent);
 	//bool °ª replicate?
 
+	DOREPLIFETIME(AShip, bLeverMove);
+	DOREPLIFETIME(AShip, bLeverIsDown);
+	DOREPLIFETIME(AShip, bLSDoorMove);
+	DOREPLIFETIME(AShip, bRSDoorMove);
+	DOREPLIFETIME(AShip, bLSDoorShut);
+	DOREPLIFETIME(AShip, bRSDoorShut);
+
+
+
 }
 
 void AShip::OpenDoors(float DeltaTime)
