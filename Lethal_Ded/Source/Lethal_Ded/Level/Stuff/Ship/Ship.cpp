@@ -42,14 +42,18 @@ void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bDoItOnce == true && bSign == true)
+	if (bDoItOnce == true)
 	{
-		OpenDoors(DeltaTime);
+		if (bSign == true && bDoorsOpen == false)
+		{
+			OpenDoors(DeltaTime);
+		}
+		else if (bSign == false && bDoorsOpen == true)
+		{
+			CloseDoors(DeltaTime);
+		}
 	}
-	else if (bDoItOnce == true && bSign == false)
-	{
-		CloseDoors(DeltaTime);
-	}
+	
 
 	if (bLeverMove == true)
 	{
@@ -87,8 +91,6 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	DOREPLIFETIME(AShip, bLSDoorShut);
 	DOREPLIFETIME(AShip, bRSDoorShut);
 
-
-
 }
 
 void AShip::OpenDoors(float DeltaTime)
@@ -106,6 +108,7 @@ void AShip::OpenDoors(float DeltaTime)
 	if (Locate.X < -600.0f)
 	{
 		bDoItOnce = false;
+		bDoorsOpen = true;
 		LeftDoorComponent->SetVisibility(false);
 		RightDoorComponent->SetVisibility(false);
 	}
@@ -129,6 +132,7 @@ void AShip::CloseDoors(float DeltaTime)
 	if (Locate.X > 0.0f)
 	{
 		bDoItOnce = false;
+		bDoorsOpen = false;
 	}
 }
 
@@ -218,9 +222,15 @@ void AShip::MoveRSDoor(float DeltaTime)
 }
 
 
-void AShip::ControlDoors(bool bOpen) //문의 개폐조절 함수. true는 열기, false는 닫기
+void AShip::ControlDoorsOpen() //입구 컨트롤 함수, 열기
 {
-	bSign = bOpen;
+	bSign = true;
+	bDoItOnce = true;
+}
+
+void AShip::ControlDoorsClose() //입구 컨트롤 함수, 닫기
+{
+	bSign = false;
 	bDoItOnce = true;
 }
 

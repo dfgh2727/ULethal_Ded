@@ -22,7 +22,8 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void ControlDoors(bool bOpen);
+	void ControlDoorsOpen();
+	void ControlDoorsClose();
 	void ControlTheLever();
 
 	void ControlSDoorLeft();
@@ -62,6 +63,8 @@ private:
 	bool bDoItOnce = false;
 	UPROPERTY(Replicated)
 	bool bSign = false;
+	UPROPERTY(Replicated)
+	bool bDoorsOpen = false;
 
 	UPROPERTY(Replicated)
 	bool bLeverMove = false;
