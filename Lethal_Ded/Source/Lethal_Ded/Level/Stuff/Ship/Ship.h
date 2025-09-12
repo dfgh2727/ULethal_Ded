@@ -22,8 +22,12 @@ public:
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void ControlDoors(bool bOpen);
+	void ControlDoorsOpen();
+	void ControlDoorsClose();
 	void ControlTheLever();
+
+	void ControlSDoorLeft();
+	void ControlSDoorRight();
 
 private:
 	void OpenDoors(float DeltaTime);
@@ -31,8 +35,8 @@ private:
 
 	void MoveTheLever(float DeltaTime);
 
-	//void PullTheLever(float DeltaTime);
-	//void PushTheLever(float DeltaTime);
+	void MoveLSDoor(float DeltaTime);
+	void MoveRSDoor(float DeltaTime);
 
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LeftDoor", meta = (AllowprivateAccess = "true"))
@@ -44,11 +48,36 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Lever", meta = (AllowprivateAccess = "true"))
 	UStaticMeshComponent* LeverComponent = nullptr;
 
-	float DoorMovement = 300.0f;
-	//bool bDoorMove = true;
-	bool bDoItOnce = false;
-	bool bSign = false;
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "StorageBody", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* StorageBodyComponent = nullptr;
+	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LSDoor", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* LSDoorComponent = nullptr;
+	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "RSDoor", meta = (AllowprivateAccess = "true"))
+	UStaticMeshComponent* RSDoorComponent = nullptr;
 
+	float DoorMovement = 300.0f;
+
+	UPROPERTY(Replicated)
+	bool bDoItOnce = false;
+	UPROPERTY(Replicated)
+	bool bSign = false;
+	UPROPERTY(Replicated)
+	bool bDoorsOpen = false;
+
+	UPROPERTY(Replicated)
 	bool bLeverMove = false;
+	UPROPERTY(Replicated)
 	bool bLeverIsDown = false;
+
+	UPROPERTY(Replicated)
+	bool bLSDoorMove = false;
+	UPROPERTY(Replicated)
+	bool bRSDoorMove = false;
+
+	UPROPERTY(Replicated)
+	bool bLSDoorShut = true;
+	UPROPERTY(Replicated)
+	bool bRSDoorShut = true;
 };
