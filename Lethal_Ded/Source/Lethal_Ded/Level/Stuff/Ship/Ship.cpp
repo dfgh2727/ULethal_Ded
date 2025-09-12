@@ -82,10 +82,14 @@ void AShip::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 	DOREPLIFETIME(AShip, StorageBodyComponent);
 	DOREPLIFETIME(AShip, LSDoorComponent);
 	DOREPLIFETIME(AShip, RSDoorComponent);
-	//bool °ª replicate?
+
+	DOREPLIFETIME(AShip, bDoItOnce);
+	DOREPLIFETIME(AShip, bSign);
+	DOREPLIFETIME(AShip, bDoorsOpen);
 
 	DOREPLIFETIME(AShip, bLeverMove);
 	DOREPLIFETIME(AShip, bLeverIsDown);
+
 	DOREPLIFETIME(AShip, bLSDoorMove);
 	DOREPLIFETIME(AShip, bRSDoorMove);
 	DOREPLIFETIME(AShip, bLSDoorShut);
@@ -103,9 +107,7 @@ void AShip::OpenDoors(float DeltaTime)
 	CurRighttLocation.X += DeltaTime * DoorMovement;
 	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
-	FVector Locate = LeftDoorComponent->GetRelativeLocation();
-
-	if (Locate.X < -600.0f)
+	if (CurLeftLocation.X < -600.0f)
 	{
 		bDoItOnce = false;
 		bDoorsOpen = true;
@@ -127,9 +129,7 @@ void AShip::CloseDoors(float DeltaTime)
 	CurRighttLocation.X -= DeltaTime * DoorMovement;
 	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
-	FVector Locate = LeftDoorComponent->GetRelativeLocation();
-
-	if (Locate.X > 0.0f)
+	if (CurLeftLocation.X > 0.0f)
 	{
 		bDoItOnce = false;
 		bDoorsOpen = false;
