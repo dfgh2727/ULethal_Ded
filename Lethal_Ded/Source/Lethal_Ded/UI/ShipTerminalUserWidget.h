@@ -13,5 +13,9 @@ UCLASS()
 class LETHAL_DED_API UShipTerminalUserWidget : public UShipUserWidget
 {
 	GENERATED_BODY()
+
+protected:
+
+	virtual void NativeOnInitialized() override;
 	
 };

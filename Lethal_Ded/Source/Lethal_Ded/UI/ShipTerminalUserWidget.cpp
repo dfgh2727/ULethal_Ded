@@ -3,3 +3,7 @@
 
 #include "UI/ShipTerminalUserWidget.h"
 
+void UShipTerminalUserWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+}
