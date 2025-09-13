@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UI_Ship/ShipUserWidget.h"
+#include "UI/ShipUserWidget.h"
 #include "ShipTerminalUserWidget.generated.h"
 
 /**
