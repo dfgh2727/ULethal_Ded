@@ -91,9 +91,10 @@ void ALCCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ALCCharacter, CurUpperAnimType);
 	DOREPLIFETIME(ALCCharacter, CurLowerAnimType);
 	DOREPLIFETIME(ALCCharacter, CurMovementValue);
-	DOREPLIFETIME(ALCCharacter, bIsFalling);
 	DOREPLIFETIME(ALCCharacter, bIsMoving);
+	DOREPLIFETIME(ALCCharacter, bIsFalling);
 	DOREPLIFETIME(ALCCharacter, bIsCrouch);
+	DOREPLIFETIME(ALCCharacter, bIsSprint);
 }
 
 #pragma endregion 
@@ -108,10 +109,12 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
 	EnhancedInputComponent->BindAction(RotateAction, ETriggerEvent::Triggered, this, &ALCCharacter::Rotate);
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALCCharacter::Move);
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Completed, this, &ALCCharacter::Idle);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ALCCharacter::StopJumping);
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALCCharacter::Move);
+	//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
+	//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ALCCharacter::StopJumping);
+	//EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ALCCharacter::Sprint);
+	//EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALCCharacter::Sprint);
 }
 
 #pragma endregion 
@@ -126,6 +129,21 @@ void ALCCharacter::Rotate(const FInputActionValue& _Axis2D)
 	{
 		AddControllerYawInput(RotateValue.X);
 		AddControllerPitchInput(-RotateValue.Y);
+	}
+}
+
+void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
+{
+	bIsMoving = false;
+
+	const FVector2D MovementValue = _Axis2D.Get<FVector2D>();
+
+	if (nullptr != Controller && true == MovementValue.IsNearlyZero(0.0f))
+	{
+		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
+
+		CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
+		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
 }
 
@@ -147,50 +165,88 @@ void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 
 		if (false == bIsFalling && true == GetVelocity().IsNearlyZero(2.0f))
 		{
-			if (false == bIsCrouch)
-			{
-				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
+			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
 
-				CurLowerAnimType = ECharLowerAnim::WALK;
-				CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
-			}
-			else
-			{
-				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
-
-				CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
-			}
+			CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
+			CurLowerAnimType = ECharLowerAnim::WALK;
 		}
 	}
 }
 
-void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
-{
-	bIsMoving = false;
+//void ALCCharacter::Move(const FInputActionValue& _Axis2D)
+//{
+//	bIsMoving = true;
+//
+//	const FVector2D MovementValue = _Axis2D.Get<FVector2D>();
+//
+//	SetMovementValue_Server(MovementValue);
+//
+//	if (nullptr != Controller)
+//	{
+//		const FVector Forward = GetActorForwardVector();
+//		AddMovementInput(Forward, MovementValue.X);
+//
+//		const FVector Right = GetActorRightVector();
+//		AddMovementInput(Right, MovementValue.Y);
+//
+//		if (false == bIsFalling && true == GetVelocity().IsNearlyZero(2.0f))
+//		{
+//			if (false == bIsCrouch)
+//			{
+//				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
+//
+//				CurLowerAnimType = ECharLowerAnim::WALK;
+//				CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
+//			}
+//			else
+//			{
+//				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
+//
+//				CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
+//			}
+//
+//			if (false == bIsSprint)
+//			{
+//				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
+//
+//				CurLowerAnimType = ECharLowerAnim::WALK;
+//			}
+//		}
+//	}
+//}
 
-	const FVector2D MovementValue = _Axis2D.Get<FVector2D>();
-
-
-	if (false == bIsCrouch)
-	{
-		if (nullptr != Controller && true == MovementValue.IsNearlyZero(0.0f))
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-
-			CurLowerAnimType = ECharLowerAnim::IDLE;
-			CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
-		}
-	}
-	else
-	{
-		if (nullptr != Controller && true == MovementValue.IsNearlyZero(0.0f))
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
-
-			CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
-		}
-	}
-}
+//void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
+//{
+//	if (true == bIsSprint)
+//	{
+//		return;
+//	}
+//
+//	bIsMoving = false;
+//
+//	const FVector2D MovementValue = _Axis2D.Get<FVector2D>();
+//
+//
+//	if (false == bIsCrouch)
+//	{
+//		if (nullptr != Controller && true == MovementValue.IsNearlyZero(0.0f))
+//		{
+//			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
+//
+//			CurLowerAnimType = ECharLowerAnim::IDLE;
+//			CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
+//		}
+//	}
+//	else
+//	{
+//		if (nullptr != Controller && true == MovementValue.IsNearlyZero(0.0f))
+//		{
+//			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
+//
+//			CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
+//		}
+//	}
+//}
 
 void ALCCharacter::Jump()
 {
@@ -232,11 +288,15 @@ void ALCCharacter::StopJumping()
 
 		CurLowerAnimType = ECharLowerAnim::WALK;
 	}
+
+	bIsFalling = false;
 }
 
 void ALCCharacter::Crouch(bool _IsCrouch)
 {
 	Super::Crouch(_IsCrouch);
+
+	bIsCrouch = true;
 
 	if (CurLowerAnimType != ECharLowerAnim::CROUCH_IDLE)
 	{
@@ -256,6 +316,8 @@ void ALCCharacter::UnCrouch(bool _IsCrouch)
 {
 	Super::UnCrouch(_IsCrouch);
 
+	bIsCrouch = false;
+
 	if (CurLowerAnimType == ECharLowerAnim::CROUCH_IDLE)
 	{
 		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
@@ -267,6 +329,31 @@ void ALCCharacter::UnCrouch(bool _IsCrouch)
 		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
 
 		CurLowerAnimType = ECharLowerAnim::WALK;
+	}
+}
+
+void ALCCharacter::Sprint()
+{
+	bIsSprint = !bIsSprint;
+
+	if (true == bIsSprint)
+	{
+		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::SPRINT"), *FString(__FUNCSIG__));
+
+		CurLowerAnimType = ECharLowerAnim::SPRINT;
+	}
+	else
+	{
+		if (true == bIsMoving)
+		{
+			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
+
+			CurLowerAnimType = ECharLowerAnim::WALK;
+		}
+		else
+		{
+			return;
+		}
 	}
 }
 
