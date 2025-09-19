@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generator")
 	UDataTable* RoomDataTable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generator")
+	UDataTable* ItemDataTable;
+
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	class AMasterRoom* LastestRoom;
 
@@ -44,20 +47,28 @@ public:
 
 private:
 
-	void CheckOverlap();
+	void AddSpawnPointToList();
+	void SpawnItem();
 	void AddOverLapRoomToList();
+	void CheckOverlap();
 	void CloseHoles();
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Generator", meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* DefaultSceneRoot;
 	class USceneComponent* SelectExit;
+	class USceneComponent* SelectSpawnPoint;
 
 	TArray<class USceneComponent*> ExitsList;
+	TArray<class USceneComponent*> SpawnPointsList;
 	TArray<class UPrimitiveComponent*> OverlapList;
 	TArray<TSubclassOf<AMasterRoom>> RoomList;
+	TArray<TSubclassOf<class AItem>> ItemList;
+
+	FRandomStream RandomStream;
 
 	int RoomAmount = 15;
+	int ItemAmount = 5;
 
 
 };
