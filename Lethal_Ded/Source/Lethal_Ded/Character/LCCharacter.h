@@ -108,7 +108,6 @@ public:
 	void Idle(const struct FInputActionValue& _Axis2D);
 
 	void Jump() override;
-	void StopJumping() override;
 
 	void Crouch(bool _IsCrouch) override;
 	void UnCrouch(bool _IsCrouch) override;
