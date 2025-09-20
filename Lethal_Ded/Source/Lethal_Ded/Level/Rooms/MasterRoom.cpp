@@ -24,6 +24,9 @@ AMasterRoom::AMasterRoom()
 	Collision = CreateDefaultSubobject<USceneComponent>("Collision");
 	Collision->SetupAttachment(DefaultSceneRoot);
 	
+	SpawnPointFolder = CreateDefaultSubobject<USceneComponent>("SpawnPointFolder");
+	SpawnPointFolder->SetupAttachment(DefaultSceneRoot);
+
 	OverlapFolder = CreateDefaultSubobject<USceneComponent>("OverlapFolder");
 	OverlapFolder->SetupAttachment(DefaultSceneRoot);
 
