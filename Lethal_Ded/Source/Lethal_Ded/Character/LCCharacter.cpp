@@ -91,6 +91,7 @@ void ALCCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ALCCharacter, bIsFalling);
 	DOREPLIFETIME(ALCCharacter, bIsCrouch);
 	DOREPLIFETIME(ALCCharacter, bIsSprint);
+	DOREPLIFETIME(ALCCharacter, bIsAttack);
 }
 
 #pragma endregion 
@@ -110,6 +111,8 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ALCCharacter::SprintStart_Server);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALCCharacter::SprintEnd_Server);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::Attack_Server);
+	//EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::Idle);
 }
 
 #pragma endregion 
@@ -148,6 +151,12 @@ void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 
 			CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
 		}
+
+		//if (false == bIsAttack)
+		//{
+		//	CurUpperAnimType = ECharUpperAnim::SHOVEL;
+		//	CurLowerAnimType = ECharLowerAnim::IDLE;
+		//}
 	}
 }
 
@@ -214,37 +223,11 @@ void ALCCharacter::Jump()
 void ALCCharacter::Crouch(bool _IsCrouch)
 {
 	Super::Crouch();
-
-	//if (false == bIsMoving)
-	//{
-	//	UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
-
-	//	CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
-	//}
-	//else
-	//{
-	//	UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
-
-	//	CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
-	//}
 }
 
 void ALCCharacter::UnCrouch(bool _IsCrouch)
 {
 	Super::UnCrouch();
-
-	//if (false == bIsMoving)
-	//{
-	//	UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-
-	//	CurLowerAnimType = ECharLowerAnim::IDLE;
-	//}
-	//else
-	//{
-	//	UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-
-	//	CurLowerAnimType = ECharLowerAnim::WALK;
-	//}
 }
 
 void ALCCharacter::SprintStart_Server_Implementation()
@@ -256,25 +239,22 @@ void ALCCharacter::SprintStart_Implementation()
 {
 	if (true == bIsMoving)
 	{
+		//SetSprintStatus(true);
 		bIsSprint = true;
-		
-		UCharacterMovementComponent* CharMovement = GetCharacterMovement();
 
-		if (CharMovement)
-		{
-			//float MaxSpeed = CharMovement->MaxWalkSpeed;
-
-			CharMovement->MaxWalkSpeed = 600.0f;
-
-			//if (CharMovement->MaxWalkSpeed <= 600.0f)
-			//{
-			//	CharMovement->MaxWalkSpeed = MaxSpeed * 2;
-			//}
-		}
+		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
 		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::SPRINT"), *FString(__FUNCSIG__));
 
 		CurLowerAnimType = ECharLowerAnim::SPRINT;
+	}
+	else
+	{
+		bIsSprint = false;
+
+		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
+
+		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
 }
 
@@ -285,17 +265,10 @@ void ALCCharacter::SprintEnd_Server_Implementation()
 
 void ALCCharacter::SprintEnd_Implementation()
 {
+	//SetSprintStatus(false);
 	bIsSprint = false;
 
-	UCharacterMovementComponent* CharMovement = GetCharacterMovement();
-
-	if (CharMovement)
-	{
-		//float MaxSpeed = CharMovement->MaxWalkSpeed;
-		CharMovement->MaxWalkSpeed = 300.0f;
-
-		//CharMovement->MaxWalkSpeed = MaxSpeed / 2;
-	}
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 
 	if (true == bIsMoving)
 	{
@@ -308,6 +281,25 @@ void ALCCharacter::SprintEnd_Implementation()
 		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
+	}
+}
+
+void ALCCharacter::Attack_Server_Implementation()
+{
+	Attack();
+}
+
+void ALCCharacter::Attack_Implementation()
+{
+	if (false == bIsAttack)
+	{
+		SetAttackStatus(true);
+		//bIsAttack = true;
+
+		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::ATTACK"), *FString(__FUNCSIG__));
+
+		CurLowerAnimType = ECharLowerAnim::ATTACK;
+		CurUpperAnimType = ECharUpperAnim::ATTACK;
 	}
 }
 

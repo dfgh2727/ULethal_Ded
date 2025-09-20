@@ -93,6 +93,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* SprintAction = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* AttackAction = nullptr;
+
 #pragma endregion 
 
 
@@ -129,6 +132,14 @@ public:
 	void SprintEnd_Implementation();
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void Attack_Server();
+	void Attack_Server_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void Attack();
+	void Attack_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void SetMovementValue_Server(const FVector2D& _MovementValue);
 	void SetMovementValue_Server_Implementation(const FVector2D& _MovementValue)
 	{
@@ -156,6 +167,20 @@ public:
 		bIsMoving = _IsMoving;
 	}
 
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void SetAttackStatus_Server(bool _IsAttack);
+	void SetAttackStatus_Server_Implementation(bool _IsAttack)
+	{
+		SetAttackStatus(_IsAttack);
+	}
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void SetAttackStatus(bool _IsAttack);
+	void SetAttackStatus_Implementation(bool _IsAttack)
+	{
+		bIsAttack = _IsAttack;
+	}
+
 protected:
 
 private:
@@ -173,6 +198,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	bool bIsSprint = false;
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	bool bIsAttack = false;
 
 #pragma endregion 
 };
