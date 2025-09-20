@@ -6,6 +6,9 @@
 #include "Level/Stuff/LCStuffActor.h"
 #include "Ship.generated.h"
 
+
+class UWidgetComponent;
+
 /**
  * 
  */
@@ -56,6 +59,10 @@ private:
 	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "RSDoor", meta = (AllowprivateAccess = "true"))
 	UStaticMeshComponent* RSDoorComponent = nullptr;
+
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Terminal", meta = (AllowprivateAccess = "true"))
+	UWidgetComponent* TerminalComponent = nullptr;
 
 	float DoorMovement = 300.0f;
 

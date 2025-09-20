@@ -3,6 +3,7 @@
 
 #include "Level/Stuff/Ship/Ship.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/WidgetComponent.h"
 
 
 AShip::AShip()
@@ -30,6 +31,8 @@ AShip::AShip()
 		RSDoorComponent->SetupAttachment(RootComponent);
 	}
 
+	TerminalComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TerminalComponent"));
+	TerminalComponent->SetupAttachment(RootComponent);
 	
 }
 
