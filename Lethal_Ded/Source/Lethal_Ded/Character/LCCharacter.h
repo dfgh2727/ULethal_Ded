@@ -29,7 +29,7 @@ private:
 	class UCameraComponent* CameraComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
-	float CurSpeed = 0.0f;
+	float CurSpeed = 300.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	float Stamina = 100.0f;
@@ -93,6 +93,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* SprintAction = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* AttackAction = nullptr;
+
 #pragma endregion 
 
 
@@ -102,18 +105,39 @@ public:
 	void Rotate(const struct FInputActionValue& _Axis2D);
 
 	UFUNCTION(BlueprintCallable)
-	void Move(const struct FInputActionValue& _Axis2D);
+	void Idle(const struct FInputActionValue& _Axis2D);
 
 	UFUNCTION(BlueprintCallable)
-	void Idle(const struct FInputActionValue& _Axis2D);
+	void Move(const struct FInputActionValue& _Axis2D);
 
 	void Jump() override;
 
 	void Crouch(bool _IsCrouch) override;
 	void UnCrouch(bool _IsCrouch) override;
 
-	UFUNCTION(BlueprintCallable)
-	void Sprint();
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void SprintStart_Server();
+	void SprintStart_Server_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void SprintStart();
+	void SprintStart_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void SprintEnd_Server();
+	void SprintEnd_Server_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void SprintEnd();
+	void SprintEnd_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void Attack_Server();
+	void Attack_Server_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void Attack();
+	void Attack_Implementation();
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void SetMovementValue_Server(const FVector2D& _MovementValue);
@@ -127,6 +151,34 @@ public:
 	void SetMovementValue_Implementation(const FVector2D& _MovementValue)
 	{
 		CurMovementValue = _MovementValue;
+	}
+
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void SetMoveStatus_Server(bool _IsMoving);
+	void SetMoveStatus_Server_Implementation(bool _IsMoving)
+	{
+		SetMoveStatus(_IsMoving);
+	}
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void SetMoveStatus(bool _IsMoving);
+	void SetMoveStatus_Implementation(bool _IsMoving)
+	{
+		bIsMoving = _IsMoving;
+	}
+
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void SetAttackStatus_Server(bool _IsAttack);
+	void SetAttackStatus_Server_Implementation(bool _IsAttack)
+	{
+		SetAttackStatus(_IsAttack);
+	}
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void SetAttackStatus(bool _IsAttack);
+	void SetAttackStatus_Implementation(bool _IsAttack)
+	{
+		bIsAttack = _IsAttack;
 	}
 
 protected:
@@ -146,6 +198,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	bool bIsSprint = false;
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	bool bIsAttack = false;
 
 #pragma endregion 
 };
