@@ -30,6 +30,11 @@ public:
 		return Exit;
 	}
 
+	const USceneComponent* GetSpawnPointFolder() const
+	{
+		return SpawnPointFolder;
+	}
+
 	class UBoxComponent* GetOverlapBox() const
 	{
 		return OverlapBox;
@@ -50,6 +55,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Room", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Geometry;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Room", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* SpawnPointFolder;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Room", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* OverlapFolder;
