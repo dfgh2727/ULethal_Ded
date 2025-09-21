@@ -3,6 +3,7 @@
 
 #include "Level/Stuff/Ship/Ship.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/WidgetComponent.h"
 
 
 AShip::AShip()
@@ -30,6 +31,8 @@ AShip::AShip()
 		RSDoorComponent->SetupAttachment(RootComponent);
 	}
 
+	TerminalComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TerminalComponent"));
+	TerminalComponent->SetupAttachment(RootComponent);
 	
 }
 
@@ -42,7 +45,9 @@ void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bDoItOnce == true)
+	OpenDoors(DeltaTime);
+
+	/*if (bDoItOnce == true)
 	{
 		if (bSign == true && bDoorsOpen == false)
 		{
@@ -52,7 +57,7 @@ void AShip::Tick(float DeltaTime)
 		{
 			CloseDoors(DeltaTime);
 		}
-	}
+	}*/
 	
 
 	if (bLeverMove == true)
@@ -112,7 +117,10 @@ void AShip::OpenDoors(float DeltaTime)
 		bDoItOnce = false;
 		bDoorsOpen = true;
 		LeftDoorComponent->SetVisibility(false);
+		//LeftDoorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		RightDoorComponent->SetVisibility(false);
+		//RightDoorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	}
 }
 

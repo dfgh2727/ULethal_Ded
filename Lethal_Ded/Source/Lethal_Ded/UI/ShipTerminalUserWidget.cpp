@@ -7,3 +7,13 @@ void UShipTerminalUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 }
+
+bool UShipTerminalUserWidget::CheckContentMoon(FString content)
+{
+	if (content == Moons)
+	{
+		return true;
+	}
+
+	return false;
+}

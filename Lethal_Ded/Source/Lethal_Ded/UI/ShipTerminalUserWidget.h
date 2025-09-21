@@ -17,5 +17,15 @@ class LETHAL_DED_API UShipTerminalUserWidget : public UShipUserWidget
 protected:
 
 	virtual void NativeOnInitialized() override;
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckContentMoon(FString content);
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
+	FString Moons = TEXT("Moons");
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
+	//FString Moons = TEXT("Moons");
 	
 };
