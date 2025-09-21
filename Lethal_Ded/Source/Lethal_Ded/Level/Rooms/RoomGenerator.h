@@ -31,6 +31,9 @@ public:
 	TSubclassOf<AActor> Wall;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generator")
+	TSubclassOf<AActor> Door;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generator")
 	UDataTable* RoomDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generator")
@@ -52,6 +55,7 @@ private:
 	void AddOverLapRoomToList();
 	void CheckOverlap();
 	void CloseHoles();
+	void SpawnDoor();
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Generator", meta = (AllowPrivateAccess = "true"))
@@ -60,6 +64,7 @@ private:
 	class USceneComponent* SelectSpawnPoint;
 
 	TArray<class USceneComponent*> ExitsList;
+	TArray<class USceneComponent*> DoorsList;
 	TArray<class USceneComponent*> SpawnPointsList;
 	TArray<class UPrimitiveComponent*> OverlapList;
 	TArray<TSubclassOf<AMasterRoom>> RoomList;

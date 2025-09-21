@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Global/LCEnum.h"
 #include "ItemDataTable.generated.h"
 
 /**
@@ -21,7 +22,14 @@ struct FItemDataRow : public FTableRowBase
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSubclassOf<class AItem> ItemList;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FString ItemName;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int ItemPrice;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    EItemType GripType = EItemType::ONEHAND;
 };
 
 

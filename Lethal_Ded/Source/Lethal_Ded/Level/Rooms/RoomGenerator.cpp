@@ -156,7 +156,8 @@ void ARoomGenerator::SpawnItem()
 		}
 
 		FVector SPLocation = SelectSpawnPoint->GetComponentLocation();
-		FRotator SPRotation = SelectSpawnPoint->GetComponentRotation();
+		/*FRotator SPRotation = SelectSpawnPoint->GetComponentRotation();*/
+		FRotator SPRotation = {0.0f,0.0f,0.0f};
 
 		TSubclassOf<AItem> SelectedItem = nullptr;
 
@@ -207,9 +208,12 @@ void ARoomGenerator::CheckOverlap()
 	}
 	else
 	{
+
 		if (ExitsList.Contains(SelectExit))
 		{
+			DoorsList.Add(SelectExit);
 			ExitsList.Remove(SelectExit);
+
 		}
 		
 		TArray<USceneComponent*> Exits;
@@ -229,6 +233,7 @@ void ARoomGenerator::CheckOverlap()
 	else
 	{
 		CloseHoles();
+		SpawnDoor();
 		SpawnItem();
 	}
 }
@@ -239,5 +244,18 @@ void ARoomGenerator::CloseHoles()
 	{
 		FTransform Transform = ExitsList[i]->GetComponentTransform();
 		GetWorld()->SpawnActor<AActor>(Wall, Transform);
+	}
+}
+
+void ARoomGenerator::SpawnDoor()
+{
+	for (int i = 0; i < DoorsList.Num(); i++)
+	{
+		FTransform Transform = DoorsList[i]->GetComponentTransform();
+
+		FVector Location = { -70.0f, 0.0f, -7.0f };
+
+		AActor* SpawnedDoor = GetWorld()->SpawnActor<AActor>(Door, Transform.GetLocation(), Transform.GetRotation().Rotator());
+		SpawnedDoor->AddActorLocalOffset(Location);
 	}
 }
