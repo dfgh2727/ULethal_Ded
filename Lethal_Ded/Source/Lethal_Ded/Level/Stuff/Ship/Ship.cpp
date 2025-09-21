@@ -3,6 +3,7 @@
 
 #include "Level/Stuff/Ship/Ship.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/WidgetComponent.h"
 
 
 AShip::AShip()
@@ -30,6 +31,8 @@ AShip::AShip()
 		RSDoorComponent->SetupAttachment(RootComponent);
 	}
 
+	TerminalComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TerminalComponent"));
+	TerminalComponent->SetupAttachment(RootComponent);
 	
 }
 
@@ -107,12 +110,16 @@ void AShip::OpenDoors(float DeltaTime)
 	CurRighttLocation.X += DeltaTime * DoorMovement;
 	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
-	if (CurLeftLocation.X < -600.0f)
+	//if (CurLeftLocation.X < -600.0f)
+	if (CurLeftLocation.X < -1580.0f)
 	{
 		bDoItOnce = false;
 		bDoorsOpen = true;
 		LeftDoorComponent->SetVisibility(false);
+		//LeftDoorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		RightDoorComponent->SetVisibility(false);
+		//RightDoorComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	}
 }
 
@@ -129,7 +136,8 @@ void AShip::CloseDoors(float DeltaTime)
 	CurRighttLocation.X -= DeltaTime * DoorMovement;
 	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
-	if (CurLeftLocation.X > 0.0f)
+	//if (CurLeftLocation.X > 0.0f)
+	if (CurLeftLocation.X > -980.0f)
 	{
 		bDoItOnce = false;
 		bDoorsOpen = false;

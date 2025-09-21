@@ -60,20 +60,51 @@ void UAIBTTaskNode::TargetCheck(UBehaviorTreeComponent& _OwnerComp)
 
 	if (nullptr == TargetActor)
 	{
-
 		AActor* CheckActor = nullptr; // 타깃으로 하는 가장 가까운 액터
 		TArray<AActor*> OutActors;
 		UGameplayStatics::GetAllActorsWithTag(GetWorld(), PlayAIData.Data.TargetGroupName, OutActors);
 
 		float CurTargetDis = TNumericLimits<float>::Max();
 
-		for (AActor * Actor : OutActors)
+		// 시야각(도) 및 시야거리 설정
+		const float SightAngle = 90.0f; // 예시: 90도
+		const float SightRange = PlayAIData.Data.TraceRange;
+
+		FVector SelfLocation = SelfActor->GetActorLocation();
+		FVector SelfForward = SelfActor->GetActorForwardVector();
+
+		for (AActor* Actor : OutActors)
 		{
-			float TargetDis = (SelfActor->GetActorLocation() - Actor->GetActorLocation()).Size();
-			if (TargetDis < PlayAIData.Data.TraceRange && TargetDis < CurTargetDis)
+			FVector TargetLocation = Actor->GetActorLocation();
+			float TargetDis = (SelfLocation - TargetLocation).Size();
+
+			if (TargetDis < SightRange && TargetDis < CurTargetDis)
 			{
-				CheckActor = Actor;
-				CurTargetDis = TargetDis;
+				// 시야각 판정
+				FVector ToTarget = (TargetLocation - SelfLocation).GetSafeNormal();
+				float Angle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(SelfForward, ToTarget)));
+
+				if (Angle <= SightAngle * 0.5f)
+				{
+					// 라인트레이스로 장애물 체크
+					FHitResult HitResult;
+					FCollisionQueryParams Params;
+					Params.AddIgnoredActor(SelfActor);
+
+					bool bHit = GetWorld()->LineTraceSingleByChannel(
+						HitResult,
+						SelfLocation,
+						TargetLocation,
+						ECC_Visibility,
+						Params
+					);
+
+					if (!bHit || HitResult.GetActor() == Actor)
+					{
+						CheckActor = Actor;
+						CurTargetDis = TargetDis;
+					}
+				}
 			}
 		}
 
@@ -83,7 +114,6 @@ void UAIBTTaskNode::TargetCheck(UBehaviorTreeComponent& _OwnerComp)
 			PlayAIData.TargetActor = TargetActor;
 		}
 	}
-
 }
 
  
