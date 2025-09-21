@@ -45,9 +45,7 @@ void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	OpenDoors(DeltaTime);
-
-	/*if (bDoItOnce == true)
+	if (bDoItOnce == true)
 	{
 		if (bSign == true && bDoorsOpen == false)
 		{
@@ -57,7 +55,7 @@ void AShip::Tick(float DeltaTime)
 		{
 			CloseDoors(DeltaTime);
 		}
-	}*/
+	}
 	
 
 	if (bLeverMove == true)
@@ -112,7 +110,8 @@ void AShip::OpenDoors(float DeltaTime)
 	CurRighttLocation.X += DeltaTime * DoorMovement;
 	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
-	if (CurLeftLocation.X < -600.0f)
+	//if (CurLeftLocation.X < -600.0f)
+	if (CurLeftLocation.X < -1580.0f)
 	{
 		bDoItOnce = false;
 		bDoorsOpen = true;
@@ -137,7 +136,8 @@ void AShip::CloseDoors(float DeltaTime)
 	CurRighttLocation.X -= DeltaTime * DoorMovement;
 	RightDoorComponent->SetRelativeLocation(CurRighttLocation);
 
-	if (CurLeftLocation.X > 0.0f)
+	//if (CurLeftLocation.X > 0.0f)
+	if (CurLeftLocation.X > -980.0f)
 	{
 		bDoItOnce = false;
 		bDoorsOpen = false;
