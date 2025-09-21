@@ -6,7 +6,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
-#include "Character/LCCharacterAnimInstance.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Lethal_Ded/Lethal_Ded.h"
@@ -111,8 +110,8 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ALCCharacter::SprintStart_Server);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALCCharacter::SprintEnd_Server);
-	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::Attack_Server);
-	//EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::Idle);
+	//EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::Attack_Server);
+	//EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::AttackEnd_Server);
 }
 
 #pragma endregion 
@@ -151,12 +150,6 @@ void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 
 			CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
 		}
-
-		//if (false == bIsAttack)
-		//{
-		//	CurUpperAnimType = ECharUpperAnim::SHOVEL;
-		//	CurLowerAnimType = ECharLowerAnim::IDLE;
-		//}
 	}
 }
 
@@ -197,6 +190,11 @@ void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 
 void ALCCharacter::Jump()
 {
+	if (true == bIsCrouch)
+	{
+		return;
+	}
+
 	Super::Jump();
 
 	if (GetVelocity().ZAxisVector.IsNearlyZero(2.0f))
@@ -206,9 +204,52 @@ void ALCCharacter::Jump()
 		CurLowerAnimType = ECharLowerAnim::JUMP;
 	}
 
+	FTimerHandle myTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(myTimerHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			if (false == bIsMoving)
+			{
+				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
+
+				CurLowerAnimType = ECharLowerAnim::IDLE;
+			}
+			else
+			{
+				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
+
+				CurLowerAnimType = ECharLowerAnim::WALK;
+			}
+
+			// 타이머 초기화
+			GetWorld()->GetTimerManager().ClearTimer(myTimerHandle);
+		}), 0.1f, false);
+}
+
+void ALCCharacter::Crouch(bool _IsCrouch)
+{
+	Super::Crouch();
+
 	if (false == bIsMoving)
 	{
-		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
+		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
+
+		CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
+	}
+	else
+	{
+		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
+
+		CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
+	}
+}
+
+void ALCCharacter::UnCrouch(bool _IsCrouch)
+{
+	Super::UnCrouch();
+
+	if (false == bIsMoving)
+	{
+		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
@@ -220,16 +261,6 @@ void ALCCharacter::Jump()
 	}
 }
 
-void ALCCharacter::Crouch(bool _IsCrouch)
-{
-	Super::Crouch();
-}
-
-void ALCCharacter::UnCrouch(bool _IsCrouch)
-{
-	Super::UnCrouch();
-}
-
 void ALCCharacter::SprintStart_Server_Implementation()
 {
 	SprintStart();
@@ -237,9 +268,14 @@ void ALCCharacter::SprintStart_Server_Implementation()
 
 void ALCCharacter::SprintStart_Implementation()
 {
+	// 임시
+	if (true == bIsCrouch)
+	{
+		return;
+	}
+
 	if (true == bIsMoving)
 	{
-		//SetSprintStatus(true);
 		bIsSprint = true;
 
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
@@ -265,7 +301,12 @@ void ALCCharacter::SprintEnd_Server_Implementation()
 
 void ALCCharacter::SprintEnd_Implementation()
 {
-	//SetSprintStatus(false);
+	// 임시
+	if (true == bIsCrouch)
+	{
+		return;
+	}
+
 	bIsSprint = false;
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
@@ -284,24 +325,34 @@ void ALCCharacter::SprintEnd_Implementation()
 	}
 }
 
-void ALCCharacter::Attack_Server_Implementation()
-{
-	Attack();
-}
-
-void ALCCharacter::Attack_Implementation()
-{
-	if (false == bIsAttack)
-	{
-		SetAttackStatus(true);
-		//bIsAttack = true;
-
-		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::ATTACK"), *FString(__FUNCSIG__));
-
-		CurLowerAnimType = ECharLowerAnim::ATTACK;
-		CurUpperAnimType = ECharUpperAnim::ATTACK;
-	}
-}
+//void ALCCharacter::Attack_Server_Implementation()
+//{
+//	Attack();
+//}
+//
+//void ALCCharacter::Attack_Implementation()
+//{
+//	if (false == bIsAttack)
+//	{
+//		SetAttackStatus(true);
+//		//bIsAttack = true;
+//
+//		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::ATTACK"), *FString(__FUNCSIG__));
+//
+//		CurLowerAnimType = ECharLowerAnim::ATTACK;
+//		CurUpperAnimType = ECharUpperAnim::ATTACK;
+//	}
+//}
+//
+//void ALCCharacter::AttackEnd_Server_Implementation()
+//{
+//	AttackEnd();
+//}
+//
+//void ALCCharacter::AttackEnd_Implementation()
+//{
+//	bIsAttack = false;
+//}
 
 #pragma endregion 
 
