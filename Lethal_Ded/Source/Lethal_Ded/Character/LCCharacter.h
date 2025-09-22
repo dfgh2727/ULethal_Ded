@@ -18,6 +18,23 @@ public:
 	// Sets default values for this character's properties
 	ALCCharacter();
 
+	// 함선 테스트
+	UFUNCTION(BlueprintCallable)
+	void ControlDoorsOpen();
+
+	UFUNCTION(BlueprintCallable)
+	void ControlDoorsClose();
+
+	UFUNCTION(BlueprintCallable)
+	void ControlTheLever();
+
+	UFUNCTION(BlueprintCallable)
+	void ControlSDoorLeft();
+
+	UFUNCTION(BlueprintCallable)
+	void ControlSDoorRight();
+	// 함선 테스트
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -147,21 +164,21 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void RecoverStamina();
 
-	//UFUNCTION(BlueprintCallable, Reliable, Server)
-	//void Attack_Server();
-	//void Attack_Server_Implementation();
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void AttackReady_Server();
+	void AttackReady_Server_Implementation();
 
-	//UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
-	//void Attack();
-	//void Attack_Implementation();
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void AttackReady();
+	void AttackReady_Implementation();
 
-	//UFUNCTION(BlueprintCallable, Reliable, Server)
-	//void AttackEnd_Server();
-	//void AttackEnd_Server_Implementation();
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void Attack_Server();
+	void Attack_Server_Implementation();
 
-	//UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
-	//void AttackEnd();
-	//void AttackEnd_Implementation();
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void Attack();
+	void Attack_Implementation();
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void SetMovementValue_Server(const FVector2D& _MovementValue);
@@ -191,20 +208,6 @@ public:
 		bIsMoving = _IsMoving;
 	}
 
-	//UFUNCTION(BlueprintCallable, Reliable, Server)
-	//void SetAttackStatus_Server(bool _IsAttack);
-	//void SetAttackStatus_Server_Implementation(bool _IsAttack)
-	//{
-	//	SetAttackStatus(_IsAttack);
-	//}
-
-	//UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
-	//void SetAttackStatus(bool _IsAttack);
-	//void SetAttackStatus_Implementation(bool _IsAttack)
-	//{
-	//	bIsAttack = _IsAttack;
-	//}
-
 protected:
 
 private:
@@ -225,6 +228,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	bool bIsAttack = false;
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	bool bCanAttack = false;
 
 #pragma endregion 
 };

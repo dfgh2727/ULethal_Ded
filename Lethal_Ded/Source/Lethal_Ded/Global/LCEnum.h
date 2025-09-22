@@ -33,6 +33,7 @@ enum class ECharUpperAnim : uint8
 	IDLE UMETA(DisplayName = "기본"),
 	TWOHANDS UMETA(DisplayName = "두손사용"),
 	SHOVEL UMETA(DisplayName = "삽"),
+	ATTACKREADY UMETA(DisplayName = "공격준비"),
 	ATTACK UMETA(DisplayName = "공격"),
 	MAX UMETA(DisplayName = "MAX"),
 };
@@ -46,7 +47,7 @@ enum class ECharLowerAnim : uint8
 	CROUCH_IDLE UMETA(DisplayName = "앉기기본"),
 	CROUCH_WALK UMETA(DisplayName = "앉아걷기"),
 	SPRINT UMETA(DisplayName = "달리기"),
-	ATTACK UMETA(DisplayName = "공격"),
+	//ATTACK UMETA(DisplayName = "공격"),
 	MAX UMETA(DisplayName = "MAX"),
 };
 

@@ -8,6 +8,10 @@
 #include "Camera/CameraComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/CharacterMovementComponent.h"
+// 함선 테스트
+#include "Level/Stuff/Ship/Ship.h"
+#include "kismet/GameplayStatics.h"
+// 함선 테스트
 #include "Lethal_Ded/Lethal_Ded.h"
 
 
@@ -60,6 +64,78 @@ void ALCCharacter::Tick(float DeltaTime)
 	bIsCrouch = GetCharacterMovement()->bWantsToCrouch;
 }
 
+// 함선 테스트
+void ALCCharacter::ControlDoorsOpen()
+{
+	AShip* Ship = Cast<AShip>(UGameplayStatics::GetActorOfClass(GetWorld(), AShip::StaticClass()));
+
+	if (nullptr == Ship)
+	{
+		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
+
+		return;
+	}
+
+	Ship->ControlDoorsOpen();
+}
+
+void ALCCharacter::ControlDoorsClose()
+{
+	AShip* Ship = Cast<AShip>(UGameplayStatics::GetActorOfClass(GetWorld(), AShip::StaticClass()));
+
+	if (nullptr == Ship)
+	{
+		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
+
+		return;
+	}
+
+	Ship->ControlDoorsClose();
+}
+
+void ALCCharacter::ControlTheLever()
+{
+	AShip* Ship = Cast<AShip>(UGameplayStatics::GetActorOfClass(GetWorld(), AShip::StaticClass()));
+
+	if (nullptr == Ship)
+	{
+		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
+
+		return;
+	}
+
+	Ship->ControlTheLever();
+}
+
+void ALCCharacter::ControlSDoorLeft()
+{
+	AShip* Ship = Cast<AShip>(UGameplayStatics::GetActorOfClass(GetWorld(), AShip::StaticClass()));
+
+	if (nullptr == Ship)
+	{
+		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
+
+		return;
+	}
+
+	Ship->ControlSDoorLeft();
+}
+
+void ALCCharacter::ControlSDoorRight()
+{
+	AShip* Ship = Cast<AShip>(UGameplayStatics::GetActorOfClass(GetWorld(), AShip::StaticClass()));
+
+	if (nullptr == Ship)
+	{
+		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
+
+		return;
+	}
+
+	Ship->ControlSDoorRight();
+}
+// 함선 테스트
+
 #pragma endregion 
 
 
@@ -91,6 +167,7 @@ void ALCCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ALCCharacter, bIsCrouch);
 	DOREPLIFETIME(ALCCharacter, bIsSprint);
 	DOREPLIFETIME(ALCCharacter, bIsAttack);
+	DOREPLIFETIME(ALCCharacter, bCanAttack);
 }
 
 #pragma endregion 
@@ -110,8 +187,8 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ALCCharacter::SprintStart_Server);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALCCharacter::SprintEnd_Server);
-	//EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::Attack_Server);
-	//EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::AttackEnd_Server);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::AttackReady_Server);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::Attack_Server);
 }
 
 #pragma endregion 
@@ -325,34 +402,50 @@ void ALCCharacter::SprintEnd_Implementation()
 	}
 }
 
-//void ALCCharacter::Attack_Server_Implementation()
-//{
-//	Attack();
-//}
-//
-//void ALCCharacter::Attack_Implementation()
-//{
-//	if (false == bIsAttack)
-//	{
-//		SetAttackStatus(true);
-//		//bIsAttack = true;
-//
-//		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::ATTACK"), *FString(__FUNCSIG__));
-//
-//		CurLowerAnimType = ECharLowerAnim::ATTACK;
-//		CurUpperAnimType = ECharUpperAnim::ATTACK;
-//	}
-//}
-//
-//void ALCCharacter::AttackEnd_Server_Implementation()
-//{
-//	AttackEnd();
-//}
-//
-//void ALCCharacter::AttackEnd_Implementation()
-//{
-//	bIsAttack = false;
-//}
+void ALCCharacter::AttackReady_Server_Implementation()
+{
+	AttackReady();
+}
+
+void ALCCharacter::AttackReady_Implementation()
+{
+	UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : AttackReady"), *FString(__FUNCSIG__));
+
+	bIsAttack = true;
+	bCanAttack = false;
+
+	UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACKREADY"), *FString(__FUNCSIG__));
+
+	CurUpperAnimType = ECharUpperAnim::ATTACKREADY;
+}
+
+void ALCCharacter::Attack_Server_Implementation()
+{
+	Attack();
+}
+
+void ALCCharacter::Attack_Implementation()
+{
+	UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Attack"), *FString(__FUNCSIG__));
+
+	bCanAttack = true;
+
+	UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACK"), *FString(__FUNCSIG__));
+
+	CurUpperAnimType = ECharUpperAnim::ATTACK;
+
+	FTimerHandle myTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(myTimerHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			CurUpperAnimType = ECharUpperAnim::SHOVEL;
+
+			bIsAttack = false;
+			bCanAttack = false;
+
+			// 타이머 초기화
+			GetWorld()->GetTimerManager().ClearTimer(myTimerHandle);
+		}), 0.26f, false);
+}
 
 #pragma endregion 
 
