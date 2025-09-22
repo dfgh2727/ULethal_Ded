@@ -35,7 +35,7 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Level")
-	TSoftObjectPtr<UWorld> TitleLevel;
+	TSoftObjectPtr<UWorld> ReadyLevel;
 
 	UPROPERTY(EditAnywhere, Category = "Level")
 	TSoftObjectPtr<UWorld> PlayLevel;
