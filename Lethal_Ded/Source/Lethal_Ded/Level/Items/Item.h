@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Global/LCEnum.h"
 #include "Item.generated.h"
 
 UCLASS()
 class LETHAL_DED_API AItem : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AItem();
 
@@ -19,18 +20,40 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item")
+	class UWidgetComponent* WidgetComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item")
+	UDataTable* ItemDataTable;
+
 
 private:
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
+	//EItemType GripType = EItemType::ONEHAND;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* DefaultSceneRoot;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* DefaultSceneRoot;
 
-	UPROPERTY(VisibleAnywhere, Category = "Item", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* StaticMeshComponent;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> WidgetClass;
 
+	void SetItemInfo();
+	void SetWidgetRotation();
+
+	FString ItemName = "NONE";
+
+	EItemType ItemGripType = EItemType::ONEHAND;
+	
+	int ItemPrice = 0;
+
+	bool bWidgetVisible = false;
+
+	const int ITEMSHOWDISTANCE = 500.0f;
 };

@@ -53,6 +53,16 @@ enum class ECharLowerAnim : uint8
 #pragma endregion
 
 
+#pragma region ItemType
+UENUM(BlueprintType)
+enum class EItemType : uint8
+{
+	ONEHAND UMETA(DisplayName = "한손사용"),
+	TWOHANDS UMETA(DisplayName = "두손사용"),
+
+};
+#pragma endregion
+
 UCLASS()
 class LETHAL_DED_API ULCEnum : public UObject
 {
