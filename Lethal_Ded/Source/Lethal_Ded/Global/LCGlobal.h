@@ -25,5 +25,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void ConnectServer(UWorld* World, APlayerController* PlayerController, FString& IP/*, FString& Port*/);
+
+	UFUNCTION(BlueprintCallable)
+	static UWorld* GetWorldPtr(APlayerController* PlayerController);
 	
 };

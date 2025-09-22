@@ -25,6 +25,16 @@ void ULCGlobal::ConnectServer(UWorld* World, APlayerController* PlayerController
 	ULCGlobal::GetLCGameInstance(World)->JoinRoom(IP, PlayerController);
 }
 
+UWorld* ULCGlobal::GetWorldPtr(APlayerController* PlayerController)
+{
+	if (PlayerController != nullptr)
+	{
+		UWorld* WorldPtr = PlayerController->GetWorld();
+		return WorldPtr;
+	}
+	return nullptr;
+}
+
 
 
 
