@@ -45,10 +45,7 @@ void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	OpenDoors(DeltaTime);
-
-	// 브랜치 머지 전에 주석 해제 필요//
-	/*if (bDoItOnce == true)
+	if (bDoItOnce == true)
 	{
 		if (bSign == true && bDoorsOpen == false)
 		{
@@ -58,7 +55,7 @@ void AShip::Tick(float DeltaTime)
 		{
 			CloseDoors(DeltaTime);
 		}
-	}*/
+	}
 	
 
 	if (bLeverMove == true)
