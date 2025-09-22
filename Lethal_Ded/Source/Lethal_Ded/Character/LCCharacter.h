@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Global/LCEnum.h"
+#include "Character/LCCharacterAnimInstance.h"
 #include "LCCharacter.generated.h"
 
 UCLASS()
@@ -46,6 +47,15 @@ public:
 	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
 	void ChangeAnimation(ECharUpperAnim _CurUpperAnimType, ECharLowerAnim _CurLowerAnimType);
 	void ChangeAnimation_Implementation(ECharUpperAnim _CurUpperAnimType, ECharLowerAnim _CurLowerAnimType);
+
+	UFUNCTION(BlueprintCallable)
+	ULCCharacterAnimInstance* GetLCAnimInstance()
+	{
+		UAnimInstance* AnimInst = GetMesh()->GetAnimInstance();
+		ULCCharacterAnimInstance* CharAnimInst = Cast<ULCCharacterAnimInstance>(AnimInst);
+
+		return CharAnimInst;
+	}
 
 protected:
 
@@ -131,13 +141,27 @@ public:
 	void SprintEnd();
 	void SprintEnd_Implementation();
 
-	UFUNCTION(BlueprintCallable, Reliable, Server)
-	void Attack_Server();
-	void Attack_Server_Implementation();
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void ConsumeStamina();
 
-	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
-	void Attack();
-	void Attack_Implementation();
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void RecoverStamina();
+
+	//UFUNCTION(BlueprintCallable, Reliable, Server)
+	//void Attack_Server();
+	//void Attack_Server_Implementation();
+
+	//UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	//void Attack();
+	//void Attack_Implementation();
+
+	//UFUNCTION(BlueprintCallable, Reliable, Server)
+	//void AttackEnd_Server();
+	//void AttackEnd_Server_Implementation();
+
+	//UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	//void AttackEnd();
+	//void AttackEnd_Implementation();
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void SetMovementValue_Server(const FVector2D& _MovementValue);
@@ -167,19 +191,19 @@ public:
 		bIsMoving = _IsMoving;
 	}
 
-	UFUNCTION(BlueprintCallable, Reliable, Server)
-	void SetAttackStatus_Server(bool _IsAttack);
-	void SetAttackStatus_Server_Implementation(bool _IsAttack)
-	{
-		SetAttackStatus(_IsAttack);
-	}
+	//UFUNCTION(BlueprintCallable, Reliable, Server)
+	//void SetAttackStatus_Server(bool _IsAttack);
+	//void SetAttackStatus_Server_Implementation(bool _IsAttack)
+	//{
+	//	SetAttackStatus(_IsAttack);
+	//}
 
-	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
-	void SetAttackStatus(bool _IsAttack);
-	void SetAttackStatus_Implementation(bool _IsAttack)
-	{
-		bIsAttack = _IsAttack;
-	}
+	//UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	//void SetAttackStatus(bool _IsAttack);
+	//void SetAttackStatus_Implementation(bool _IsAttack)
+	//{
+	//	bIsAttack = _IsAttack;
+	//}
 
 protected:
 
