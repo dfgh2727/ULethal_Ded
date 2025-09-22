@@ -18,13 +18,13 @@ ULCGameInstance::~ULCGameInstance()
 
 void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 {
-	FString TitleLevelName = TitleLevel.GetLongPackageName();
-	FString OpenLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
+	FString ReadyLevelName = ReadyLevel.GetLongPackageName();
+	FString OpenLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *ReadyLevelName);
 
 	ALCTitleController* LCTitleController = Cast<ALCTitleController>(PlayerController);
 	if (LCTitleController != nullptr)
 	{
-		LCTitleController->SetServerTravel(TitleLevelName);
+		LCTitleController->SetServerTravel(ReadyLevelName);
 	}
 
 	UGameplayStatics::OpenLevel(GetWorld(), *OpenLevelName, true);
@@ -32,12 +32,12 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 
 void ULCGameInstance::JoinRoom(FString IP, APlayerController* PlayerController)
 {
-	FString TitleLevelName = TitleLevel.GetLongPackageName();
+	FString ReadyLevelName = ReadyLevel.GetLongPackageName();
 
 	//아래는 테스트용 ConnectLevelName
 	//FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
 
-	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *IP, *Port, *TitleLevelName);
+	FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *IP, *Port, *ReadyLevelName);
 
 	UGameplayStatics::OpenLevel(GetWorld(), *ConnectLevelName, true);
 }
