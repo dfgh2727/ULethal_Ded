@@ -38,11 +38,14 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* DefaultSceneRoot;
 
+
 	UPROPERTY(VisibleAnywhere, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* StaticMeshComponent;
 
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WidgetClass;
+
 
 	void SetItemInfo();
 	void SetWidgetRotation();

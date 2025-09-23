@@ -23,13 +23,16 @@ struct FItemDataRow : public FTableRowBase
     TSubclassOf<class AItem> ItemList;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FString ItemName;
+    FString ItemName = "NONE";
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int ItemPrice;
+    int ItemPrice = 0;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     EItemType GripType = EItemType::ONEHAND;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    EItemInteractType Interact = EItemInteractType::NONE;
 };
 
 

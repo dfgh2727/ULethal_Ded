@@ -54,13 +54,20 @@ enum class ECharLowerAnim : uint8
 #pragma endregion
 
 
-#pragma region ItemType
+#pragma region Item
 UENUM(BlueprintType)
 enum class EItemType : uint8
 {
 	ONEHAND UMETA(DisplayName = "한손사용"),
 	TWOHANDS UMETA(DisplayName = "두손사용"),
+};
 
+UENUM(BlueprintType)
+enum class EItemInteractType : uint8
+{
+	NONE UMETA(DisplayName = "없음"),
+	WEAPON UMETA(DisplayName = "무기"),
+	LIGHT UMETA(DisplayName = "손전등"),
 };
 #pragma endregion
 
