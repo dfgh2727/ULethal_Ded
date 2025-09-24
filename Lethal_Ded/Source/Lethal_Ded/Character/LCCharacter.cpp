@@ -74,7 +74,7 @@ void ALCCharacter::ControlDoorsOpen()
 		#if !UE_BUILD_SHIPPING
 		//UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
 		#endif
 		return;
 	}
@@ -89,7 +89,7 @@ void ALCCharacter::ControlDoorsClose()
 	if (nullptr == Ship)
 	{
 		//UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
 
 		return;
 	}
@@ -104,7 +104,7 @@ void ALCCharacter::ControlTheLever()
 	if (nullptr == Ship)
 	{
 		//UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
 
 		return;
 	}
@@ -119,7 +119,7 @@ void ALCCharacter::ControlSDoorLeft()
 	if (nullptr == Ship)
 	{
 		//UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
 
 		return;
 	}
@@ -134,7 +134,7 @@ void ALCCharacter::ControlSDoorRight()
 	if (nullptr == Ship)
 	{
 		//UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("[%s] : Ship is null"), TEXT(__FUNCSIG__)));
 
 		return;
 	}
@@ -224,7 +224,7 @@ void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 		if (false == bIsCrouch)
 		{
 			//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
 
 			CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
 			CurLowerAnimType = ECharLowerAnim::IDLE;
@@ -232,7 +232,7 @@ void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 		else
 		{
 			//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), TEXT(__FUNCSIG__)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), TEXT(__FUNCSIG__)));
 
 			CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
 		}
@@ -260,7 +260,7 @@ void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 			if (false == bIsCrouch)
 			{
 				//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
 
 				CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
 				CurLowerAnimType = ECharLowerAnim::WALK;
@@ -268,7 +268,7 @@ void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 			else
 			{
 				//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), TEXT(__FUNCSIG__)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), TEXT(__FUNCSIG__)));
 
 				CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
 			}
@@ -288,7 +288,7 @@ void ALCCharacter::Jump()
 	if (GetVelocity().ZAxisVector.IsNearlyZero(2.0f))
 	{
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::JUMP"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::JUMP"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::JUMP"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::JUMP;
 	}
@@ -299,14 +299,14 @@ void ALCCharacter::Jump()
 			if (false == bIsMoving)
 			{
 				//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
 
 				CurLowerAnimType = ECharLowerAnim::IDLE;
 			}
 			else
 			{
 				//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
 
 				CurLowerAnimType = ECharLowerAnim::WALK;
 			}
@@ -323,14 +323,14 @@ void ALCCharacter::Crouch(bool _IsCrouch)
 	if (false == bIsMoving)
 	{
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
 	}
 	else
 	{
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
 	}
@@ -343,14 +343,14 @@ void ALCCharacter::UnCrouch(bool _IsCrouch)
 	if (false == bIsMoving)
 	{
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
 	else
 	{
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::WALK;
 	}
@@ -376,7 +376,7 @@ void ALCCharacter::SprintStart_Implementation()
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::SPRINT"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::SPRINT"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::SPRINT"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::SPRINT;
 	}
@@ -385,7 +385,7 @@ void ALCCharacter::SprintStart_Implementation()
 		bIsSprint = false;
 
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
@@ -411,14 +411,14 @@ void ALCCharacter::SprintEnd_Implementation()
 	if (true == bIsMoving)
 	{
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::WALK;
 	}
 	else
 	{
 		//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), TEXT(__FUNCSIG__)));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
@@ -432,13 +432,13 @@ void ALCCharacter::AttackReady_Server_Implementation()
 void ALCCharacter::AttackReady_Implementation()
 {
 	//UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : AttackReady"), *FString(__FUNCSIG__));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : AttackReady"), TEXT(__FUNCSIG__)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : AttackReady"), TEXT(__FUNCSIG__)));
 
 	bIsAttack = true;
 	bCanAttack = false;
 
 	//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACKREADY"), *FString(__FUNCSIG__));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACKREADY"), TEXT(__FUNCSIG__)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACKREADY"), TEXT(__FUNCSIG__)));
 
 	CurUpperAnimType = ECharUpperAnim::ATTACKREADY;
 }
@@ -451,12 +451,12 @@ void ALCCharacter::Attack_Server_Implementation()
 void ALCCharacter::Attack_Implementation()
 {
 	//UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Attack"), *FString(__FUNCSIG__));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : Attack"), TEXT(__FUNCSIG__)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : Attack"), TEXT(__FUNCSIG__)));
 
 	bCanAttack = true;
 
 	//UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACK"), *FString(__FUNCSIG__));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACK"), TEXT(__FUNCSIG__)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACK"), TEXT(__FUNCSIG__)));
 
 	CurUpperAnimType = ECharUpperAnim::ATTACK;
 
