@@ -52,6 +52,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	float Stamina = 100.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	bool bCanShowCharLog = false;
+
 #pragma endregion 
 
 
@@ -93,7 +96,7 @@ public:
 protected:
 
 private:
-
+	
 #pragma endregion 
 
 
@@ -122,6 +125,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttackAction = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	float HoldTime = 0.0f;
 
 #pragma endregion 
 
