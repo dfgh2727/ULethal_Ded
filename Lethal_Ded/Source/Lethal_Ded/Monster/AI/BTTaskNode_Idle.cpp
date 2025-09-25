@@ -4,11 +4,15 @@
 #include "Monster/AI/BTTaskNode_Idle.h"
 #include "Monster/Monster.h"
 
+#include "GameFramework/CharacterMovementComponent.h" // 추가
+
 UBTTaskNode_Idle::UBTTaskNode_Idle()
 {
 	AIStateValue = EAIState::Idle;
 }
 
+
+// 기존 코드 유지
 void UBTTaskNode_Idle::Start(UBehaviorTreeComponent& _OwnerComp)
 {
 	FPlayAIData& PlayAIData = UAIBTTaskNode::GetPlayAIData(_OwnerComp);
@@ -16,6 +20,13 @@ void UBTTaskNode_Idle::Start(UBehaviorTreeComponent& _OwnerComp)
 	if (nullptr != PlayAIData.SelfAnimPawn)
 	{
 		PlayAIData.SelfAnimPawn->ChangeAnimation_Multicast(static_cast<int>(AIStateValue)); // 0 은 Idle
+	}
+
+	ACharacter* Character = Cast<ACharacter>(PlayAIData.SelfPawn);
+	if (nullptr != Character)
+	{
+		//Character->GetCharacterMovement()->bOrientRotationToMovement = true;
+		Character->GetCharacterMovement()->MaxWalkSpeed = PlayAIData.Data.MaxSpeed; // 순찰 속도 조정
 	}
 }
 
