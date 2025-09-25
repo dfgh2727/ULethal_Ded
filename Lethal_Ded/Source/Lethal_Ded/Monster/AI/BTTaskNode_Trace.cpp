@@ -26,7 +26,7 @@ void UBTTaskNode_Trace::Start(UBehaviorTreeComponent& _OwnerComp)
 	{
 		Character->GetCharacterMovement()->bOrientRotationToMovement = true;
 
-		float Speed= Character->GetCharacterMovement()->MaxWalkSpeed * 3;
+		float Speed= Character->GetCharacterMovement()->MaxWalkSpeed * 1.5;
 		Character->GetCharacterMovement()->MaxWalkSpeed = Speed;
 		
 	}

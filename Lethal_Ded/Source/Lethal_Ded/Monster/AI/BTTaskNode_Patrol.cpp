@@ -32,15 +32,56 @@ void UBTTaskNode_Patrol::Start(UBehaviorTreeComponent& _OwnerComp)
 	FVector Orgin2D = PlayAIData.OriginPos;
 	Orgin2D.Z = 0.0f;
 
-	for (size_t i = 0; i < 3; i++)
+	PlayAIData.PatrolPos.Empty();
+
+	float PatrolRange = PlayAIData.Data.PatrolRange;
+	int32 MaxTry = 30;
+	float MaxDistance = 0.0f;
+	FVector BestPos = Orgin2D;
+
+	for (int32 i = 0; i < MaxTry; ++i)
 	{
 		FVector Dir2D = Stream.GetUnitVector();
 		Dir2D.Z = 0.0f;
-		PlayAIData.PatrolPos.Add(Orgin2D + (Dir2D * PlayAIData.Data.PatrolRange));
+		FVector CandidatePos = Orgin2D + (Dir2D * PatrolRange);
+
+		// 레이 트레이스: 벽 체크
+		FHitResult HitResult;
+		FVector TraceStart = Orgin2D;
+		FVector TraceEnd = CandidatePos;
+		TraceEnd.Z = TraceStart.Z;
+
+		FCollisionQueryParams TraceParams(FName(TEXT("PatrolStartTrace")), true, PlayAIData.SelfPawn);
+
+		bool bHit = PlayAIData.SelfPawn->GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			TraceStart,
+			TraceEnd,
+			ECC_Visibility,
+			TraceParams
+		);
+
+		if (!bHit || !HitResult.bBlockingHit)
+		{
+			float Dist = (CandidatePos - Orgin2D).Size();
+			if (Dist > MaxDistance)
+			{
+				MaxDistance = Dist;
+				BestPos = CandidatePos;
+			}
+		}
 	}
 
-	// 최후에는 결국 다시 원래자리로 돌아가야 한다.
-	PlayAIData.PatrolPos.Add(Orgin2D);
+	// 가장 먼 안전한 위치만 저장
+	if (MaxDistance > 0.0f)
+	{
+		PlayAIData.PatrolPos.Add(BestPos);
+	}
+	else
+	{
+		// 안전한 위치가 없으면 원래 자리로
+		PlayAIData.PatrolPos.Add(Orgin2D);
+	}
 }
 
 void UBTTaskNode_Patrol::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pNodeMemory, float _DeltaSeconds)
@@ -48,10 +89,10 @@ void UBTTaskNode_Patrol::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pN
 	Super::TickTask(_OwnerComp, _pNodeMemory, _DeltaSeconds);
 	FPlayAIData& PlayAIData = UAIBTTaskNode::GetPlayAIData(_OwnerComp);
 
-	if (true == PlayAIData.PatrolPos.IsEmpty())
+	if (PlayAIData.PatrolPos.IsEmpty())
 	{
 		PlayAIData.CurPatrolTime = 0.0f;
-		ChangeState(_OwnerComp, EAIState::Idle);
+		Start(_OwnerComp); // 새로운 방향 찾기
 		return;
 	}
 
@@ -67,14 +108,42 @@ void UBTTaskNode_Patrol::TickTask(UBehaviorTreeComponent& _OwnerComp, uint8* _pN
 	FVector SelfActorPos = SelfActor->GetActorLocation();
 	SelfActorPos.Z = 0.0f;
 
-	FVector PatrolDir = (PlayAIData.PatrolPos[0] - SelfActorPos);
+	FVector TargetPos = PlayAIData.PatrolPos[0];
+	FVector PatrolDir = (TargetPos - SelfActorPos);
 	PatrolDir.Normalize();
 
-	SelfActor->AddMovementInput(PatrolDir);
+	// 레이 트레이스: 벽 체크
+	FHitResult HitResult;
+	FVector TraceStart = SelfActor->GetActorLocation();
+	FVector TraceEnd = TargetPos;
+	TraceEnd.Z = TraceStart.Z;
 
-	float Size = (SelfActorPos - PlayAIData.PatrolPos[0]).Size();
+	FCollisionQueryParams TraceParams(FName(TEXT("PatrolTrace")), true, SelfActor);
 
-	if (Size <= 30.0f)
+	bool bHit = SelfActor->GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		TraceStart,
+		TraceEnd,
+		ECC_Visibility,
+		TraceParams
+	);
+
+	if (bHit && HitResult.bBlockingHit)
+	{
+		// 벽이 있으면 우회: 오른쪽 방향으로 이동
+		FVector RightDir = FVector::CrossProduct(PatrolDir, FVector::UpVector);
+		RightDir.Normalize();
+		SelfActor->AddMovementInput(RightDir, 1.0f);
+	}
+	else
+	{
+		// 벽이 없으면 정상적으로 PatrolDir로 이동
+		SelfActor->AddMovementInput(PatrolDir);
+	}
+
+	float Size = (SelfActorPos - TargetPos).Size();
+
+	if (Size <= 100.0f)
 	{
 		PlayAIData.PatrolPos.RemoveAt(0);
 	}
