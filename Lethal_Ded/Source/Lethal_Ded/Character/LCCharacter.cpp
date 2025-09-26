@@ -64,6 +64,17 @@ void ALCCharacter::Tick(float DeltaTime)
 	bIsCrouch = GetCharacterMovement()->bWantsToCrouch;
 }
 
+void ALCCharacter::LCCharLog(const FString _Func, const FString _TEXT)
+{
+#if !UE_BUILD_SHIPPING
+	if (true == bCanShowCharLog)
+	{
+		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s]"), *_Func);
+		UE_LOG(LethalCompany_LOG, Log, TEXT("%s"), *_TEXT);
+	}
+#endif
+}
+
 // 함선 테스트
 void ALCCharacter::ControlDoorsOpen()
 {
@@ -71,12 +82,7 @@ void ALCCharacter::ControlDoorsOpen()
 
 	if (nullptr == Ship)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::ControlDoorsOpen"), TEXT("Ship is null"));
 		return;
 	}
 
@@ -89,12 +95,7 @@ void ALCCharacter::ControlDoorsClose()
 
 	if (nullptr == Ship)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::ControlDoorsClose"), TEXT("Ship is null"));
 		return;
 	}
 
@@ -107,12 +108,7 @@ void ALCCharacter::ControlTheLever()
 
 	if (nullptr == Ship)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::ControlTheLever"), TEXT("Ship is null"));
 		return;
 	}
 
@@ -125,12 +121,7 @@ void ALCCharacter::ControlSDoorLeft()
 
 	if (nullptr == Ship)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::ControlSDoorLeft"), TEXT("Ship is null"));
 		return;
 	}
 
@@ -143,12 +134,7 @@ void ALCCharacter::ControlSDoorRight()
 
 	if (nullptr == Ship)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Ship is null"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::ControlSDoorRight"), TEXT("Ship is null"));
 		return;
 	}
 
@@ -207,8 +193,12 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ALCCharacter::Jump);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ALCCharacter::SprintStart_Server);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALCCharacter::SprintEnd_Server);
-	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::AttackReady_Server);
-	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::Attack_Server);
+
+	if (false == bIsAttack && false == bCanAttack)
+	{
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::AttackReady_Server);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::Attack_Server);
+	}
 }
 
 #pragma endregion 
@@ -236,24 +226,14 @@ void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 	{
 		if (false == bIsCrouch)
 		{
-#if !UE_BUILD_SHIPPING
-			if (true == bCanShowCharLog)
-			{
-				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-			}
-#endif
+			LCCharLog(TEXT("ALCCharacter::Idle"), TEXT("CurLowerAnimType = ECharLowerAnim::IDLE"));
 
 			CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
 			CurLowerAnimType = ECharLowerAnim::IDLE;
 		}
 		else
 		{
-#if !UE_BUILD_SHIPPING
-			if (true == bCanShowCharLog)
-			{
-				UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
-			}
-#endif
+			LCCharLog(TEXT("ALCCharacter::Idle"), TEXT("CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"));
 
 			CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
 		}
@@ -280,24 +260,14 @@ void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 		{
 			if (false == bIsCrouch)
 			{
-#if !UE_BUILD_SHIPPING
-				if (true == bCanShowCharLog)
-				{
-					UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-				}
-#endif
+				LCCharLog(TEXT("ALCCharacter::Move"), TEXT("CurLowerAnimType = ECharLowerAnim::WALK"));
 
 				CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
 				CurLowerAnimType = ECharLowerAnim::WALK;
 			}
 			else
 			{
-#if !UE_BUILD_SHIPPING
-				if (true == bCanShowCharLog)
-				{
-					UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
-				}
-#endif
+				LCCharLog(TEXT("ALCCharacter::Move"), TEXT("CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"));
 
 				CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
 			}
@@ -316,12 +286,7 @@ void ALCCharacter::Jump()
 
 	if (GetVelocity().ZAxisVector.IsNearlyZero(2.0f))
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::JUMP"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::Jump"), TEXT("CurLowerAnimType = ECharLowerAnim::JUMP"));
 
 		CurLowerAnimType = ECharLowerAnim::JUMP;
 	}
@@ -331,23 +296,13 @@ void ALCCharacter::Jump()
 		{
 			if (false == bIsMoving)
 			{
-#if !UE_BUILD_SHIPPING
-				if (true == bCanShowCharLog)
-				{
-					UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-				}
-#endif
+				LCCharLog(TEXT("ALCCharacter::Jump"), TEXT("CurLowerAnimType = ECharLowerAnim::IDLE"));
 
 				CurLowerAnimType = ECharLowerAnim::IDLE;
 			}
 			else
 			{
-#if !UE_BUILD_SHIPPING
-				if (true == bCanShowCharLog)
-				{
-					UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-				}
-#endif
+				LCCharLog(TEXT("ALCCharacter::Jump"), TEXT("CurLowerAnimType = ECharLowerAnim::WALK"));
 
 				CurLowerAnimType = ECharLowerAnim::WALK;
 			}
@@ -363,23 +318,13 @@ void ALCCharacter::Crouch(bool _IsCrouch)
 
 	if (false == bIsMoving)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::Crouch"), TEXT("CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE"));
 
 		CurLowerAnimType = ECharLowerAnim::CROUCH_IDLE;
 	}
 	else
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::Crouch"), TEXT("CurLowerAnimType = ECharLowerAnim::CROUCH_WALK"));
 
 		CurLowerAnimType = ECharLowerAnim::CROUCH_WALK;
 	}
@@ -391,23 +336,13 @@ void ALCCharacter::UnCrouch(bool _IsCrouch)
 
 	if (false == bIsMoving)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::UnCrouch"), TEXT("CurLowerAnimType = ECharLowerAnim::IDLE"));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
 	else
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::UnCrouch"), TEXT("CurLowerAnimType = ECharLowerAnim::WALK"));
 
 		CurLowerAnimType = ECharLowerAnim::WALK;
 	}
@@ -432,12 +367,7 @@ void ALCCharacter::SprintStart_Implementation()
 
 		GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::SPRINT"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::SprintStart_Implementation"), TEXT("CurLowerAnimType = ECharLowerAnim::SPRINT"));
 
 		CurLowerAnimType = ECharLowerAnim::SPRINT;
 	}
@@ -445,12 +375,7 @@ void ALCCharacter::SprintStart_Implementation()
 	{
 		bIsSprint = false;
 
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::SprintStart_Implementation"), TEXT("CurLowerAnimType = ECharLowerAnim::IDLE"));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
@@ -475,23 +400,13 @@ void ALCCharacter::SprintEnd_Implementation()
 
 	if (true == bIsMoving)
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::WALK"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::SprintEnd_Implementation"), TEXT("CurLowerAnimType = ECharLowerAnim::WALK"));
 
 		CurLowerAnimType = ECharLowerAnim::WALK;
 	}
 	else
 	{
-#if !UE_BUILD_SHIPPING
-		if (true == bCanShowCharLog)
-		{
-			UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurLowerAnimType = ECharLowerAnim::IDLE"), *FString(__FUNCSIG__));
-		}
-#endif
+		LCCharLog(TEXT("ALCCharacter::SprintEnd_Implementation"), TEXT("CurLowerAnimType = ECharLowerAnim::IDLE"));
 
 		CurLowerAnimType = ECharLowerAnim::IDLE;
 	}
@@ -504,24 +419,17 @@ void ALCCharacter::AttackReady_Server_Implementation()
 
 void ALCCharacter::AttackReady_Implementation()
 {
-#if !UE_BUILD_SHIPPING
-	if (true == bCanShowCharLog)
+	if (false == bIsAttack && CurUpperAnimType == ECharUpperAnim::SHOVEL)
 	{
-		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : AttackReady"), *FString(__FUNCSIG__));
+		LCCharLog(TEXT("ALCCharacter::AttackReady_Implementation"), TEXT("AttackReady"));
+
+		bIsAttack = true;
+		bCanAttack = false;
+
+		//LCCharLog(TEXT("ALCCharacter::AttackReady_Implementation"), TEXT("CurUpperAnimType = ECharUpperAnim::ATTACKREADY"));
+
+		//CurUpperAnimType = ECharUpperAnim::ATTACKREADY;
 	}
-#endif
-
-	bIsAttack = true;
-	bCanAttack = false;
-
-#if !UE_BUILD_SHIPPING
-	if (true == bCanShowCharLog)
-	{
-		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACKREADY"), *FString(__FUNCSIG__));
-	}
-#endif
-
-	CurUpperAnimType = ECharUpperAnim::ATTACKREADY;
 }
 
 void ALCCharacter::Attack_Server_Implementation()
@@ -531,35 +439,28 @@ void ALCCharacter::Attack_Server_Implementation()
 
 void ALCCharacter::Attack_Implementation()
 {
-#if !UE_BUILD_SHIPPING
-	if (true == bCanShowCharLog)
+	if (false == bCanAttack && CurUpperAnimType == ECharUpperAnim::SHOVEL)
 	{
-		UE_LOG(LethalCompany_LOG, Warning, TEXT("[%s] : Attack"), *FString(__FUNCSIG__));
+		LCCharLog(TEXT("ALCCharacter::Attack_Implementation"), TEXT("Attack"));
+
+		bCanAttack = true;
+
+		LCCharLog(TEXT("ALCCharacter::Attack_Implementation"), TEXT("CurUpperAnimType = ECharUpperAnim::ATTACK"));
+
+		CurUpperAnimType = ECharUpperAnim::ATTACK;
+
+		//FTimerHandle myTimerHandle;
+		//GetWorld()->GetTimerManager().SetTimer(myTimerHandle, FTimerDelegate::CreateLambda([&]()
+		//	{
+		//		CurUpperAnimType = ECharUpperAnim::SHOVEL;
+
+		//		bIsAttack = false;
+		//		bCanAttack = false;
+
+		//		// 타이머 초기화
+		//		GetWorld()->GetTimerManager().ClearTimer(myTimerHandle);
+		//	}), 2.6f, false);
 	}
-#endif
-
-	bCanAttack = true;
-
-#if !UE_BUILD_SHIPPING
-	if (true == bCanShowCharLog)
-	{
-		UE_LOG(LethalCompany_LOG, Log, TEXT("[%s] : CurUpperAnimType = ECharUpperAnim::ATTACK"), *FString(__FUNCSIG__));
-	}
-#endif
-
-	CurUpperAnimType = ECharUpperAnim::ATTACK;
-
-	FTimerHandle myTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(myTimerHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			CurUpperAnimType = ECharUpperAnim::SHOVEL;
-
-			bIsAttack = false;
-			bCanAttack = false;
-
-			// 타이머 초기화
-			GetWorld()->GetTimerManager().ClearTimer(myTimerHandle);
-		}), 0.26f, false);
 }
 
 #pragma endregion 
