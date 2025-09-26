@@ -13,5 +13,10 @@ UCLASS()
 class LETHAL_DED_API ATitleGameMode : public ALCGameMode
 {
 	GENERATED_BODY()
+
+public:
+	ATitleGameMode();
+	//~ATitleGameMode();
+
 	
 };

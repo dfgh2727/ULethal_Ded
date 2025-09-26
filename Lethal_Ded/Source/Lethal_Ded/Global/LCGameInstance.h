@@ -19,7 +19,10 @@ public:
 	ULCGameInstance();
 	~ULCGameInstance();
 
+	//UFUNCTION(Server, Reliable)
 	void CreateRoom(APlayerController* PlayerController);
+	//void CreateRoom_Implementation(APlayerController* PlayerController);
+
 	void JoinRoom(FString IP, APlayerController* PlayerController);
 
 	void SetBootingScreenPlayed(bool bCheck)

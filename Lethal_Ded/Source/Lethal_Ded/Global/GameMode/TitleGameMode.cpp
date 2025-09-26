@@ -3,3 +3,7 @@
 
 #include "Global/GameMode/TitleGameMode.h"
 
+ATitleGameMode::ATitleGameMode()
+{
+	bUseSeamlessTravel = true;
+}
