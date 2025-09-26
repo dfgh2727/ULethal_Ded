@@ -18,6 +18,8 @@ public:
 	// Sets default values for this character's properties
 	ALCCharacter();
 
+	void LCCharLog(const FString _Func, const FString _TEXT);
+
 	// 함선 테스트
 	UFUNCTION(BlueprintCallable)
 	void ControlDoorsOpen();
@@ -125,9 +127,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttackAction = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
-	float HoldTime = 0.0f;
 
 #pragma endregion 
 

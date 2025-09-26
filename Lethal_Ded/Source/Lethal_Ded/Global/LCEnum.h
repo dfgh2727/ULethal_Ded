@@ -35,6 +35,7 @@ enum class ECharUpperAnim : uint8
 	SHOVEL UMETA(DisplayName = "삽"),
 	ATTACKREADY UMETA(DisplayName = "공격준비"),
 	ATTACK UMETA(DisplayName = "공격"),
+	//FULLATTACK UMETA(DisplayName = "공격전체"),
 	MAX UMETA(DisplayName = "MAX"),
 };
 
