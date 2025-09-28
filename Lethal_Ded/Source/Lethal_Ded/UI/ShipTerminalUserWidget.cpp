@@ -26,6 +26,16 @@ bool UShipTerminalUserWidget::CheckContentRend()
 	return false;
 }
 
+bool UShipTerminalUserWidget::CheckContentCompany()
+{
+	if (UserInputContents == TEXT("Company"))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void UShipTerminalUserWidget::CheckConfirmOrDeny()
 {
 	if (UserInputContents == TEXT("Confirm"))

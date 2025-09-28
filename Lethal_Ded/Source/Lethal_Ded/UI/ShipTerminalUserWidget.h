@@ -25,6 +25,9 @@ protected:
 	bool CheckContentRend();
 
 	UFUNCTION(BlueprintCallable)
+	bool CheckContentCompany();
+
+	UFUNCTION(BlueprintCallable)
 	void CheckConfirmOrDeny();
 
 	UFUNCTION(BlueprintCallable)
