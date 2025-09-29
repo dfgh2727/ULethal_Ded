@@ -19,13 +19,40 @@ protected:
 	virtual void NativeOnInitialized() override;
 
 	UFUNCTION(BlueprintCallable)
-	bool CheckContentMoon(FString content);
+	bool CheckContentMoon();
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckContentRend();
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckContentCompany();
+
+	UFUNCTION(BlueprintCallable)
+	void CheckConfirmOrDeny();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetBools();
+
+	//UFUNCTION(BlueprintCallable)
+	//void OrderTravelToRend(APlayerController* PlayerController);
+	//
+	//UFUNCTION(BlueprintCallable)
+	//void OrderTravelToCompany(APlayerController* PlayerController);
+	//
+	//UFUNCTION(BlueprintCallable)
+	//void OrderTravelToReady(APlayerController* PlayerController);
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
-	FString Moons = TEXT("Moons");
-
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
 	//FString Moons = TEXT("Moons");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
+	FString UserInputContents = TEXT("Temp");
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
+	bool bAnswer = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
+	bool bConfirm = false;
 	
 };

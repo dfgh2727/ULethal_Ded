@@ -25,6 +25,10 @@ public:
 
 	void JoinRoom(FString IP, APlayerController* PlayerController);
 
+	void TravelToRend(APlayerController* PlayerController);
+	void TravelToCompany(APlayerController* PlayerController);
+	void TravelToReady(APlayerController* PlayerController);
+
 	void SetBootingScreenPlayed(bool bCheck)
 	{
 		bBootingScreenPlayed = bCheck;
@@ -42,6 +46,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Level")
 	TSoftObjectPtr<UWorld> PlayLevel;
+
+	UPROPERTY(EditAnywhere, Category = "Level")
+	TSoftObjectPtr<UWorld> CompanyLevel;
 
 	UPROPERTY(EditAnywhere, Category = "Num")
 	FString Port = TEXT("7777");

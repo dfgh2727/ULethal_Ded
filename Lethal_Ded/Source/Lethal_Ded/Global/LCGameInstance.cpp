@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Global/DevGlob/GlobDevGameMode.h"
 #include "Global/Controller/LCTitleController.h"
+#include "Global/Controller/LCPlayerController.h"
+
 
 ULCGameInstance::ULCGameInstance()
 {
@@ -26,28 +28,59 @@ void ULCGameInstance::CreateRoom(APlayerController* PlayerController)
 	ALCTitleController* LCTitleController = Cast<ALCTitleController>(PlayerController);
 	if (LCTitleController != nullptr)
 	{
+		//Debug
 		LCTitleController->SetServerTravel(ReadyLevelName);
 		UGameplayStatics::OpenLevel(GetWorld(), *OpenLevelName, true);
-		
-		//LCTitleController->ClientTravel(OpenLevelName, TRAVEL_Absolute);
-		//LCTitleController->ClientTravel("127.0.0.1:7777", ETravelType::TRAVEL_Absolute);
 
+		//Release
+		//UGameplayStatics::OpenLevel(GetWorld(), *OpenLevelName, true);
 	}
-
-	//UGameplayStatics::OpenLevel(GetWorld(), *OpenLevelName, true);
 }
 
 void ULCGameInstance::JoinRoom(FString IP, APlayerController* PlayerController)
 {
 	FString ReadyLevelName = ReadyLevel.GetLongPackageName();
 
-	//아래는 테스트용 ConnectLevelName
-	//FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *LocalIP, *Port, *TitleLevelName);
-
-	//FString ConnectLevelName = FString::Printf(TEXT("%s:%s%s"), *IP, *Port, *ReadyLevelName);
 	FString ConnectLevelName = FString::Printf(TEXT("%s:%s"), *IP, *Port);
 
-	UGameplayStatics::OpenLevel(GetWorld(), *ConnectLevelName, true);
+	ALCTitleController* LCTitleController = Cast<ALCTitleController>(PlayerController);
+	if (LCTitleController != nullptr)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), *ConnectLevelName, true);
+	}
+}
+
+void ULCGameInstance::TravelToRend(APlayerController* PlayerController)
+{
+	FString PlayLevelName = PlayLevel.GetLongPackageName();
+
+	ALCPlayerController* LCPlayerController = Cast<ALCPlayerController>(PlayerController);
+	if (LCPlayerController != nullptr)
+	{
+		LCPlayerController->SetServerTravel(PlayLevelName);
+	}
+}
+
+void ULCGameInstance::TravelToCompany(APlayerController* PlayerController)
+{
+	FString CompanyLevelName = CompanyLevel.GetLongPackageName();
+
+	ALCPlayerController* LCPlayerController = Cast<ALCPlayerController>(PlayerController);
+	if (LCPlayerController != nullptr)
+	{
+		LCPlayerController->SetServerTravel(CompanyLevelName);
+	}
+}
+
+void ULCGameInstance::TravelToReady(APlayerController* PlayerController)
+{
+	FString ReadyLevelName = ReadyLevel.GetLongPackageName();
+	ALCPlayerController* LCPlayerController = Cast<ALCPlayerController>(PlayerController);
+	if (LCPlayerController != nullptr)
+	{
+		LCPlayerController->SetServerTravel(ReadyLevelName);
+	}
+
 }
 
 

@@ -26,7 +26,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static void ConnectServer(UWorld* World, APlayerController* PlayerController, FString& IP/*, FString& Port*/);
 
+
 	UFUNCTION(BlueprintCallable)
 	static UWorld* GetWorldPtr(APlayerController* PlayerController);
 	
+	UFUNCTION(BlueprintCallable)
+	static void SendToRend(UWorld* World, APlayerController* PlayerController);
+	
+	UFUNCTION(BlueprintCallable)
+	static void SendToCompany(UWorld* World, APlayerController* PlayerController);
+
+	UFUNCTION(BlueprintCallable)
+	static void SendToReady(UWorld* World, APlayerController* PlayerController);
+
 };

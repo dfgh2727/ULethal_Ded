@@ -25,6 +25,7 @@ void ULCGlobal::ConnectServer(UWorld* World, APlayerController* PlayerController
 	ULCGlobal::GetLCGameInstance(World)->JoinRoom(IP, PlayerController);
 }
 
+
 UWorld* ULCGlobal::GetWorldPtr(APlayerController* PlayerController)
 {
 	if (PlayerController != nullptr)
@@ -35,6 +36,20 @@ UWorld* ULCGlobal::GetWorldPtr(APlayerController* PlayerController)
 	return nullptr;
 }
 
+void ULCGlobal::SendToRend(UWorld* World, APlayerController* PlayerController)
+{
+	ULCGlobal::GetLCGameInstance(World)->TravelToRend(PlayerController);
+}
+
+void ULCGlobal::SendToCompany(UWorld* World, APlayerController* PlayerController)
+{
+	ULCGlobal::GetLCGameInstance(World)->TravelToCompany(PlayerController);
+}
+
+void ULCGlobal::SendToReady(UWorld* World, APlayerController* PlayerController)
+{
+	ULCGlobal::GetLCGameInstance(World)->TravelToReady(PlayerController);
+}
 
 
 
