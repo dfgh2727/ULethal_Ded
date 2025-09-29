@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void SetupInputComponentEvent();
 
+	UFUNCTION(Server, Reliable)
+	void SetServerTravel(const FString& TargetLevel);
+	void SetServerTravel_Implementation(const FString& TargetLevel);
 
 protected:
 	void BeginPlay() override;

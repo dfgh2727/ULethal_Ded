@@ -27,6 +27,7 @@ public:
 
 	void TravelToRend(APlayerController* PlayerController);
 	void TravelToCompany(APlayerController* PlayerController);
+	void TravelToReady(APlayerController* PlayerController);
 
 	void SetBootingScreenPlayed(bool bCheck)
 	{

@@ -2,6 +2,9 @@
 
 
 #include "UI/ShipTerminalUserWidget.h"
+#include "Global/LCGlobal.h"
+//#include "Global/Controller/LCPlayerController.h"
+
 
 void UShipTerminalUserWidget::NativeOnInitialized()
 {
@@ -54,3 +57,28 @@ void UShipTerminalUserWidget::ResetBools()
 	bAnswer = false;
 	bConfirm = false;
 }
+
+//void UShipTerminalUserWidget::OrderTravelToRend(APlayerController* PlayerController)
+//{
+//	if (PlayerController != nullptr)
+//	{
+//		ULCGlobal::SendToRend(GetWorld(), PlayerController);
+//	}
+//}
+//
+//void UShipTerminalUserWidget::OrderTravelToCompany(APlayerController* PlayerController)
+//{
+//	if (PlayerController != nullptr)
+//	{
+//		ULCGlobal::SendToCompany(GetWorld(), PlayerController);
+//	}
+//}
+//
+//void UShipTerminalUserWidget::OrderTravelToReady(APlayerController* PlayerController)
+//{
+//	if (PlayerController != nullptr)
+//	{
+//		ULCGlobal::SendToReady(GetWorld(), PlayerController);
+//	}
+//}
+//

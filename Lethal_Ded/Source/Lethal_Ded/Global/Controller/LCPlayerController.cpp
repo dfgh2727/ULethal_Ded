@@ -43,3 +43,10 @@ void ALCPlayerController::AddMappingContext(UInputMappingContext* _MappingContex
 	InputSystem->AddMappingContext(_MappingContext, 0);
 }
 
+void ALCPlayerController::SetServerTravel_Implementation(const FString& TargetLevel)
+{
+	if (HasAuthority())
+	{
+		GetWorld()->ServerTravel(TargetLevel);
+	}
+}

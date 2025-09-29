@@ -33,13 +33,18 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ResetBools();
 
+	//UFUNCTION(BlueprintCallable)
+	//void OrderTravelToRend(APlayerController* PlayerController);
+	//
+	//UFUNCTION(BlueprintCallable)
+	//void OrderTravelToCompany(APlayerController* PlayerController);
+	//
+	//UFUNCTION(BlueprintCallable)
+	//void OrderTravelToReady(APlayerController* PlayerController);
+
 private:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
 	//FString Moons = TEXT("Moons");
-	//FString Rend = TEXT("Rend");
-	//FString Confirm = TEXT("Confirm");
-	//FString Deny = TEXT("Deny");
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ship|Content", meta = (AllowPrivateAccess = "true"))
 	FString UserInputContents = TEXT("Temp");

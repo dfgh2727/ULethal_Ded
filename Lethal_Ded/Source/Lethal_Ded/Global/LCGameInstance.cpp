@@ -57,7 +57,7 @@ void ULCGameInstance::TravelToRend(APlayerController* PlayerController)
 	ALCPlayerController* LCPlayerController = Cast<ALCPlayerController>(PlayerController);
 	if (LCPlayerController != nullptr)
 	{
-		//LCPlayerController->SetServerTravel(PlayLevelName);
+		LCPlayerController->SetServerTravel(PlayLevelName);
 	}
 }
 
@@ -68,8 +68,19 @@ void ULCGameInstance::TravelToCompany(APlayerController* PlayerController)
 	ALCPlayerController* LCPlayerController = Cast<ALCPlayerController>(PlayerController);
 	if (LCPlayerController != nullptr)
 	{
-		//LCPlayerController->SetServerTravel(CompanyLevelName);
+		LCPlayerController->SetServerTravel(CompanyLevelName);
 	}
+}
+
+void ULCGameInstance::TravelToReady(APlayerController* PlayerController)
+{
+	FString ReadyLevelName = ReadyLevel.GetLongPackageName();
+	ALCPlayerController* LCPlayerController = Cast<ALCPlayerController>(PlayerController);
+	if (LCPlayerController != nullptr)
+	{
+		LCPlayerController->SetServerTravel(ReadyLevelName);
+	}
+
 }
 
 
