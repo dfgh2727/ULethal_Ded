@@ -4,6 +4,9 @@
 #include "Level/Stuff/Ship/Ship.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/WidgetComponent.h"
+#include "UI/ShipTerminalUserWidget.h"
+#include "Global/LCGlobal.h"
+//#include "Global/Controller/LCPlayerController.h"
 
 
 AShip::AShip()
@@ -39,6 +42,8 @@ AShip::AShip()
 void AShip::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ShipTerminalUserWidget = Cast<UShipTerminalUserWidget>(TerminalComponent->GetWidget());
 }
 
 void AShip::Tick(float DeltaTime)
@@ -226,6 +231,30 @@ void AShip::MoveRSDoor(float DeltaTime)
 			bRSDoorMove = false;
 			bRSDoorShut = true;
 		}
+	}
+}
+
+void AShip::OrderTravelToRend(APlayerController* PlayerController)
+{
+	if (PlayerController != nullptr)
+	{
+		ULCGlobal::SendToRend(GetWorld(), PlayerController);
+	}
+}
+
+void AShip::OrderTravelToCompany(APlayerController* PlayerController)
+{
+	if (PlayerController != nullptr)
+	{
+		ULCGlobal::SendToCompany(GetWorld(), PlayerController);
+	}
+}
+
+void AShip::OrderTravelToReady(APlayerController* PlayerController)
+{
+	if (PlayerController != nullptr)
+	{
+		ULCGlobal::SendToReady(GetWorld(), PlayerController);
 	}
 }
 
