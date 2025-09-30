@@ -36,7 +36,10 @@ private:
 	void OpenDoors(float DeltaTime);
 	void CloseDoors(float DeltaTime);
 
-	void MoveTheLever(float DeltaTime);
+	//void MoveTheLever(float DeltaTime);
+
+	void PullTheLever(float DeltaTime);
+	void PushTheLever(float DeltaTime);
 
 	void MoveLSDoor(float DeltaTime);
 	void MoveRSDoor(float DeltaTime);

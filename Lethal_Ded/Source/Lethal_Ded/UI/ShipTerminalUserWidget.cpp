@@ -3,7 +3,8 @@
 
 #include "UI/ShipTerminalUserWidget.h"
 #include "Global/LCGlobal.h"
-//#include "Global/Controller/LCPlayerController.h"
+#include "Global/Controller/LCPlayerController.h"
+
 
 
 void UShipTerminalUserWidget::NativeOnInitialized()
@@ -58,27 +59,39 @@ void UShipTerminalUserWidget::ResetBools()
 	bConfirm = false;
 }
 
-//void UShipTerminalUserWidget::OrderTravelToRend(APlayerController* PlayerController)
-//{
-//	if (PlayerController != nullptr)
-//	{
-//		ULCGlobal::SendToRend(GetWorld(), PlayerController);
-//	}
-//}
-//
-//void UShipTerminalUserWidget::OrderTravelToCompany(APlayerController* PlayerController)
-//{
-//	if (PlayerController != nullptr)
-//	{
-//		ULCGlobal::SendToCompany(GetWorld(), PlayerController);
-//	}
-//}
-//
-//void UShipTerminalUserWidget::OrderTravelToReady(APlayerController* PlayerController)
-//{
-//	if (PlayerController != nullptr)
-//	{
-//		ULCGlobal::SendToReady(GetWorld(), PlayerController);
-//	}
-//}
-//
+void UShipTerminalUserWidget::SetTargetRendOrCompany(bool Sign)
+{
+	Sign = bTargetRendOrCompany;
+	// false´Â Rend, true´Â Company
+}
+
+bool UShipTerminalUserWidget::CheckTargetRendOrCompany()
+{
+	return bTargetRendOrCompany;
+}
+
+void UShipTerminalUserWidget::SetLCPlayerController(ALCPlayerController* LCPlayerController)
+{
+	SavedPlayerController = Cast<APlayerController>(LCPlayerController);
+}
+
+APlayerController* UShipTerminalUserWidget::GetLCPlayerController()
+{
+	return SavedPlayerController;
+}
+
+
+void UShipTerminalUserWidget::TurnItOccupied()
+{
+	bOccupied = true;
+}
+
+void UShipTerminalUserWidget::TurnItUnoccupied()
+{
+	bOccupied = false;
+}
+
+bool UShipTerminalUserWidget::CheckOccupied()
+{
+	return bOccupied;
+}

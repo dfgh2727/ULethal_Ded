@@ -65,7 +65,15 @@ void AShip::Tick(float DeltaTime)
 
 	if (bLeverMove == true)
 	{
-		MoveTheLever(DeltaTime);
+		//MoveTheLever(DeltaTime);
+		if (bLeverIsDown == false)
+		{
+			PullTheLever(DeltaTime);
+		}
+		else
+		{
+			PushTheLever(DeltaTime);
+		}
 	}
 
 	if (bLSDoorMove == true)
@@ -149,33 +157,76 @@ void AShip::CloseDoors(float DeltaTime)
 	}
 }
 
-void AShip::MoveTheLever(float DeltaTime)
-{
-	if (bLeverIsDown == false)
-	{
-		FRotator CurRotation = LeverComponent->GetRelativeRotation();
-		CurRotation.Roll -= DeltaTime * 100;
-		LeverComponent->SetRelativeRotation(CurRotation);
+//void AShip::MoveTheLever(float DeltaTime)
+//{
+//	if (bLeverIsDown == false)
+//	{
+//		FRotator CurRotation = LeverComponent->GetRelativeRotation();
+//		CurRotation.Roll -= DeltaTime * 100;
+//		LeverComponent->SetRelativeRotation(CurRotation);
+//
+//		if (CurRotation.Roll <= -46)
+//		{
+//			bLeverMove = false;
+//			bLeverIsDown = true;
+//		}
+//	}
+//	else
+//	{
+//		FRotator CurRotation = LeverComponent->GetRelativeRotation();
+//		CurRotation.Roll += DeltaTime * 100;
+//		LeverComponent->SetRelativeRotation(CurRotation);
+//		
+//		if (CurRotation.Roll >= 1)
+//		{
+//			bLeverMove = false;
+//			bLeverIsDown = false;
+//		}
+//	}
+//	
+//}
 
-		if (CurRotation.Roll <= -46)
-		{
-			bLeverMove = false;
-			bLeverIsDown = true;
-		}
-	}
-	else
+void AShip::PullTheLever(float DeltaTime)
+{
+	FRotator CurRotation = LeverComponent->GetRelativeRotation();
+	CurRotation.Roll -= DeltaTime * 100;
+	LeverComponent->SetRelativeRotation(CurRotation);
+
+	if (CurRotation.Roll <= -46)
 	{
-		FRotator CurRotation = LeverComponent->GetRelativeRotation();
-		CurRotation.Roll += DeltaTime * 100;
-		LeverComponent->SetRelativeRotation(CurRotation);
-		
-		if (CurRotation.Roll >= 1)
+		bLeverMove = false;
+		bLeverIsDown = true;
+
+		//Target 체크하고 이동 명령 필요
+		bool TargetSign = ShipTerminalUserWidget->CheckTargetRendOrCompany();
+		APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
+
+		if (TargetSign == true)
 		{
-			bLeverMove = false;
-			bLeverIsDown = false;
+			OrderTravelToCompany(PlayerController);
+		}
+		else
+		{
+			OrderTravelToRend(PlayerController);
 		}
 	}
+}
+
+void AShip::PushTheLever(float DeltaTime)
+{
+	FRotator CurRotation = LeverComponent->GetRelativeRotation();
+	CurRotation.Roll += DeltaTime * 100;
+	LeverComponent->SetRelativeRotation(CurRotation);
 	
+	if (CurRotation.Roll >= 1)
+	{
+		bLeverMove = false;
+		bLeverIsDown = false;
+
+		//시간 지연 뒤 Ready로 이동 명령 필요
+		APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
+		OrderTravelToReady(PlayerController);
+	}	
 }
 
 void AShip::MoveLSDoor(float DeltaTime)
