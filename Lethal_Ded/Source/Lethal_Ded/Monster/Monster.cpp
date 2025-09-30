@@ -14,6 +14,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "Components/SceneComponent.h"
+#include "TimerManager.h" // 추가: 타이머 사용
+
 
 
 // Sets default values
@@ -144,6 +146,9 @@ void AMonster::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	DOREPLIFETIME(AMonster, DataKey);
 	DOREPLIFETIME(AMonster, AIStateValue);
 	DOREPLIFETIME(AMonster, bIsWaitTime);
+
+	DOREPLIFETIME(AMonster, bIsDead);
+	DOREPLIFETIME(AMonster, CurrentAttackCount);
 }
 
 void AMonster::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -164,6 +169,19 @@ void AMonster::ChangeAnimation_Multicast_Implementation(int _CurAnimnation, FNam
 	{
 		CurAnimInstance->ChangeAnimation(_CurAnimnation, _SectionName);
 	}
+}
+
+void AMonster::OnRep_IsDead()
+{
+	if (bIsDead)
+	{
+		HandleDeath(nullptr);
+	}
+}
+
+void AMonster::S2C_OnKilled_Implementation(AActor* Killer)
+{
+	HandleDeath(Killer);
 }
 
 void AMonster::AttackStart()
@@ -197,14 +215,56 @@ void AMonster::AttackEnd()
 		}
 	}
 }
+void AMonster::HandleDeath(AActor* Killer)
+{
 
+	// 일정 시간 뒤 제거 (필요 시)
+	if (HasAuthority())
+	{
+		FTimerHandle DestroyTimerHandle;
+		TWeakObjectPtr<AActor> WeakThis(this);
+
+		FTimerDelegate DestroyDelegate = FTimerDelegate::CreateLambda([WeakThis]()
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->Destroy(true);
+			}
+		});
+
+		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyDelegate, 5.0f, false);
+	}
+}
 float AMonster::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	// 먼저 부모 처리(버프/데미지 타입 등 엔진 기본 처리)
+	const float Actual = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	return 0.0f;
+	// 서버에서만 누적/사망 처리
+	if (!HasAuthority() || bIsDead)
+	{
+		return Actual;
+	}
+
+	// 데미지가 0 이하라면 무시(원하면 제거 가능)
+	if (Damage <= 0.f)
+	{
+		return Actual;
+	}
+
+	// 공격 1회로 카운트
+	++CurrentAttackCount;
+
+	// 임계치 도달 시 사망 처리
+	if (CurrentAttackCount >= AttacksToKill)
+	{
+		bIsDead = true;
+		HandleDeath(DamageCauser ? DamageCauser : (EventInstigator ? EventInstigator->GetPawn() : nullptr));
+		S2C_OnKilled(DamageCauser ? DamageCauser : (EventInstigator ? EventInstigator->GetPawn() : nullptr));
+	}
+
+	return Actual;
 }
-
 void AMonster::C2S_AttachCharacter_Implementation(AActor* Target)
 {
 	S2C_ApplyCaptured_Implementation(Target, true);
