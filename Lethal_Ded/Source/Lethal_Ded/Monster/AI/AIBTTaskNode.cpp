@@ -75,14 +75,21 @@ void UAIBTTaskNode::TargetCheck(UBehaviorTreeComponent& _OwnerComp)
 
 		for (AActor* Actor : OutActors)
 		{
+			if (Actor == nullptr || Actor == SelfActor)
+			{
+				continue;
+			}
+
 			FVector TargetLocation = Actor->GetActorLocation();
 			float TargetDis = (SelfLocation - TargetLocation).Size();
 
 			if (TargetDis < SightRange && TargetDis < CurTargetDis)
 			{
-				// 시야각 판정
+				// 시야각 판정 (dot 클램프로 NaN 방지)
 				FVector ToTarget = (TargetLocation - SelfLocation).GetSafeNormal();
-				float Angle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(SelfForward, ToTarget)));
+				float Dot = FVector::DotProduct(SelfForward, ToTarget);
+				Dot = FMath::Clamp(Dot, -1.0f, 1.0f);
+				float Angle = FMath::RadiansToDegrees(acosf(Dot));
 
 				if (Angle <= SightAngle * 0.5f)
 				{
@@ -101,8 +108,24 @@ void UAIBTTaskNode::TargetCheck(UBehaviorTreeComponent& _OwnerComp)
 
 					if (!bHit || HitResult.GetActor() == Actor)
 					{
+						// 목표에 직접 LOS가 있으면 그 목표 선택
 						CheckActor = Actor;
 						CurTargetDis = TargetDis;
+					}
+					else
+					{
+						// 이 부분이 핵심 수정:
+						// 뒤 타깃을 향한 LOS가 "다른 타깃 후보"에게 막히면 그 막은 액터를 타깃으로 채택
+						AActor* Blocker = HitResult.GetActor();
+						if (IsValid(Blocker) && Blocker != SelfActor && Blocker->ActorHasTag(PlayAIData.Data.TargetGroupName))
+						{
+							const float BlockerDis = (SelfLocation - Blocker->GetActorLocation()).Size();
+							if (BlockerDis < SightRange && BlockerDis < CurTargetDis)
+							{
+								CheckActor = Blocker;
+								CurTargetDis = BlockerDis;
+							}
+						}
 					}
 				}
 			}
@@ -115,5 +138,3 @@ void UAIBTTaskNode::TargetCheck(UBehaviorTreeComponent& _OwnerComp)
 		}
 	}
 }
-
- 

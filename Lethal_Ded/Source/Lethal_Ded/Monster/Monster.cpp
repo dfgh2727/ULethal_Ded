@@ -13,6 +13,8 @@
 #include <Global/LCConst.h>
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "Components/SceneComponent.h"
+
 
 // Sets default values
 AMonster::AMonster()
@@ -211,22 +213,38 @@ void AMonster::C2S_AttachCharacter_Implementation(AActor* Target)
 void AMonster::S2C_ApplyCaptured_Implementation(AActor* Target, bool bCaptured)
 {
 	const FName SocketName = TEXT("PlayerPointSocket");
-	const FAttachmentTransformRules KeepWorld(EAttachmentRule::KeepWorld, true);
+	//const FAttachmentTransformRules KeepWorld(EAttachmentRule::KeepWorld, true);
 
-	const FTransform SocketW = GetMesh()->GetSocketTransform(SocketName, RTS_World);
+	//const FTransform SocketW = GetMesh()->GetSocketTransform(SocketName, RTS_World);
 
 
 	if (GetMesh()->DoesSocketExist(SocketName))
 	{
-		//PlayAIData.TargetActor->SetActorEnableCollision(false);
-		Target->SetActorTransform(SocketW, false, nullptr, ETeleportType::TeleportPhysics);
-
-		// 4. 플레이어 캐릭터의 루트 컴포넌트를 소켓에 붙입니다.
-		Target->GetRootComponent()->AttachToComponent(
-			GetMesh(),
-			KeepWorld,
-			SocketName
+		// 1) 소켓의 월드 위치/회전만 사용하고, 대상의 원래 스케일 유지
+		const FTransform SocketW = GetMesh()->GetSocketTransform(SocketName, RTS_World);
+		const FVector    OrigScale = Target->GetActorScale3D();
+		const FTransform DesiredWorld(
+			SocketW.GetRotation(),
+			SocketW.GetLocation(),
+			OrigScale // 스케일은 원본 유지
 		);
+
+		// 2) 부모 스케일 전파를 차단(스케일만 절대값으로)
+		USceneComponent* TargetRootComp = Target->GetRootComponent();
+		if (!TargetRootComp) return;
+		TargetRootComp->SetAbsolute(false, false, true); // 위치/회전은 부모 따르고, 스케일은 절대
+
+		// 3) 먼저 월드 트랜스폼을 맞춘 뒤
+		Target->SetActorTransform(DesiredWorld, false, nullptr, ETeleportType::TeleportPhysics);
+
+		// 4) KeepWorld 규칙으로 소켓에 어태치
+		const FAttachmentTransformRules KeepWorld(
+			EAttachmentRule::KeepWorld,
+			EAttachmentRule::KeepWorld,
+			EAttachmentRule::KeepWorld,
+			/*bWeldSimulatedBodies=*/true
+		);
+		TargetRootComp->AttachToComponent(GetMesh(), KeepWorld, SocketName);
 
 		if (bCaptured)
 		{
