@@ -51,6 +51,7 @@ public:
 	// 공격 시
 	void AttackStart();
 	void AttackEnd();
+	void HandleDeath(AActor* Killer);
 	float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 
 	UFUNCTION(Server, Reliable)
@@ -93,4 +94,24 @@ private:
 public:
 	UPROPERTY(Replicated)
 	bool bIsWaitTime = false;
+
+	// (설정) 몇 번의 공격을 맞으면 사망할지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Play")
+	int32 AttacksToKill = 3;
+
+	// (상태) 현재 누적 공격 횟수
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = "Play")
+	int32 CurrentAttackCount = 0;
+
+	// (상태) 사망 여부
+	UPROPERTY(ReplicatedUsing = OnRep_IsDead, VisibleAnywhere, BlueprintReadOnly, Category = "Play")
+	bool bIsDead = false;
+
+	UFUNCTION()
+	void OnRep_IsDead();
+
+	// 사망 브로드캐스트
+	UFUNCTION(NetMulticast, Reliable)
+	void S2C_OnKilled(AActor* Killer);
+	void S2C_OnKilled_Implementation(AActor* Killer);
 };
