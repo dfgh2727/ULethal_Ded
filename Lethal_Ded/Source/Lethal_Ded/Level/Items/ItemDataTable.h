@@ -33,6 +33,10 @@ struct FItemDataRow : public FTableRowBase
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     EItemInteractType Interact = EItemInteractType::NONE;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool bSwamItem = true;
+
 };
 
 

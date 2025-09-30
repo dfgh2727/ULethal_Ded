@@ -2,12 +2,14 @@
 
 
 #include "Level/Items/Item.h"
+#include "Level/Items/ItemDataTable.h"
+#include "Level/Items/ItemWidget.h"
 
 #include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/TextBlock.h"
-#include "Level/Items/ItemDataTable.h"
-#include "Level/Items/ItemWidget.h"
+
 
 // Sets default values
 AItem::AItem()
@@ -23,6 +25,12 @@ AItem::AItem()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	StaticMeshComponent->SetupAttachment(DefaultSceneRoot);
 
+	GrabTrigger = CreateDefaultSubobject<UBoxComponent>("GrabTrigger");
+	GrabTrigger->SetupAttachment(DefaultSceneRoot);
+	GrabTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	GrabTrigger->SetCollisionObjectType(ECC_WorldDynamic);
+	GrabTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+	GrabTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	WidgetComponent->SetupAttachment(DefaultSceneRoot);
@@ -39,6 +47,10 @@ void AItem::BeginPlay()
 	Super::BeginPlay();
 
 	SetItemInfo();
+
+
+	GrabTrigger->OnComponentBeginOverlap.AddDynamic(this, &AItem::OverlapBegin);
+	GrabTrigger->OnComponentEndOverlap.AddDynamic(this, &AItem::OverlapEnd);
 }
 
 // Called every frame
@@ -58,6 +70,17 @@ void AItem::Tick(float DeltaTime)
 		WidgetComponent->SetVisibility(false);
 	}
 
+}
+
+void AItem::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	bGrabbable = true;
+}
+
+void AItem::OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	bGrabbable = false;
 }
 
 void AItem::SetItemInfo()
@@ -120,5 +143,10 @@ void AItem::SetWidgetRotation()
 			}
 		}
 	}
+
+}
+
+void AItem::SetGrabble()
+{
 
 }
