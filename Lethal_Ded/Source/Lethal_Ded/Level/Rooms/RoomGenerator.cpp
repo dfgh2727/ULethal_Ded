@@ -60,7 +60,7 @@ void ARoomGenerator::BeginPlay()
 			for (const FName& Name : RowNames)
 			{
 				FItemDataRow* Row = ItemDataTable->FindRow<FItemDataRow>(Name, TEXT(""));
-				if (Row && Row->ItemList)
+				if (Row && Row->ItemList && Row->bSwamItem == true)
 				{
 					ItemList.Add(Row->ItemList);
 				}

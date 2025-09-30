@@ -30,6 +30,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item")
 	UDataTable* ItemDataTable;
 
+	bool CanGrab()
+	{
+		return bGrabbable;
+	}
+
+	UFUNCTION()
+	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 private:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
@@ -42,6 +51,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* StaticMeshComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* GrabTrigger;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WidgetClass;
@@ -49,6 +60,8 @@ private:
 
 	void SetItemInfo();
 	void SetWidgetRotation();
+	void SetGrabble();
+
 
 	FString ItemName = "NONE";
 
@@ -57,6 +70,7 @@ private:
 	int ItemPrice = 0;
 
 	bool bWidgetVisible = false;
+	bool bGrabbable = false;
 
 	const int ITEMSHOWDISTANCE = 500.0f;
 };
