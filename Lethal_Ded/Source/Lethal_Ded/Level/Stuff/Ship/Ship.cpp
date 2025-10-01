@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "UI/ShipTerminalUserWidget.h"
 #include "Global/LCGlobal.h"
+#include "Global/Component/TimeEventComponent.h"
 //#include "Global/Controller/LCPlayerController.h"
 
 
@@ -36,7 +37,8 @@ AShip::AShip()
 
 	TerminalComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TerminalComponent"));
 	TerminalComponent->SetupAttachment(RootComponent);
-	
+
+	TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>(TEXT("TimeEventComponent"));
 }
 
 void AShip::BeginPlay()
@@ -197,7 +199,7 @@ void AShip::PullTheLever(float DeltaTime)
 		bLeverMove = false;
 		bLeverIsDown = true;
 
-		//Target 체크하고 이동 명령 필요
+		//Target 체크하고 이동 명령
 		bool TargetSign = ShipTerminalUserWidget->CheckTargetRendOrCompany();
 		APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
 
@@ -223,9 +225,12 @@ void AShip::PushTheLever(float DeltaTime)
 		bLeverMove = false;
 		bLeverIsDown = false;
 
-		//시간 지연 뒤 Ready로 이동 명령 필요
-		APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
-		OrderTravelToReady(PlayerController);
+		//시간 지연 뒤 Ready로 이동 명령
+		TimeEventComponent->AddEndEvent(2.0f, [this]()
+			{
+				APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
+				OrderTravelToReady(PlayerController);
+			});
 	}	
 }
 

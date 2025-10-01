@@ -71,8 +71,9 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Terminal", meta = (AllowprivateAccess = "true"))
 	UWidgetComponent* TerminalComponent = nullptr;
 
-
 	UShipTerminalUserWidget* ShipTerminalUserWidget = nullptr;
+
+	class UTimeEventComponent* TimeEventComponent = nullptr;
 
 	float DoorMovement = 300.0f;
 
