@@ -20,33 +20,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item")
-	class UWidgetComponent* WidgetComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item")
-	UDataTable* ItemDataTable;
-
-	bool CanGrab()
-	{
-		return bGrabbable;
-	}
-
-	UFUNCTION()
-	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-private:
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
-	//EItemType GripType = EItemType::ONEHAND;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* DefaultSceneRoot;
-
 
 	UPROPERTY(VisibleAnywhere, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* StaticMeshComponent;
@@ -57,15 +32,47 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WidgetClass;
 
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item")
+	class UWidgetComponent* WidgetComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item")
+	UDataTable* ItemDataTable;
+
+	bool CanGrab() const
+	{
+		return bGrabbable;
+	}
+
+	EItemType GetItemGripType() const
+	{
+		return ItemGripType;
+	}
+
+	EItemInteractType GetItemInteractType() const
+	{
+		return ItemInteractType;
+	}
+
+private:
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
+	//EItemType GripType = EItemType::ONEHAND;
+
+	UFUNCTION()
+	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 
 	void SetItemInfo();
 	void SetWidgetRotation();
-	void SetGrabble();
-
 
 	FString ItemName = "NONE";
-
 	EItemType ItemGripType = EItemType::ONEHAND;
+	EItemInteractType ItemInteractType = EItemInteractType::NONE;
 	
 	int ItemPrice = 0;
 

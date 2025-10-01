@@ -97,6 +97,7 @@ void AItem::SetItemInfo()
 				ItemName = Row->ItemName;
 				ItemPrice = Row->ItemPrice;
 				ItemGripType = Row->GripType;
+				ItemInteractType = Row->Interact;
 				break;
 			}
 		}
@@ -143,10 +144,5 @@ void AItem::SetWidgetRotation()
 			}
 		}
 	}
-
-}
-
-void AItem::SetGrabble()
-{
 
 }
