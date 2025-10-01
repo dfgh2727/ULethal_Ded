@@ -66,11 +66,11 @@ void ADoor::Tick(float DeltaTime)
 }
 
 
-void ADoor::ServerSetDoorOpen_Implementation()
+void ADoor::ServerSetDoorState_Implementation(bool _bOpen)
 {
 	if (!bDoorOverlap) return; // 겹치지 않으면 열지 않음
 
-	bOpen = !bOpen;
+	bOpen = _bOpen;
 
 	// 서버에서도 Timeline 실행
 	if (bOpen)
