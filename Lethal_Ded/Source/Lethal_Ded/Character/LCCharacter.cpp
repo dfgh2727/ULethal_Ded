@@ -29,6 +29,7 @@ ALCCharacter::ALCCharacter()
 	bUseControllerRotationRoll = false;
 
 	GetMesh()->Mobility = EComponentMobility::Movable;
+	GetMesh()->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(GetMesh(), FName("Neck"));
@@ -43,6 +44,8 @@ void ALCCharacter::BeginPlay()
 	
 	CurUpperAnimType = ECharUpperAnim::IDLE;
 	CurLowerAnimType = ECharLowerAnim::IDLE;
+
+	bCanAttack = true;
 }
 
 // Called every frame
@@ -174,6 +177,8 @@ void ALCCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(ALCCharacter, bIsSprint);
 	DOREPLIFETIME(ALCCharacter, bIsAttack);
 	DOREPLIFETIME(ALCCharacter, bCanAttack);
+	DOREPLIFETIME(ALCCharacter, DeathCount);
+	DOREPLIFETIME(ALCCharacter, AttackCount);
 }
 
 #pragma endregion 
@@ -194,10 +199,15 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &ALCCharacter::SprintStart_Server);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ALCCharacter::SprintEnd_Server);
 
-	if (false == bIsAttack && false == bCanAttack)
+	//if (false == bIsAttack && false == bCanAttack)
+	//{
+	//	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::AttackReady_Server);
+	//	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::Attack_Server);
+	//}
+
+	if (true == bCanAttack)
 	{
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::AttackReady_Server);
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ALCCharacter::Attack_Server);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::Attack_Server);
 	}
 }
 
@@ -228,7 +238,7 @@ void ALCCharacter::Idle(const struct FInputActionValue& _Axis2D)
 		{
 			LCCharLog(TEXT("ALCCharacter::Idle"), TEXT("CurLowerAnimType = ECharLowerAnim::IDLE"));
 
-			CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
+			//CurUpperAnimType = ECharUpperAnim::IDLE;	// Replicated Test
 			CurLowerAnimType = ECharLowerAnim::IDLE;
 		}
 		else
@@ -262,7 +272,7 @@ void ALCCharacter::Move(const FInputActionValue& _Axis2D)
 			{
 				LCCharLog(TEXT("ALCCharacter::Move"), TEXT("CurLowerAnimType = ECharLowerAnim::WALK"));
 
-				CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
+				//CurUpperAnimType = ECharUpperAnim::TWOHANDS;	// Replicated Tests
 				CurLowerAnimType = ECharLowerAnim::WALK;
 			}
 			else
@@ -419,17 +429,7 @@ void ALCCharacter::AttackReady_Server_Implementation()
 
 void ALCCharacter::AttackReady_Implementation()
 {
-	if (false == bIsAttack && CurUpperAnimType == ECharUpperAnim::SHOVEL)
-	{
-		LCCharLog(TEXT("ALCCharacter::AttackReady_Implementation"), TEXT("AttackReady"));
-
-		bIsAttack = true;
-		bCanAttack = false;
-
-		//LCCharLog(TEXT("ALCCharacter::AttackReady_Implementation"), TEXT("CurUpperAnimType = ECharUpperAnim::ATTACKREADY"));
-
-		//CurUpperAnimType = ECharUpperAnim::ATTACKREADY;
-	}
+	int a = 0;
 }
 
 void ALCCharacter::Attack_Server_Implementation()
@@ -439,29 +439,38 @@ void ALCCharacter::Attack_Server_Implementation()
 
 void ALCCharacter::Attack_Implementation()
 {
-	if (false == bCanAttack && CurUpperAnimType == ECharUpperAnim::SHOVEL)
+	if (false == bCanAttack)
+	{
+		return;
+	}
+
+	if (false == bIsAttack && CurUpperAnimType == ECharUpperAnim::SHOVEL)
 	{
 		LCCharLog(TEXT("ALCCharacter::Attack_Implementation"), TEXT("Attack"));
 
-		bCanAttack = true;
+		bIsAttack = true;
 
 		LCCharLog(TEXT("ALCCharacter::Attack_Implementation"), TEXT("CurUpperAnimType = ECharUpperAnim::ATTACK"));
 
 		CurUpperAnimType = ECharUpperAnim::ATTACK;
-
-		//FTimerHandle myTimerHandle;
-		//GetWorld()->GetTimerManager().SetTimer(myTimerHandle, FTimerDelegate::CreateLambda([&]()
-		//	{
-		//		CurUpperAnimType = ECharUpperAnim::SHOVEL;
-
-		//		bIsAttack = false;
-		//		bCanAttack = false;
-
-		//		// 타이머 초기화
-		//		GetWorld()->GetTimerManager().ClearTimer(myTimerHandle);
-		//	}), 2.6f, false);
 	}
 }
+
+//void ALCCharacter::Hit(AActor* _Actor)
+//{
+//	if (true == _Actor->ActorHasTag(TEXT("Monster")))
+//	{
+//		APawn* DamagePawn = Cast<APawn>(_Actor);
+//		AController* Con = nullptr;
+//		if (nullptr == DamagePawn)
+//		{
+//			Con = DamagePawn->GetController();
+//		}
+//
+//		DamagePawn->GetController();
+//		UGameplayStatics::ApplyDamage(this, AttackCount, Con, _Actor, nullptr);
+//	}
+//}
 
 #pragma endregion 
 

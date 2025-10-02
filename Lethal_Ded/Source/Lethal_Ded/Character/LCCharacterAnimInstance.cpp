@@ -20,4 +20,18 @@ void ULCCharacterAnimInstance::ChangeAnimation(ECharUpperAnim _CurUpperAnimType,
 	CurLowerAnimType = _CurLowerAnimType;
 }
 
+void ULCCharacterAnimInstance::AttackAnimStop()
+{
+	bIsAttackPause = true;
+	AttackPlayRate = 0.0f;
+}
+
+void ULCCharacterAnimInstance::AttackAnimResume()
+{
+	if (true == bIsAttackPause)
+	{
+		AttackPlayRate = 1.0f;
+		bIsAttackPause = false;
+	}
+}
 
