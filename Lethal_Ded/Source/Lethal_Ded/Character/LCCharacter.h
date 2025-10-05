@@ -205,8 +205,8 @@ public:
 	void Attack();
 	void Attack_Implementation();
 
-	UFUNCTION(BlueprintCallable)
-	void Hit(AActor* _Actor);
+	//UFUNCTION(BlueprintCallable)
+	//void Hit(AActor* _Actor);
 
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void SetMovementValue_Server(const FVector2D& _MovementValue);
