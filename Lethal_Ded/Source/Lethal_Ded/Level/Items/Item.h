@@ -20,6 +20,18 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* DefaultSceneRoot;
+
+	UPROPERTY(VisibleAnywhere, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* StaticMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* GrabTrigger;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> WidgetClass;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -30,33 +42,42 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item")
 	UDataTable* ItemDataTable;
 
+	bool CanGrab() const
+	{
+		return bGrabbable;
+	}
+
+	EItemType GetItemGripType() const
+	{
+		return ItemGripType;
+	}
+
+	EItemInteractType GetItemInteractType() const
+	{
+		return ItemInteractType;
+	}
 
 private:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	//EItemType GripType = EItemType::ONEHAND;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
-	class USceneComponent* DefaultSceneRoot;
-
-
-	UPROPERTY(VisibleAnywhere, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* StaticMeshComponent;
-
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> WidgetClass;
+	UFUNCTION()
+	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 
 	void SetItemInfo();
 	void SetWidgetRotation();
 
 	FString ItemName = "NONE";
-
 	EItemType ItemGripType = EItemType::ONEHAND;
+	EItemInteractType ItemInteractType = EItemInteractType::NONE;
 	
 	int ItemPrice = 0;
 
 	bool bWidgetVisible = false;
+	bool bGrabbable = false;
 
 	const int ITEMSHOWDISTANCE = 500.0f;
 };

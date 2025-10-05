@@ -23,10 +23,22 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeAnimation(ECharUpperAnim _CurUpperAnimType, ECharLowerAnim _CurLowerAnimType);
 
+	UFUNCTION(BlueprintCallable)
+	void AttackAnimStop();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackAnimResume();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	ECharUpperAnim CurUpperAnimType = ECharUpperAnim::MAX;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	ECharLowerAnim CurLowerAnimType = ECharLowerAnim::MAX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	bool bIsAttackPause = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	float AttackPlayRate = 1.0f;
 };

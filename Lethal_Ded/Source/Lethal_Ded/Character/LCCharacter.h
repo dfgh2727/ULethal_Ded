@@ -79,6 +79,26 @@ public:
 		return CharAnimInst;
 	}
 
+	void SetCurUpperAnimType(ECharUpperAnim _CurUpperAnimType)
+	{
+		CurUpperAnimType = _CurUpperAnimType;
+	}
+
+	ECharUpperAnim GetCurUpperAnimType()
+	{
+		return CurUpperAnimType;
+	}
+
+	void SetCurLowerAnimType(ECharLowerAnim _CurLowerAnimType)
+	{
+		CurLowerAnimType = _CurLowerAnimType;
+	}
+
+	ECharLowerAnim GetCurLowerAnimType()
+	{
+		return CurLowerAnimType;
+	}
+
 protected:
 
 private:
@@ -185,6 +205,9 @@ public:
 	void Attack();
 	void Attack_Implementation();
 
+	UFUNCTION(BlueprintCallable)
+	void Hit(AActor* _Actor);
+
 	UFUNCTION(BlueprintCallable, Reliable, Server)
 	void SetMovementValue_Server(const FVector2D& _MovementValue);
 	void SetMovementValue_Server_Implementation(const FVector2D& _MovementValue)
@@ -213,6 +236,26 @@ public:
 		bIsMoving = _IsMoving;
 	}
 
+	void SetIsAttack(bool _IsAttack)
+	{
+		bIsAttack = _IsAttack;
+	}
+
+	bool GetIsAttack()
+	{
+		return bIsAttack;
+	}
+
+	void SetCanAttack(bool _CanAttack)
+	{
+		bCanAttack = _CanAttack;
+	}
+
+	bool GetCanAttack()
+	{
+		return bCanAttack;
+	}
+
 protected:
 
 private:
@@ -235,7 +278,13 @@ private:
 	bool bIsAttack = false;
 
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
-	bool bCanAttack = false;
+	bool bCanAttack = true;
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	int32 DeathCount = 10;
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	int32 AttackCount = 1;
 
 #pragma endregion 
 };

@@ -13,6 +13,10 @@
 #include <Global/LCConst.h>
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "Components/SceneComponent.h"
+#include "TimerManager.h" // 추가: 타이머 사용
+
+
 
 // Sets default values
 AMonster::AMonster()
@@ -142,6 +146,9 @@ void AMonster::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetime
 	DOREPLIFETIME(AMonster, DataKey);
 	DOREPLIFETIME(AMonster, AIStateValue);
 	DOREPLIFETIME(AMonster, bIsWaitTime);
+
+	DOREPLIFETIME(AMonster, bIsDead);
+	DOREPLIFETIME(AMonster, CurrentAttackCount);
 }
 
 void AMonster::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -162,6 +169,19 @@ void AMonster::ChangeAnimation_Multicast_Implementation(int _CurAnimnation, FNam
 	{
 		CurAnimInstance->ChangeAnimation(_CurAnimnation, _SectionName);
 	}
+}
+
+void AMonster::OnRep_IsDead()
+{
+	if (bIsDead)
+	{
+		HandleDeath(nullptr);
+	}
+}
+
+void AMonster::S2C_OnKilled_Implementation(AActor* Killer)
+{
+	HandleDeath(Killer);
 }
 
 void AMonster::AttackStart()
@@ -195,14 +215,56 @@ void AMonster::AttackEnd()
 		}
 	}
 }
+void AMonster::HandleDeath(AActor* Killer)
+{
 
+	// 일정 시간 뒤 제거 (필요 시)
+	if (HasAuthority())
+	{
+		FTimerHandle DestroyTimerHandle;
+		TWeakObjectPtr<AActor> WeakThis(this);
+
+		FTimerDelegate DestroyDelegate = FTimerDelegate::CreateLambda([WeakThis]()
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->Destroy(true);
+			}
+		});
+
+		GetWorldTimerManager().SetTimer(DestroyTimerHandle, DestroyDelegate, 5.0f, false);
+	}
+}
 float AMonster::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	// 먼저 부모 처리(버프/데미지 타입 등 엔진 기본 처리)
+	const float Actual = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	return 0.0f;
+	// 서버에서만 누적/사망 처리
+	if (!HasAuthority() || bIsDead)
+	{
+		return Actual;
+	}
+
+	// 데미지가 0 이하라면 무시(원하면 제거 가능)
+	if (Damage <= 0.f)
+	{
+		return Actual;
+	}
+
+	// 공격 1회로 카운트
+	++CurrentAttackCount;
+
+	// 임계치 도달 시 사망 처리
+	if (CurrentAttackCount >= AttacksToKill)
+	{
+		bIsDead = true;
+		HandleDeath(DamageCauser ? DamageCauser : (EventInstigator ? EventInstigator->GetPawn() : nullptr));
+		S2C_OnKilled(DamageCauser ? DamageCauser : (EventInstigator ? EventInstigator->GetPawn() : nullptr));
+	}
+
+	return Actual;
 }
-
 void AMonster::C2S_AttachCharacter_Implementation(AActor* Target)
 {
 	S2C_ApplyCaptured_Implementation(Target, true);
@@ -211,22 +273,38 @@ void AMonster::C2S_AttachCharacter_Implementation(AActor* Target)
 void AMonster::S2C_ApplyCaptured_Implementation(AActor* Target, bool bCaptured)
 {
 	const FName SocketName = TEXT("PlayerPointSocket");
-	const FAttachmentTransformRules KeepWorld(EAttachmentRule::KeepWorld, true);
+	//const FAttachmentTransformRules KeepWorld(EAttachmentRule::KeepWorld, true);
 
-	const FTransform SocketW = GetMesh()->GetSocketTransform(SocketName, RTS_World);
+	//const FTransform SocketW = GetMesh()->GetSocketTransform(SocketName, RTS_World);
 
 
 	if (GetMesh()->DoesSocketExist(SocketName))
 	{
-		//PlayAIData.TargetActor->SetActorEnableCollision(false);
-		Target->SetActorTransform(SocketW, false, nullptr, ETeleportType::TeleportPhysics);
-
-		// 4. 플레이어 캐릭터의 루트 컴포넌트를 소켓에 붙입니다.
-		Target->GetRootComponent()->AttachToComponent(
-			GetMesh(),
-			KeepWorld,
-			SocketName
+		// 1) 소켓의 월드 위치/회전만 사용하고, 대상의 원래 스케일 유지
+		const FTransform SocketW = GetMesh()->GetSocketTransform(SocketName, RTS_World);
+		const FVector    OrigScale = Target->GetActorScale3D();
+		const FTransform DesiredWorld(
+			SocketW.GetRotation(),
+			SocketW.GetLocation(),
+			OrigScale // 스케일은 원본 유지
 		);
+
+		// 2) 부모 스케일 전파를 차단(스케일만 절대값으로)
+		USceneComponent* TargetRootComp = Target->GetRootComponent();
+		if (!TargetRootComp) return;
+		TargetRootComp->SetAbsolute(false, false, true); // 위치/회전은 부모 따르고, 스케일은 절대
+
+		// 3) 먼저 월드 트랜스폼을 맞춘 뒤
+		Target->SetActorTransform(DesiredWorld, false, nullptr, ETeleportType::TeleportPhysics);
+
+		// 4) KeepWorld 규칙으로 소켓에 어태치
+		const FAttachmentTransformRules KeepWorld(
+			EAttachmentRule::KeepWorld,
+			EAttachmentRule::KeepWorld,
+			EAttachmentRule::KeepWorld,
+			/*bWeldSimulatedBodies=*/true
+		);
+		TargetRootComp->AttachToComponent(GetMesh(), KeepWorld, SocketName);
 
 		if (bCaptured)
 		{

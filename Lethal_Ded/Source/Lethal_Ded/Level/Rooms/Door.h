@@ -16,17 +16,34 @@ public:
 	// Sets default values for this actor's properties
 	ADoor();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	void OpenDoor()
+	{
+		bOpen = true;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "Door")
+	void CloseDoor()
+	{
+		bOpen = false;
+	}
 
 
+	UFUNCTION()
+	void OnRep_Open();
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetDoorState(bool _bOpen);
+	void ServerSetDoorState_Implementation(bool _bOpen);
 private:
 	UFUNCTION()
 	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult); 
@@ -49,12 +66,25 @@ private:
 	UPROPERTY()
 	FTimeline DoorOpenTimeline;
 
+	UPROPERTY()
+	FTimeline DoorCloseTimeline;
+
 	UPROPERTY(EditAnywhere, Category = "Level|Door", meta = (AllowPrivateAccess = "true"))
 	UCurveFloat* DoorOpenCurve;
 
-	UFUNCTION()
-	void OpenDoor(float Value);
+	UPROPERTY(EditAnywhere, Category = "Level|Door", meta = (AllowPrivateAccess = "true"))
+	UCurveFloat* DoorCloseCurve;
 
-	bool bOpen = false;
+	UFUNCTION()
+	void OpenDoorAnimation(float Value);
+
+	UFUNCTION()
+	void CloseDoorAnimation(float Value);
+
+	UPROPERTY(ReplicatedUsing = OnRep_Open)
+	bool bOpen;
+
+
+	UPROPERTY(Replicated)
 	bool bDoorOverlap = false;
 };
