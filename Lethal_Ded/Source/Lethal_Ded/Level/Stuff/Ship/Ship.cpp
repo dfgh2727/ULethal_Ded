@@ -4,6 +4,10 @@
 #include "Level/Stuff/Ship/Ship.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/WidgetComponent.h"
+#include "UI/ShipTerminalUserWidget.h"
+#include "Global/LCGlobal.h"
+#include "Global/Component/TimeEventComponent.h"
+//#include "Global/Controller/LCPlayerController.h"
 
 
 AShip::AShip()
@@ -33,12 +37,15 @@ AShip::AShip()
 
 	TerminalComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("TerminalComponent"));
 	TerminalComponent->SetupAttachment(RootComponent);
-	
+
+	TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>(TEXT("TimeEventComponent"));
 }
 
 void AShip::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ShipTerminalUserWidget = Cast<UShipTerminalUserWidget>(TerminalComponent->GetWidget());
 }
 
 void AShip::Tick(float DeltaTime)
@@ -60,7 +67,15 @@ void AShip::Tick(float DeltaTime)
 
 	if (bLeverMove == true)
 	{
-		MoveTheLever(DeltaTime);
+		//MoveTheLever(DeltaTime);
+		if (bLeverIsDown == false)
+		{
+			PullTheLever(DeltaTime);
+		}
+		else
+		{
+			PushTheLever(DeltaTime);
+		}
 	}
 
 	if (bLSDoorMove == true)
@@ -144,33 +159,79 @@ void AShip::CloseDoors(float DeltaTime)
 	}
 }
 
-void AShip::MoveTheLever(float DeltaTime)
-{
-	if (bLeverIsDown == false)
-	{
-		FRotator CurRotation = LeverComponent->GetRelativeRotation();
-		CurRotation.Roll -= DeltaTime * 100;
-		LeverComponent->SetRelativeRotation(CurRotation);
+//void AShip::MoveTheLever(float DeltaTime)
+//{
+//	if (bLeverIsDown == false)
+//	{
+//		FRotator CurRotation = LeverComponent->GetRelativeRotation();
+//		CurRotation.Roll -= DeltaTime * 100;
+//		LeverComponent->SetRelativeRotation(CurRotation);
+//
+//		if (CurRotation.Roll <= -46)
+//		{
+//			bLeverMove = false;
+//			bLeverIsDown = true;
+//		}
+//	}
+//	else
+//	{
+//		FRotator CurRotation = LeverComponent->GetRelativeRotation();
+//		CurRotation.Roll += DeltaTime * 100;
+//		LeverComponent->SetRelativeRotation(CurRotation);
+//		
+//		if (CurRotation.Roll >= 1)
+//		{
+//			bLeverMove = false;
+//			bLeverIsDown = false;
+//		}
+//	}
+//	
+//}
 
-		if (CurRotation.Roll <= -46)
-		{
-			bLeverMove = false;
-			bLeverIsDown = true;
-		}
-	}
-	else
+void AShip::PullTheLever(float DeltaTime)
+{
+	FRotator CurRotation = LeverComponent->GetRelativeRotation();
+	CurRotation.Roll -= DeltaTime * 100;
+	LeverComponent->SetRelativeRotation(CurRotation);
+
+	if (CurRotation.Roll <= -46)
 	{
-		FRotator CurRotation = LeverComponent->GetRelativeRotation();
-		CurRotation.Roll += DeltaTime * 100;
-		LeverComponent->SetRelativeRotation(CurRotation);
-		
-		if (CurRotation.Roll >= 1)
+		bLeverMove = false;
+		bLeverIsDown = true;
+
+		//Target 체크하고 이동 명령
+		bool TargetSign = ShipTerminalUserWidget->CheckTargetRendOrCompany();
+		APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
+
+		if (TargetSign == true)
 		{
-			bLeverMove = false;
-			bLeverIsDown = false;
+			OrderTravelToCompany(PlayerController);
+		}
+		else
+		{
+			OrderTravelToRend(PlayerController);
 		}
 	}
+}
+
+void AShip::PushTheLever(float DeltaTime)
+{
+	FRotator CurRotation = LeverComponent->GetRelativeRotation();
+	CurRotation.Roll += DeltaTime * 100;
+	LeverComponent->SetRelativeRotation(CurRotation);
 	
+	if (CurRotation.Roll >= 1)
+	{
+		bLeverMove = false;
+		bLeverIsDown = false;
+
+		//시간 지연 뒤 Ready로 이동 명령
+		TimeEventComponent->AddEndEvent(2.0f, [this]()
+			{
+				APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
+				OrderTravelToReady(PlayerController);
+			});
+	}	
 }
 
 void AShip::MoveLSDoor(float DeltaTime)
@@ -226,6 +287,30 @@ void AShip::MoveRSDoor(float DeltaTime)
 			bRSDoorMove = false;
 			bRSDoorShut = true;
 		}
+	}
+}
+
+void AShip::OrderTravelToRend(APlayerController* PlayerController)
+{
+	if (PlayerController != nullptr)
+	{
+		ULCGlobal::SendToRend(GetWorld(), PlayerController);
+	}
+}
+
+void AShip::OrderTravelToCompany(APlayerController* PlayerController)
+{
+	if (PlayerController != nullptr)
+	{
+		ULCGlobal::SendToCompany(GetWorld(), PlayerController);
+	}
+}
+
+void AShip::OrderTravelToReady(APlayerController* PlayerController)
+{
+	if (PlayerController != nullptr)
+	{
+		ULCGlobal::SendToReady(GetWorld(), PlayerController);
 	}
 }
 

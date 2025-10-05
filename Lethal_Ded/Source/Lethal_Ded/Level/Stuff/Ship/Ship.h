@@ -6,8 +6,8 @@
 #include "Level/Stuff/LCStuffActor.h"
 #include "Ship.generated.h"
 
-
 class UWidgetComponent;
+class UShipTerminalUserWidget;
 
 /**
  * 
@@ -36,10 +36,17 @@ private:
 	void OpenDoors(float DeltaTime);
 	void CloseDoors(float DeltaTime);
 
-	void MoveTheLever(float DeltaTime);
+	//void MoveTheLever(float DeltaTime);
+
+	void PullTheLever(float DeltaTime);
+	void PushTheLever(float DeltaTime);
 
 	void MoveLSDoor(float DeltaTime);
 	void MoveRSDoor(float DeltaTime);
+
+	void OrderTravelToRend(APlayerController* PlayerController);
+	void OrderTravelToCompany(APlayerController* PlayerController);
+	void OrderTravelToReady(APlayerController* PlayerController);
 
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LeftDoor", meta = (AllowprivateAccess = "true"))
@@ -63,6 +70,10 @@ private:
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "Terminal", meta = (AllowprivateAccess = "true"))
 	UWidgetComponent* TerminalComponent = nullptr;
+
+	UShipTerminalUserWidget* ShipTerminalUserWidget = nullptr;
+
+	class UTimeEventComponent* TimeEventComponent = nullptr;
 
 	float DoorMovement = 300.0f;
 
