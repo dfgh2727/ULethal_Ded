@@ -20,6 +20,7 @@ enum class EAIState : uint8
 	Trace UMETA(DisplayName = "추적"),
 	TraceBack UMETA(DisplayName = "회귀"),
 	Attack UMETA(DisplayName = "공격"),
+	Die UMETA(DisplayName = "죽음"),
 	MAX UMETA(DisplayName = "MAX"),
 };
 
