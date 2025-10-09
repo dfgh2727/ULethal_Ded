@@ -37,6 +37,19 @@ public:
 	void ControlSDoorRight();
 	// 함선 테스트
 
+	// 라인 트레이스
+	UFUNCTION(BlueprintCallable)
+	void TraceForInteractable();
+
+	UFUNCTION(BlueprintCallable, Reliable, Server)
+	void OnInteract_Server();
+	void OnInteract_Server_Implementation();
+
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
+	void OnInteract();
+	void OnInteract_Implementation();
+	// 라인 트레이스
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -56,6 +69,18 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	bool bCanShowCharLog = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	AActor* FocusedActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	UPrimitiveComponent* FocusedComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	float TraceDistance = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	FName TargetTagName = "";
 
 #pragma endregion 
 
@@ -147,6 +172,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttackAction = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SelectAction = nullptr;
 
 #pragma endregion 
 
@@ -256,6 +284,9 @@ public:
 		return bCanAttack;
 	}
 
+	UFUNCTION(BlueprintCallable)
+	void Equip(AActor* _Item);
+
 protected:
 
 private:
@@ -285,6 +316,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
 	int32 AttackCount = 1;
+
+	UPROPERTY(EditAnywhere, Replicated, BlueprintReadWrite, category = "LCCharacter", meta = (AllowPrivateAccess = "true"))
+	class AItem* EquipItem = nullptr;
 
 #pragma endregion 
 };
