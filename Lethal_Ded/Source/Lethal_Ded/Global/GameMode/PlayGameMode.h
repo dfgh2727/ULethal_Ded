@@ -10,7 +10,7 @@
  * 
  */
 
-class ALCCharacter;
+
 
 UCLASS()
 class LETHAL_DED_API APlayGameMode : public ALCGameMode
@@ -21,16 +21,6 @@ public:
 	APlayGameMode();
 
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void PostLogin(APlayerController* PlayerController) override;
-	void SpawnAndPossess(class ALCPlayerController* Controller);
-
-private:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ALCCharacter> Character;
-
-	class UTimeEventComponent* TimeEventComponent = nullptr;
+	//virtual void Tick(float DeltaTime) override;
 	
 };

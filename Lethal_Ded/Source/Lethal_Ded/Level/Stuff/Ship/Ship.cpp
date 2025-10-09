@@ -52,6 +52,8 @@ void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AddActorWorldOffset(FVector::UnitX() * 10.0f);
+
 	if (bDoItOnce == true)
 	{
 		if (bSign == true && bDoorsOpen == false)
