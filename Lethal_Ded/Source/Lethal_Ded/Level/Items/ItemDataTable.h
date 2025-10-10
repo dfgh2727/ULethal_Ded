@@ -37,6 +37,12 @@ struct FItemDataRow : public FTableRowBase
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bSwamItem = true;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FVector ItemPosition = {0.0f, 0.0f, 0.0f};
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FVector ItemRoatation = { 0.0f, 0.0f, 0.0f };
+
 };
 
 
