@@ -3,6 +3,7 @@
 
 #include "Global/GameMode/ReadyGameMode.h"
 #include "Character/LCCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Global/Controller/LCPlayerController.h"
 #include "Global/Component/TimeEventComponent.h"
 #include "Level/Stuff/Ship/Ship.h"
@@ -19,6 +20,7 @@ void AReadyGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnShip();
+	//LCGameInstance = Cast<ULCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void AReadyGameMode::Tick(float DeltaTime)
@@ -60,12 +62,16 @@ void AReadyGameMode::SpawnAndPossess(ALCPlayerController* Controller)
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *MyString);
 }
 
+void AReadyGameMode::CheckShipIsSpawned()
+{
+
+}
+
 void AReadyGameMode::SpawnShip()
 {
-	FVector SpawnPos = FVector(0.0f, 0.0f, 1500.0f);
-	FRotator SpawnRot = FRotator(0.0f, 0.0f, 0.0f);
-	FActorSpawnParameters SpawnParam;
-	SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-	ShipPtr = GetWorld()->SpawnActor<AShip>(AShip::StaticClass(), SpawnPos, SpawnRot, SpawnParam);
+	if (SpawnTarget_Ship != nullptr)
+	{
+		ShipPtr = GetWorld()->SpawnActor<AShip>(SpawnTarget_Ship);
+		ShipPtr->SetActorLocation(FVector(0.0f, 0.0f, 1500.0f));
+	}
 }

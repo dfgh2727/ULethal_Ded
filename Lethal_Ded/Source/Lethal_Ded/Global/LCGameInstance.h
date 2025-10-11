@@ -39,6 +39,16 @@ public:
 		return bBootingScreenPlayed;
 	}
 
+	void SetShipSpawned(bool bCheck)
+	{
+		bShipSpawned = bCheck;
+	}
+
+	bool CheckShipSpawned()
+	{
+		return bShipSpawned;
+	}
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Level")
@@ -58,6 +68,6 @@ private:
 
 	bool bBootingScreenPlayed = false;
 	
-	
+	bool bShipSpawned = false;
 	
 };

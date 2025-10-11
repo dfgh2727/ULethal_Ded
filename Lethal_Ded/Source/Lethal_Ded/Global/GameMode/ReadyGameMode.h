@@ -25,6 +25,8 @@ class LETHAL_DED_API AReadyGameMode : public ALCGameMode
 	void SpawnAndPossess(class ALCPlayerController* Controller);
 
 protected:
+	void CheckShipIsSpawned();
+
 	void SpawnShip();
 
 private:
@@ -32,8 +34,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<ALCCharacter> Character;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning_Ship", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AShip>SpawnTarget_Ship;
+	
 	class UTimeEventComponent* TimeEventComponent = nullptr;
 
 	class AShip* ShipPtr = nullptr;
 	
+	class ULCGameInstance* LCGameInstance = nullptr;
+
 };
