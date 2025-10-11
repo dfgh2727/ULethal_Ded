@@ -82,10 +82,20 @@ void AItem::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 
 
-	if (GrabTrigger)
+	if (GrabTrigger != nullptr)
 	{
 		FString BPItemName = GetName();
+
 		BPItemName.RemoveFromStart("BP_");
+		
+		
+		int32 Index = BPItemName.Find(TEXT("_"), ESearchCase::IgnoreCase, ESearchDir::FromStart);
+
+		if (Index != INDEX_NONE)
+		{
+			BPItemName = BPItemName.Left(Index);
+		}
+
 		GrabTrigger->ComponentTags.AddUnique(FName(*BPItemName));
 	}
 }

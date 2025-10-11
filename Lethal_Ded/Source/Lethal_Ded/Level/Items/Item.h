@@ -65,6 +65,11 @@ public:
 		return ItemDataRow;
 	}
 
+	const UBoxComponent* GetGrabTrigger() const
+	{
+		return GrabTrigger;
+	}
+
 private:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	//EItemType GripType = EItemType::ONEHAND;
