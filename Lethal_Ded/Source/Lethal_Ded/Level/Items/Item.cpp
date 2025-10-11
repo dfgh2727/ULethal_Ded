@@ -41,6 +41,24 @@ AItem::AItem()
 	WidgetComponent->SetRelativeScale3D({0.25f, 0.25f, 0.25f});
 
 	Tags.Add("Item");
+
+	if (GrabTrigger != nullptr)
+	{
+		FString BPItemName = GetClass()->GetName();;
+
+		BPItemName.RemoveFromStart("BP_");
+
+
+		int32 Index = BPItemName.Find(TEXT("_C"), ESearchCase::IgnoreCase, ESearchDir::FromStart);
+
+		if (Index != INDEX_NONE)
+		{
+			BPItemName = BPItemName.Left(Index);
+		}
+
+		GrabTrigger->ComponentTags.Add(FName(*BPItemName));
+
+	}
 }
 
 
@@ -54,8 +72,6 @@ void AItem::BeginPlay()
 
 	GrabTrigger->OnComponentBeginOverlap.AddDynamic(this, &AItem::OverlapBegin);
 	GrabTrigger->OnComponentEndOverlap.AddDynamic(this, &AItem::OverlapEnd);
-
-
 }
 
 // Called every frame
@@ -77,28 +93,11 @@ void AItem::Tick(float DeltaTime)
 
 }
 
-void AItem::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-
-
-	if (GrabTrigger != nullptr)
-	{
-		FString BPItemName = GetName();
-
-		BPItemName.RemoveFromStart("BP_");
-		
-		
-		int32 Index = BPItemName.Find(TEXT("_"), ESearchCase::IgnoreCase, ESearchDir::FromStart);
-
-		if (Index != INDEX_NONE)
-		{
-			BPItemName = BPItemName.Left(Index);
-		}
-
-		GrabTrigger->ComponentTags.AddUnique(FName(*BPItemName));
-	}
-}
+//void AItem::OnConstruction(const FTransform& Transform)
+//{
+//	Super::OnConstruction(Transform);
+//
+//}
 
 
 void AItem::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

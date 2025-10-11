@@ -20,7 +20,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void OnConstruction(const FTransform& Transform) override;
+	//virtual void OnConstruction(const FTransform& Transform) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item", meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* DefaultSceneRoot;
@@ -34,15 +34,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> WidgetClass;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level|Item")
 	class UWidgetComponent* WidgetComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level|Item")
 	UDataTable* ItemDataTable;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 
 	bool CanGrab() const
