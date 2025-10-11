@@ -55,6 +55,8 @@ void AReadyGameMode::SpawnAndPossess(ALCPlayerController* Controller)
 	}
 
 	AActor* NewActor = GetWorld()->SpawnActor<AActor>(Character);
+	NewActor->SetActorLocation(PlayerSpawnPos);
+
 	ALCCharacter* NewCharacter = Cast<ALCCharacter>(NewActor);
 	LCPlayerController->Possess(NewCharacter);
 
@@ -72,6 +74,6 @@ void AReadyGameMode::SpawnShip()
 	if (SpawnTarget_Ship != nullptr)
 	{
 		ShipPtr = GetWorld()->SpawnActor<AShip>(SpawnTarget_Ship);
-		ShipPtr->SetActorLocation(FVector(0.0f, 0.0f, 1500.0f));
+		ShipPtr->SetActorLocation(ShipSpawnPos);
 	}
 }

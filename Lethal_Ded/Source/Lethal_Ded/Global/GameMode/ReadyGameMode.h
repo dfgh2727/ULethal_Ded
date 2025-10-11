@@ -43,4 +43,7 @@ private:
 	
 	class ULCGameInstance* LCGameInstance = nullptr;
 
+	FVector PlayerSpawnPos = FVector(-300.0f, 1500.0f, 1800.0f);
+	FVector ShipSpawnPos = FVector(0.0f, 0.0f, 1500.0f);
+
 };
