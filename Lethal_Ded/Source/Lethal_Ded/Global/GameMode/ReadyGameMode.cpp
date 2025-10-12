@@ -20,7 +20,6 @@ void AReadyGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnShip();
-	//LCGameInstance = Cast<ULCGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void AReadyGameMode::Tick(float DeltaTime)
@@ -64,11 +63,6 @@ void AReadyGameMode::SpawnAndPossess(ALCPlayerController* Controller)
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *MyString);
 }
 
-void AReadyGameMode::CheckShipIsSpawned()
-{
-
-}
-
 void AReadyGameMode::SpawnShip()
 {
 	if (SpawnTarget_Ship != nullptr)
@@ -76,4 +70,32 @@ void AReadyGameMode::SpawnShip()
 		ShipPtr = GetWorld()->SpawnActor<AShip>(SpawnTarget_Ship);
 		ShipPtr->SetActorLocation(ShipSpawnPos);
 	}
+}
+
+void AReadyGameMode::CheckShipIsSpawned()
+{
+
+}
+
+void AReadyGameMode::OrderShipServerTravelToPlay(const FString& TargetLevel)
+{
+	ShipServerTravelToPlay_Implementation(TargetLevel);
+}
+
+void AReadyGameMode::OrderShipServerTravelToCompany(const FString& TargetLevel)
+{
+	ShipServerTravelToCompany_Implementation(TargetLevel);
+}
+
+
+void AReadyGameMode::ShipServerTravelToPlay_Implementation(const FString& TargetLevel)
+{
+	if (ShipPtr != nullptr)
+	{
+		
+	}
+}
+
+void AReadyGameMode::ShipServerTravelToCompany_Implementation(const FString& TargetLevel)
+{
 }
