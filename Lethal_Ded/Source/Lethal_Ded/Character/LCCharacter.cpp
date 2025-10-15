@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "Level/Items/Item.h"
 // 함선 테스트
 #include "Level/Stuff/Ship/Ship.h"
 #include "kismet/GameplayStatics.h"
@@ -65,6 +67,8 @@ void ALCCharacter::Tick(float DeltaTime)
 
 	bIsFalling = GetCharacterMovement()->IsFalling();
 	bIsCrouch = GetCharacterMovement()->bWantsToCrouch;
+
+	TraceForInteractable();
 }
 
 void ALCCharacter::LCCharLog(const FString _Func, const FString _TEXT)
@@ -145,6 +149,218 @@ void ALCCharacter::ControlSDoorRight()
 }
 // 함선 테스트
 
+// 라인 트레이스
+void ALCCharacter::TraceForInteractable()
+{
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC)
+	{
+		return;
+	}
+
+	FVector CameraPos;
+	FRotator CameraRot;
+	PC->GetPlayerViewPoint(CameraPos, CameraRot);
+
+	FVector Start = CameraPos;
+	FVector End = Start + (CameraRot.Vector() * TraceDistance);
+
+	FHitResult HitResult;
+	FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(TraceForInteractable), true, this);
+	TraceParams.bReturnPhysicalMaterial = false;
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		Start,
+		End,
+		ECC_Visibility,
+		TraceParams
+	);
+
+	if (bHit)
+	{
+		AActor* HitActor = HitResult.GetActor();
+		UPrimitiveComponent* HitComp = HitResult.GetComponent();
+
+		bool bHasTag = false;
+
+		if (HitComp)
+		{
+			TArray<USceneComponent*> ComponentsToCheck;
+			ComponentsToCheck.Add(HitComp);
+
+			USceneComponent* ParentComp = HitComp->GetAttachParent();
+			while (ParentComp)
+			{
+				TArray<USceneComponent*> ParentChildren;
+				ParentComp->GetChildrenComponents(true, ParentChildren);
+				for (USceneComponent* Child : ParentChildren)
+				{
+					if (Child)
+					{
+						ComponentsToCheck.AddUnique(Child);
+					}
+				}
+				ParentComp = ParentComp->GetAttachParent();
+			}
+
+			TArray<USceneComponent*> MyChildren;
+			HitComp->GetChildrenComponents(true, MyChildren);
+			for (USceneComponent* Child : MyChildren)
+			{
+				if (Child)
+				{
+					ComponentsToCheck.AddUnique(Child);
+				}
+			}
+
+			// 태그 디버깅
+			for (USceneComponent* Comp : ComponentsToCheck)
+			{
+				if (!Comp)
+				{
+					continue;
+				}
+
+				for (const FName& Tag : Comp->ComponentTags)
+				{
+					if (true == bCanShowCharLog)
+					{
+						UE_LOG(LethalCompany_LOG, Log, TEXT("Tag Check - Comp: %s | Tag: %s"), *Comp->GetName(), *Tag.ToString());
+					}
+
+					if (Tag != "None")
+					{
+						TargetTagName = Tag;
+					}
+
+					if (Comp->ComponentHasTag(TargetTagName))
+					{
+						bHasTag = true;
+						HitComp = Cast<UPrimitiveComponent>(Comp);
+						break;
+					}
+				}
+
+				if (bHasTag)
+				{
+					break;
+				}
+			}
+
+			//// 맞는 컴포넌트 태그 가졌음?
+			//if (HitComp->ComponentHasTag(TargetTagName))
+			//{
+			//	bHasTag = true;
+			//}
+			//else
+			//{
+			//	// 없을 경우, 부모 컴포넌트 확인
+			//	USceneComponent* ParentComp = HitComp->GetAttachParent();
+			//	while (ParentComp && !bHasTag)
+			//	{
+			//		if (ParentComp->ComponentHasTag(TargetTagName))
+			//		{
+			//			HitComp = Cast<UPrimitiveComponent>(ParentComp);
+			//			bHasTag = true;
+			//			break;
+			//		}
+			//		ParentComp = ParentComp->GetAttachParent();
+			//	}
+
+			//	// 모든 자식 컴포넌트도 확인
+			//	if (!bHasTag)
+			//	{
+			//		USceneComponent* RootForSearch = HitComp->GetAttachParent();
+			//		if (RootForSearch == nullptr)
+			//		{
+			//			RootForSearch = HitComp;
+			//		}
+
+			//		TArray<USceneComponent*> AllChildren;
+			//		RootForSearch->GetChildrenComponents(true, AllChildren);
+
+			//		for (USceneComponent* ChildComp : AllChildren)
+			//		{
+			//			if (ChildComp && ChildComp->ComponentHasTag(TargetTagName))
+			//			{
+			//				HitComp = Cast<UPrimitiveComponent>(ChildComp);
+			//				bHasTag = true;
+			//				break;
+			//			}
+			//		}
+			//	}
+			//}
+		}
+
+		if (bHasTag)
+		{
+			FocusedActor = HitActor;
+			FocusedComponent = HitComp;
+
+			if (true == bCanShowCharLog)
+			{
+				DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0, 0, 1.f);
+				UE_LOG(LethalCompany_LOG, Log, TEXT("Interactable Found: %s (Tag: %s)"), *HitComp->GetName(), *TargetTagName.ToString());
+			}
+		}
+		else
+		{
+			FocusedActor = nullptr;
+			FocusedComponent = nullptr;
+
+			if (true == bCanShowCharLog)
+			{
+				DrawDebugLine(GetWorld(), Start, End, FColor::Yellow, false, 0, 0, 1.f);
+			}
+
+		}
+	}
+	else
+	{
+		FocusedActor = nullptr;
+		FocusedComponent = nullptr;
+
+		if (true == bCanShowCharLog)
+		{
+			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1.f);
+		}
+	}
+}
+
+void ALCCharacter::OnInteract_Server_Implementation()
+{
+	OnInteract();
+}
+
+void ALCCharacter::OnInteract_Implementation()
+{
+	if (FocusedComponent)
+	{
+		if (true == bCanShowCharLog)
+		{
+			UE_LOG(LethalCompany_LOG, Warning, TEXT("Interacted with component: %s (Actor: %s)"),
+				*FocusedComponent->GetName(),
+				*FocusedActor->GetName());
+		}
+
+		if (FocusedComponent->ComponentHasTag("Shovel"))
+		{
+			if (true == bCanShowCharLog)
+			{
+				UE_LOG(LethalCompany_LOG, Log, TEXT("This component is Shovel!"));
+			}
+
+			FocusedActor;
+
+			Equip(FocusedActor);
+
+			CurUpperAnimType = ECharUpperAnim::SHOVEL;
+		}
+	}
+}
+// 라인 트레이스
+
 #pragma endregion 
 
 
@@ -209,6 +425,8 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ALCCharacter::Attack_Server);
 	}
+
+	EnhancedInputComponent->BindAction(SelectAction, ETriggerEvent::Triggered, this, &ALCCharacter::OnInteract_Server);
 }
 
 #pragma endregion 
@@ -454,6 +672,26 @@ void ALCCharacter::Attack_Implementation()
 
 		CurUpperAnimType = ECharUpperAnim::ATTACK;
 	}
+}
+
+void ALCCharacter::Equip(AActor* _Item)
+{
+	EquipItem = Cast<AItem>(_Item);
+
+	if (EquipItem == nullptr)
+	{
+		if (true == bCanShowCharLog)
+		{
+			UE_LOG(LethalCompany_LOG, Log, TEXT("FocusedActor Tag: %s"), *FocusedActor->Tags[0].ToString());
+		}
+
+		LCCharLog(TEXT("ALCCharacter::Equip"), TEXT("EquipItem is null"));
+		
+		return;
+	}
+
+	EquipItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("ItemSocket"));
+	EquipItem->SetActorRelativeLocation(FVector(0, 0, 0));
 }
 
 //void ALCCharacter::Hit(AActor* _Actor)

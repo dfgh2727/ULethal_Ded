@@ -2,7 +2,7 @@
 
 
 #include "Level/Items/Item.h"
-#include "Level/Items/ItemDataTable.h"
+
 #include "Level/Items/ItemWidget.h"
 
 #include "Components/StaticMeshComponent.h"
@@ -18,6 +18,7 @@ AItem::AItem()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bReplicates = true;
+
 
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>("DefaultSceneRoot");
 	RootComponent = DefaultSceneRoot;
@@ -39,7 +40,27 @@ AItem::AItem()
 	WidgetComponent->SetTwoSided(true);
 	WidgetComponent->SetRelativeScale3D({0.25f, 0.25f, 0.25f});
 
+	Tags.Add("Item");
+
+	if (GrabTrigger != nullptr)
+	{
+		FString BPItemName = GetClass()->GetName();;
+
+		BPItemName.RemoveFromStart("BP_");
+
+
+		int32 Index = BPItemName.Find(TEXT("_C"), ESearchCase::IgnoreCase, ESearchDir::FromStart);
+
+		if (Index != INDEX_NONE)
+		{
+			BPItemName = BPItemName.Left(Index);
+		}
+
+		GrabTrigger->ComponentTags.Add(FName(*BPItemName));
+
+	}
 }
+
 
 // Called when the game starts or when spawned
 void AItem::BeginPlay()
@@ -72,6 +93,13 @@ void AItem::Tick(float DeltaTime)
 
 }
 
+//void AItem::OnConstruction(const FTransform& Transform)
+//{
+//	Super::OnConstruction(Transform);
+//
+//}
+
+
 void AItem::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -94,6 +122,8 @@ void AItem::SetItemInfo()
 		{
 			if (Row && Row->ItemList == GetClass()) // 현재 아이템 BP 클래스와 동일하면
 			{
+				ItemDataRow = Row;
+
 				ItemName = Row->ItemName;
 				ItemPrice = Row->ItemPrice;
 				ItemGripType = Row->GripType;
