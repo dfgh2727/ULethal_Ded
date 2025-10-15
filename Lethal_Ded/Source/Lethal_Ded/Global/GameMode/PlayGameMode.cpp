@@ -6,11 +6,12 @@
 #include "Global/Controller/LCPlayerController.h"
 #include "Global/Component/TimeEventComponent.h"
 #include "Level/Stuff/Ship/Ship.h"
+#include "Global/Component/TimeEventComponent.h"
 
 
 APlayGameMode::APlayGameMode()
 {
-	//TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
+	TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
 
 	bUseSeamlessTravel = true;
 }
@@ -19,14 +20,30 @@ void APlayGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//SpawnShip();
+	SpawnShip();
+
+	TimeEventComponent->AddEndEvent(1.0f, [this]()
+		{
+			bShipIsLanding = true;
+		});
 }
-//
-//void APlayGameMode::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//}
-//
+
+void APlayGameMode::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (bShipIsLanding == true && ShipPtr != nullptr)
+	{
+		ShipPtr->ShipLand(DeltaTime);
+		//if (배가 만약 착륙 위치에 있다면)
+		//{
+		//		bShipIsLanding =false;
+		//}
+	}
+	
+}
+
+
 //void APlayGameMode::PostLogin(APlayerController* PlayerController)
 //{
 //	Super::PostLogin(PlayerController);
@@ -60,13 +77,12 @@ void APlayGameMode::BeginPlay()
 //	FString MyString = TEXT("YOUR CLIENT IS CONNECTED");
 //	UE_LOG(LogTemp, Warning, TEXT("%s"), *MyString);
 //}
-//
-//void APlayGameMode::SpawnShip()
-//{
-//	FVector SpawnPos = FVector(0.0f, 0.0f, 1500.0f);
-//	FRotator SpawnRot = FRotator(0.0f, 0.0f, 0.0f);
-//	FActorSpawnParameters SpawnParam;
-//	SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-//
-//	ShipPtr = GetWorld()->SpawnActor<AShip>(AShip::StaticClass(), SpawnPos, SpawnRot, SpawnParam);
-//}
+
+void APlayGameMode::SpawnShip()
+{
+	if (SpawnTarget_Ship != nullptr)
+	{
+		ShipPtr = GetWorld()->SpawnActor<AShip>(SpawnTarget_Ship);
+		ShipPtr->SetActorLocation(ShipSpawnPos);
+	}
+}

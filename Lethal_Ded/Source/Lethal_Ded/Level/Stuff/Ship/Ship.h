@@ -32,6 +32,9 @@ public:
 	void ControlSDoorLeft();
 	void ControlSDoorRight();
 
+	void ShipTakeOff(float DeltaTime);
+	void ShipLand(float DeltaTime);
+
 private:
 	void OpenDoors(float DeltaTime);
 	void CloseDoors(float DeltaTime);

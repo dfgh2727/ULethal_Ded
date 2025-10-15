@@ -24,21 +24,21 @@ class LETHAL_DED_API AReadyGameMode : public ALCGameMode
 	virtual void PostLogin(APlayerController* PlayerController) override;
 	void SpawnAndPossess(class ALCPlayerController* Controller);
 
-	void OrderShipServerTravelToPlay(const FString& TargetLevel);
-	void OrderShipServerTravelToCompany(const FString& TargetLevel);
+	//void OrderShipServerTravelToPlay(const FString& TargetLevel);
+	//void OrderShipServerTravelToCompany(const FString& TargetLevel);
 
 
 protected:
 	void SpawnShip();
-	void CheckShipIsSpawned();
+	//void CheckShipIsSpawned();
 
-	UFUNCTION(Server, Reliable)
-	void ShipServerTravelToPlay(const FString& TargetLevel);
-	void ShipServerTravelToPlay_Implementation(const FString& TargetLevel);
+	//UFUNCTION(Server, Reliable)
+	//void ShipServerTravelToPlay(const FString& TargetLevel);
+	//void ShipServerTravelToPlay_Implementation(const FString& TargetLevel);
 
-	UFUNCTION(Server, Reliable)
-	void ShipServerTravelToCompany(const FString& TargetLevel);
-	void ShipServerTravelToCompany_Implementation(const FString& TargetLevel);
+	//UFUNCTION(Server, Reliable)
+	//void ShipServerTravelToCompany(const FString& TargetLevel);
+	//void ShipServerTravelToCompany_Implementation(const FString& TargetLevel);
 
 private:
 

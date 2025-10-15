@@ -344,3 +344,12 @@ void AShip::ControlSDoorRight() //저장고(Storage) 오른쪽문 컨트롤 함수
 	bRSDoorMove = true;
 }
 
+void AShip::ShipTakeOff(float DeltaTime)
+{
+	//AddActorWorldOffset()
+}
+
+void AShip::ShipLand(float DeltaTime)
+{
+}
+

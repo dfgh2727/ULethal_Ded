@@ -21,6 +21,24 @@ public:
 	APlayGameMode();
 
 	virtual void BeginPlay() override;
-	//virtual void Tick(float DeltaTime) override;
-	
+	virtual void Tick(float DeltaTime) override;
+
+
+
+private:
+
+	void SpawnShip();
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning_Ship", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AShip>SpawnTarget_Ship;
+
+	class AShip* ShipPtr = nullptr;
+
+	FVector ShipSpawnPos = FVector(0.0f, 0.0f, 1500.0f);
+
+	class UTimeEventComponent* TimeEventComponent = nullptr;
+
+	bool bShipIsLanding = false;
+	bool bShipIsTakingOff = false;
 };

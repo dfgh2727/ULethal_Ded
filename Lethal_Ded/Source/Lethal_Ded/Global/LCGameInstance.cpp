@@ -61,7 +61,6 @@ void ULCGameInstance::TravelToRend(APlayerController* PlayerController)
 		LCPlayerController->SetServerTravel(PlayLevelName);
 	}
 
-
 }
 
 void ULCGameInstance::TravelToCompany(APlayerController* PlayerController)
@@ -74,11 +73,6 @@ void ULCGameInstance::TravelToCompany(APlayerController* PlayerController)
 		LCPlayerController->SetServerTravel(CompanyLevelName);
 	}
 
-	AReadyGameMode* ReadyGameMode = Cast< AReadyGameMode>(GetWorld()->GetAuthGameMode());
-	if (ReadyGameMode != nullptr)
-	{
-
-	}
 }
 
 void ULCGameInstance::TravelToReady(APlayerController* PlayerController)

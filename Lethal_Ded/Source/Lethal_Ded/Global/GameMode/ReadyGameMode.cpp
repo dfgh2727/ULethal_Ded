@@ -10,7 +10,7 @@
 
 AReadyGameMode::AReadyGameMode()
 {
-	TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
+	//TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
 
 	bUseSeamlessTravel = true;
 }
@@ -43,10 +43,6 @@ void AReadyGameMode::PostLogin(APlayerController* PlayerController)
 
 void AReadyGameMode::SpawnAndPossess(ALCPlayerController* Controller)
 {
-	FVector Location = FVector(0.0, 0.0, 300.0);
-	FRotator Rotation = FRotator::ZeroRotator;
-
-
 	ALCPlayerController* LCPlayerController = Controller;
 	if (LCPlayerController != nullptr)
 	{
@@ -72,30 +68,4 @@ void AReadyGameMode::SpawnShip()
 	}
 }
 
-void AReadyGameMode::CheckShipIsSpawned()
-{
 
-}
-
-void AReadyGameMode::OrderShipServerTravelToPlay(const FString& TargetLevel)
-{
-	ShipServerTravelToPlay_Implementation(TargetLevel);
-}
-
-void AReadyGameMode::OrderShipServerTravelToCompany(const FString& TargetLevel)
-{
-	ShipServerTravelToCompany_Implementation(TargetLevel);
-}
-
-
-void AReadyGameMode::ShipServerTravelToPlay_Implementation(const FString& TargetLevel)
-{
-	if (ShipPtr != nullptr)
-	{
-		
-	}
-}
-
-void AReadyGameMode::ShipServerTravelToCompany_Implementation(const FString& TargetLevel)
-{
-}
