@@ -7,7 +7,7 @@
 #include "UI/ShipTerminalUserWidget.h"
 #include "Global/LCGlobal.h"
 #include "Global/Component/TimeEventComponent.h"
-//#include "Global/Controller/LCPlayerController.h"
+#include "Global/Controller/LCPlayerController.h"
 
 
 AShip::AShip()
@@ -51,6 +51,8 @@ void AShip::BeginPlay()
 void AShip::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//AddActorWorldOffset(FVector::UnitX() * 10.0f);
 
 	if (bDoItOnce == true)
 	{
@@ -188,7 +190,7 @@ void AShip::CloseDoors(float DeltaTime)
 //	
 //}
 
-void AShip::PullTheLever(float DeltaTime)
+void AShip::PullTheLever_Implementation(float DeltaTime)
 {
 	FRotator CurRotation = LeverComponent->GetRelativeRotation();
 	CurRotation.Roll -= DeltaTime * 100;
@@ -201,20 +203,22 @@ void AShip::PullTheLever(float DeltaTime)
 
 		//Target 체크하고 이동 명령
 		bool TargetSign = ShipTerminalUserWidget->CheckTargetRendOrCompany();
-		APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
+		//APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
 
 		if (TargetSign == true)
 		{
-			OrderTravelToCompany(PlayerController);
+			//OrderTravelToCompany(PlayerController);
+			OrderTravelToCompany(PlayerControllerPtr);
 		}
 		else
 		{
-			OrderTravelToRend(PlayerController);
+			//OrderTravelToRend(PlayerController);
+			OrderTravelToRend(PlayerControllerPtr);
 		}
 	}
 }
 
-void AShip::PushTheLever(float DeltaTime)
+void AShip::PushTheLever_Implementation(float DeltaTime)
 {
 	FRotator CurRotation = LeverComponent->GetRelativeRotation();
 	CurRotation.Roll += DeltaTime * 100;
@@ -228,8 +232,9 @@ void AShip::PushTheLever(float DeltaTime)
 		//시간 지연 뒤 Ready로 이동 명령
 		TimeEventComponent->AddEndEvent(2.0f, [this]()
 			{
-				APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
-				OrderTravelToReady(PlayerController);
+				//APlayerController* PlayerController = ShipTerminalUserWidget->GetLCPlayerController();
+				//OrderTravelToReady(PlayerController);
+				OrderTravelToReady(PlayerControllerPtr);
 			});
 	}	
 }
@@ -290,7 +295,7 @@ void AShip::MoveRSDoor(float DeltaTime)
 	}
 }
 
-void AShip::OrderTravelToRend(APlayerController* PlayerController)
+void AShip::OrderTravelToRend_Implementation(APlayerController* PlayerController)
 {
 	if (PlayerController != nullptr)
 	{
@@ -298,7 +303,7 @@ void AShip::OrderTravelToRend(APlayerController* PlayerController)
 	}
 }
 
-void AShip::OrderTravelToCompany(APlayerController* PlayerController)
+void AShip::OrderTravelToCompany_Implementation(APlayerController* PlayerController)
 {
 	if (PlayerController != nullptr)
 	{
@@ -306,7 +311,7 @@ void AShip::OrderTravelToCompany(APlayerController* PlayerController)
 	}
 }
 
-void AShip::OrderTravelToReady(APlayerController* PlayerController)
+void AShip::OrderTravelToReady_Implementation(APlayerController* PlayerController)
 {
 	if (PlayerController != nullptr)
 	{
@@ -327,7 +332,7 @@ void AShip::ControlDoorsClose() //입구 컨트롤 함수, 닫기
 	bDoItOnce = true;
 }
 
-void AShip::ControlTheLever() //레버 컨트롤 함수
+void AShip::ControlTheLever_Implementation() //레버 컨트롤 함수
 {
 	bLeverMove = true;
 }
@@ -340,5 +345,19 @@ void AShip::ControlSDoorLeft() //저장고(Storage) 왼쪽문 컨트롤 함수
 void AShip::ControlSDoorRight() //저장고(Storage) 오른쪽문 컨트롤 함수
 {
 	bRSDoorMove = true;
+}
+
+void AShip::ShipTakeOff(float DeltaTime)
+{
+	//AddActorWorldOffset()
+}
+
+void AShip::ShipLand(float DeltaTime)
+{
+}
+
+void AShip::SetPlayerControllerPtr(APlayerController* PlayerController)
+{
+	PlayerControllerPtr = PlayerController;
 }
 

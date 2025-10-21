@@ -5,6 +5,10 @@
 #include "Character/LCCharacter.h"
 #include "Global/Controller/LCPlayerController.h"
 #include "Global/Component/TimeEventComponent.h"
+#include "Level/Stuff/Ship/Ship.h"
+
+#include "GameFramework/PlayerStart.h"
+
 
 
 APlayGameMode::APlayGameMode()
@@ -17,43 +21,43 @@ APlayGameMode::APlayGameMode()
 void APlayGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SpawnShip();
+
+	TimeEventComponent->AddEndEvent(1.0f, [this]()
+		{
+			bShipIsLanding = true;
+		});
 }
 
 void APlayGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
 
-void APlayGameMode::PostLogin(APlayerController* PlayerController)
-{
-	Super::PostLogin(PlayerController);
-
-	TimeEventComponent->AddEndEvent(0.5f, [this, PlayerController]()
-		{
-			ALCPlayerController* LCPlayerController = Cast<ALCPlayerController>(PlayerController);
-			if (LCPlayerController != nullptr)
-			{
-				SpawnAndPossess(LCPlayerController);
-			}
-		});
-}
-
-void APlayGameMode::SpawnAndPossess(ALCPlayerController* Controller)
-{
-	FVector Location = FVector(0.0, 0.0, 300.0);
-	FRotator Rotation = FRotator::ZeroRotator;
-
-
-	ALCPlayerController* LCPlayerController = Controller;
-	if (LCPlayerController != nullptr)
+	if (bShipIsLanding == true && ShipPtr != nullptr)
 	{
-		LCPlayerController->GetPawn()->Destroy();
+		ShipPtr->ShipLand(DeltaTime);
+		//if (배가 만약 착륙 위치에 있다면)
+		//{
+		//		bShipIsLanding =false;
+		//}
 	}
-
-	AActor* NewActor = GetWorld()->SpawnActor<AActor>(Character);
-	ALCCharacter* NewCharacter = Cast<ALCCharacter>(NewActor);
-	LCPlayerController->Possess(NewCharacter);
-
-	FString MyString = TEXT("YOUR CLIENT IS CONNECTED");
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *MyString);
+	
 }
+
+void APlayGameMode::SpawnShip()
+{
+	if (SpawnTarget_Ship != nullptr)
+	{
+		ShipPtr = GetWorld()->SpawnActor<AShip>(SpawnTarget_Ship);
+		ShipPtr->SetActorLocation(ShipSpawnPos);
+	}
+}
+
+
+AShip* APlayGameMode::GetShipPtr()
+{
+	return ShipPtr;
+}
+
+

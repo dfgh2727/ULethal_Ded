@@ -10,7 +10,7 @@
  * 
  */
 
-class ALCCharacter;
+
 
 UCLASS()
 class LETHAL_DED_API APlayGameMode : public ALCGameMode
@@ -23,14 +23,22 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void PostLogin(APlayerController* PlayerController) override;
-	void SpawnAndPossess(class ALCPlayerController* Controller);
+	UFUNCTION(BlueprintCallable)
+	class AShip* GetShipPtr();
 
 private:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<ALCCharacter> Character;
+	void SpawnShip();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning_Ship", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AShip>SpawnTarget_Ship;
+
+	class AShip* ShipPtr = nullptr;
+
+	FVector ShipSpawnPos = FVector(0.0f, 100.0f, -6000.0f);
 
 	class UTimeEventComponent* TimeEventComponent = nullptr;
-	
+
+	bool bShipIsLanding = false;
+	bool bShipIsTakingOff = false;
 };

@@ -3,9 +3,10 @@
 
 #include "Global/LCGameInstance.h"
 #include "Kismet/GameplayStatics.h"
-#include "Global/DevGlob/GlobDevGameMode.h"
+#include "Global/DevGlob/GlobDevGameMode.h" // ÀÌ°Å ¹¹Áö??
 #include "Global/Controller/LCTitleController.h"
 #include "Global/Controller/LCPlayerController.h"
+#include "Global/GameMode/ReadyGameMode.h"
 
 
 ULCGameInstance::ULCGameInstance()
@@ -59,6 +60,7 @@ void ULCGameInstance::TravelToRend(APlayerController* PlayerController)
 	{
 		LCPlayerController->SetServerTravel(PlayLevelName);
 	}
+
 }
 
 void ULCGameInstance::TravelToCompany(APlayerController* PlayerController)
@@ -70,6 +72,7 @@ void ULCGameInstance::TravelToCompany(APlayerController* PlayerController)
 	{
 		LCPlayerController->SetServerTravel(CompanyLevelName);
 	}
+
 }
 
 void ULCGameInstance::TravelToReady(APlayerController* PlayerController)
