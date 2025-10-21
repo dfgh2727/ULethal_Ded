@@ -10,7 +10,7 @@
 
 AReadyGameMode::AReadyGameMode()
 {
-	//TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
+	TimeEventComponent = CreateDefaultSubobject<UTimeEventComponent>("TimeEventComponent");
 
 	bUseSeamlessTravel = true;
 }
@@ -66,6 +66,11 @@ void AReadyGameMode::SpawnShip()
 		ShipPtr = GetWorld()->SpawnActor<AShip>(SpawnTarget_Ship);
 		ShipPtr->SetActorLocation(ShipSpawnPos);
 	}
+}
+
+AShip* AReadyGameMode::GetShipPtr()
+{
+	return ShipPtr;
 }
 
 

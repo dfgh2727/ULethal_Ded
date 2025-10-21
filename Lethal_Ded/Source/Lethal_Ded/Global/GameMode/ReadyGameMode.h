@@ -27,18 +27,12 @@ class LETHAL_DED_API AReadyGameMode : public ALCGameMode
 	//void OrderShipServerTravelToPlay(const FString& TargetLevel);
 	//void OrderShipServerTravelToCompany(const FString& TargetLevel);
 
+	UFUNCTION(BlueprintCallable)
+	class AShip* GetShipPtr();
 
 protected:
 	void SpawnShip();
 	//void CheckShipIsSpawned();
-
-	//UFUNCTION(Server, Reliable)
-	//void ShipServerTravelToPlay(const FString& TargetLevel);
-	//void ShipServerTravelToPlay_Implementation(const FString& TargetLevel);
-
-	//UFUNCTION(Server, Reliable)
-	//void ShipServerTravelToCompany(const FString& TargetLevel);
-	//void ShipServerTravelToCompany_Implementation(const FString& TargetLevel);
 
 private:
 
@@ -54,7 +48,7 @@ private:
 	
 	class ULCGameInstance* LCGameInstance = nullptr;
 
-	FVector PlayerSpawnPos = FVector(-300.0f, 1500.0f, 1800.0f);
+	FVector PlayerSpawnPos = FVector(-100.0f, 1200.0f, 1800.0f);
 	FVector ShipSpawnPos = FVector(0.0f, 0.0f, 1500.0f);
 
 };

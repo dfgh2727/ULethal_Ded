@@ -27,7 +27,11 @@ public:
 
 	void ControlDoorsOpen();
 	void ControlDoorsClose();
+
+	//UFUNCTION(BlueprintCallable, Reliable, Server)
+	UFUNCTION(BlueprintCallable, Reliable, NetMulticast)
 	void ControlTheLever();
+	void ControlTheLever_Implementation();
 
 	void ControlSDoorLeft();
 	void ControlSDoorRight();
@@ -35,21 +39,37 @@ public:
 	void ShipTakeOff(float DeltaTime);
 	void ShipLand(float DeltaTime);
 
+	void SetPlayerControllerPtr(class APlayerController* PlayerController);
+
 private:
 	void OpenDoors(float DeltaTime);
 	void CloseDoors(float DeltaTime);
 
 	//void MoveTheLever(float DeltaTime);
 
+	//UFUNCTION(Reliable, Server)
+	UFUNCTION(Reliable, NetMulticast)
 	void PullTheLever(float DeltaTime);
+	void PullTheLever_Implementation(float DeltaTime);
+
+	//UFUNCTION(Reliable, Server)
+	UFUNCTION(Reliable, NetMulticast)
 	void PushTheLever(float DeltaTime);
+	void PushTheLever_Implementation(float DeltaTime);
 
 	void MoveLSDoor(float DeltaTime);
 	void MoveRSDoor(float DeltaTime);
 
+	//UFUNCTION(Reliable, Server)
+	UFUNCTION(Reliable, NetMulticast)
 	void OrderTravelToRend(APlayerController* PlayerController);
+	void OrderTravelToRend_Implementation(APlayerController* PlayerController);
+	UFUNCTION(Reliable, Server)
 	void OrderTravelToCompany(APlayerController* PlayerController);
+	void OrderTravelToCompany_Implementation(APlayerController* PlayerController);
+	UFUNCTION(Reliable, Server)
 	void OrderTravelToReady(APlayerController* PlayerController);
+	void OrderTravelToReady_Implementation(APlayerController* PlayerController);
 
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "LeftDoor", meta = (AllowprivateAccess = "true"))
@@ -101,4 +121,6 @@ private:
 	bool bLSDoorShut = true;
 	UPROPERTY(Replicated)
 	bool bRSDoorShut = true;
+
+	class APlayerController* PlayerControllerPtr = nullptr;
 };

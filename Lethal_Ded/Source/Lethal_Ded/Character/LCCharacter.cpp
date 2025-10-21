@@ -113,6 +113,10 @@ void ALCCharacter::ControlTheLever()
 {
 	AShip* Ship = Cast<AShip>(UGameplayStatics::GetActorOfClass(GetWorld(), AShip::StaticClass()));
 
+	//추가된 코드
+	APlayerController* CurController = Cast<APlayerController>(GetController());
+	Ship->SetPlayerControllerPtr(CurController);
+
 	if (nullptr == Ship)
 	{
 		LCCharLog(TEXT("ALCCharacter::ControlTheLever"), TEXT("Ship is null"));

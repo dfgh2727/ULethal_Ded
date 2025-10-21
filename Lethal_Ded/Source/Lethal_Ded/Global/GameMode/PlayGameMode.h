@@ -23,19 +23,19 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-
+	UFUNCTION(BlueprintCallable)
+	class AShip* GetShipPtr();
 
 private:
 
 	void SpawnShip();
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Global|Spawning_Ship", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class AShip>SpawnTarget_Ship;
 
 	class AShip* ShipPtr = nullptr;
 
-	FVector ShipSpawnPos = FVector(0.0f, 0.0f, 1500.0f);
+	FVector ShipSpawnPos = FVector(0.0f, 100.0f, -6000.0f);
 
 	class UTimeEventComponent* TimeEventComponent = nullptr;
 
